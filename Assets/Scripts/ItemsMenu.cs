@@ -7,6 +7,7 @@ public class ItemsMenu : MonoBehaviour
     public GameObject Canvas;
     //[Header("Menus")]
     public GameObject ItemsMenu_object;
+    RotationScale _shortcutAccessRotationScale;
     //public GameObject LightingMenu_object;
     //public GameObject PeopleMenu_object;
     //public GameObject PropsMenu_object;
@@ -37,21 +38,21 @@ public class ItemsMenu : MonoBehaviour
         curr_menu.SetActive(!curr_menu.activeSelf);
     }
 
-    public void Test(float s, float p)
-    {
-        int t = 0;
-    }
-
     // to instantiate the object that is passed according to the pressed button in the menu
-    public void ObjectButton(GameObject prefab, float sx, float sy, float sz, float rx, float ry, float rz)
+    public void ObjectButton(GameObject prefab)
     {
+        // access the script RotationScale in the prefab
+        _shortcutAccessRotationScale = prefab.GetComponentInChildren<RotationScale>();
+        Vector3 rotation = _shortcutAccessRotationScale.rotation;
+        Vector3 scale = _shortcutAccessRotationScale.scale;
+
         // instantiate a new object in the hands position and looking forward
         GameObject object_instance = Instantiate(prefab);
         // the attach point always corresponds to the first child
         Transform attach_point = object_instance.transform.GetChild(0);
 
-        //object_instance.transform.localScale = scale;
-        //object_instance.transform.Rotate(rotation);
+        object_instance.transform.localScale = scale;
+        object_instance.transform.Rotate(rotation);
         // locate the object making the attach point to be on the hand
         Vector3 dif = object_instance.transform.position - attach_point.transform.position;
         object_instance.transform.position = RightController.transform.position;
