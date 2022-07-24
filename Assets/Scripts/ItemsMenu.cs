@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class ItemsMenu : MonoBehaviour
 {
     public GameObject Canvas;
     //[Header("Menus")]
-    public GameObject ItemsMenu_object;
+    //public GameObject ItemsMenu_object;
     RotationScale _shortcutAccessRotationScale;
+    // since i am unable to use getKeyDown, only Get
+    bool key_down = false;
+
     //public GameObject LightingMenu_object;
     //public GameObject PeopleMenu_object;
     //public GameObject PropsMenu_object;
@@ -32,10 +36,10 @@ public class ItemsMenu : MonoBehaviour
     }
 
     // Show or hide the current menu and Items menu
-    public void change_MenuButton(GameObject curr_menu)
+    public void change_MenuButton(GameObject curr_menu, GameObject new_menu)
     {
-        ItemsMenu_object.SetActive(!ItemsMenu_object.activeSelf);
-        curr_menu.SetActive(!curr_menu.activeSelf);
+        curr_menu.SetActive(false);
+        new_menu.SetActive(true);
     }
 
     // to instantiate the object that is passed according to the pressed button in the menu
@@ -62,8 +66,22 @@ public class ItemsMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))// || Input.GetJoystickNames(Button.Three))
+        OVRInput.Update();
+        if(OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)){
+            // do it only if it is the first time it is pressed
+            if (!key_down)
+            {
+                key_down = true;
+                Canvas.transform.GetChild(0).gameObject.SetActive(true);
+            }
+            //if (OVRInput.GetDown(OVRInput.Button.One)) { 
+            //if (Input.GetKeyDown(KeyCode.M)) || Input.GetJoystickNames(Button.Three))
+            //{
+        }
+        // once it is up again, set it to false
+        else
         {
+            key_down = false;
             int n_menus = Canvas.transform.childCount;
             bool any_active = false;
             // iterate through all child menus and set all to inactive
@@ -74,10 +92,8 @@ public class ItemsMenu : MonoBehaviour
                 any_active = curr_child.activeSelf || any_active;
                 curr_child.SetActive(false);
             }
-
-            // if there were no active menus then set the items menu to active
-            if (!any_active)
-                Canvas.transform.GetChild(0).gameObject.SetActive(true);
         }
     }
+
+
 }
