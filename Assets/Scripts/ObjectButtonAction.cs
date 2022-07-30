@@ -70,7 +70,7 @@ public class ObjectButtonAction : MonoBehaviour
             {
                 buttonDown = true;
                 ItemsMenu itemsMenu = canvas.GetComponent<ItemsMenu>();
-                itemsMenu.ObjectButton(itemPrefab);
+                itemsMenu.ObjectButton(itemPrefab, handController);
             }
         }
         else

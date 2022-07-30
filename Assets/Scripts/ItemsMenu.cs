@@ -43,7 +43,7 @@ public class ItemsMenu : MonoBehaviour
     }
 
     // to instantiate the object that is passed according to the pressed button in the menu
-    public void ObjectButton(GameObject prefab)
+    public void ObjectButton(GameObject prefab, GameObject handController)
     {
         // access the script RotationScale in the prefab
         _shortcutAccessRotationScale = prefab.GetComponentInChildren<RotationScale>();
@@ -59,7 +59,7 @@ public class ItemsMenu : MonoBehaviour
         object_instance.transform.Rotate(rotation);
         // locate the object making the attach point to be on the hand
         Vector3 dif = object_instance.transform.position - attach_point.transform.position;
-        object_instance.transform.position = RightController.transform.position;
+        object_instance.transform.position = handController.transform.position;
         object_instance.transform.position += dif;
     }
 
