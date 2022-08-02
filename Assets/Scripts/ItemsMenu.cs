@@ -8,7 +8,7 @@ public class ItemsMenu : MonoBehaviour
     public GameObject Canvas;
     //[Header("Menus")]
     //public GameObject ItemsMenu_object;
-    RotationScale _shortcutAccessRotationScale;
+    RotationScale rotationScale;
     // since i am unable to use getKeyDown, only Get
     bool key_down = false;
 
@@ -46,9 +46,9 @@ public class ItemsMenu : MonoBehaviour
     public void ObjectButton(GameObject prefab, GameObject handController)
     {
         // access the script RotationScale in the prefab
-        _shortcutAccessRotationScale = prefab.GetComponentInChildren<RotationScale>();
-        Vector3 rotation = _shortcutAccessRotationScale.rotation;
-        Vector3 scale = _shortcutAccessRotationScale.scale;
+        rotationScale = prefab.GetComponentInChildren<RotationScale>();
+        Vector3 rotation = rotationScale.rotation;
+        Vector3 scale = rotationScale.scale;
 
         // instantiate a new object in the hands position and looking forward
         GameObject object_instance = Instantiate(prefab);
