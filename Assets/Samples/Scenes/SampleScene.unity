@@ -4781,7 +4781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a09ab5fc64402d49b12d170a7577986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ndiName: LAPTOP-2H4H1CRT (NDI Sender)
+  _ndiName: CSTIL (NDI Sender)
   _targetTexture: {fileID: 8400000, guid: a2c2a018d3ee69d41a9d808dd42092e0, type: 2}
   _targetRenderer: {fileID: 1374559422}
   _targetMaterialProperty: _EmissionMap
@@ -5364,6 +5364,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1351307109}
+  - component: {fileID: 1351307110}
   m_Layer: 0
   m_Name: Pipe Sender
   m_TagString: Untagged
@@ -5386,6 +5387,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1351307110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351307108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d89e48c253968e41bbfc968e80fef93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  screenCamera: {fileID: 231107369}
 --- !u!4 &1374559421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 464f0cb9b32e5df4e81c8608c1c133b2,

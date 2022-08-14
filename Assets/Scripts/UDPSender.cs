@@ -29,7 +29,7 @@ public class UDPSender: MonoBehaviour
         {
             byte[] message = new byte[num];
             client.Send(message, message.Length, target);
-            Debug.Log("Sent: " + message);
+            //Debug.Log("Sent: " + message);
         }
         client.Close();
     }
