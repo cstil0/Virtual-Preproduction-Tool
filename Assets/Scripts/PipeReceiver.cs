@@ -5,36 +5,36 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
+using System.Security.Principal;
+using System.Text;
 
 public class PipeReceiver : MonoBehaviour
 {
     Thread receiveThread;
     NamedPipeClientStream pipeClient;
+    public string recievedMessage;
+    public Camera ScreenCamera;
+
     void recieveThread()
     {
         while (true)
         {
-            using (pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.In))
-            {
-                // Connect to the pipe or wait until the pipe is available.
-                Console.Write("Attempting to connect to pipe...");
-                pipeClient.Connect();
+                //Create Client Instance
+                NamedPipeClientStream client = new NamedPipeClientStream(".", "MyCOMApp",
+                               PipeDirection.InOut, PipeOptions.None,
+                               TokenImpersonationLevel.Impersonation);
 
-                Console.WriteLine("Connected to pipe.");
-                Console.WriteLine("There are currently {0} pipe server instances open.",
-                   pipeClient.NumberOfServerInstances);
-                using (StreamReader sr = new StreamReader(pipeClient))
-                {
-                    // Display the read text to the console
-                    string temp;
-                    while ((temp = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine("Received from server: {0}", temp);
-                    }
-                }
-            }
-            Console.Write("Press Enter to continue...");
-            Console.ReadLine();
+                //Connect to server
+                client.Connect();
+                //Created stream for reading and writing
+                StreamString clientStream = new StreamString(client);
+                //Read from Server
+                recievedMessage = clientStream.ReadString();
+                Debug.Log("Recieved:" + recievedMessage);
+                //Send Message to Server
+                clientStream.WriteString("Bye from client");
+                //Close client
+                client.Close();
         }
     }
 
@@ -58,6 +58,11 @@ public class PipeReceiver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (recievedMessage != null)
+        {
+            string[] splittedMessage = recievedMessage.Split(" ");
+            ScreenCamera.transform.position = new Vector3(int.Parse(splittedMessage[0]), int.Parse(splittedMessage[1]), int.Parse(splittedMessage[2]));
+            Debug.Log("Vector3: " + ScreenCamera.transform.position);
+        }
     }
 }
