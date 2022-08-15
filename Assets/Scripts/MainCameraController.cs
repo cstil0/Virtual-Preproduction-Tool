@@ -5,12 +5,15 @@ using UnityEngine;
 public class MainCameraController : MonoBehaviour
 {
     public GameObject controller;
-    public Vector3 startPosition;
+    Vector3 cameraStartPos;
+    Vector3 controllerStartPos;
+    //Vector3 lastRotation
 
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.transform.position = startPosition;
+        cameraStartPos = gameObject.transform.position;
+        controllerStartPos = controller.transform.position;
     }
 
     // Update is called once per frame
@@ -18,8 +21,13 @@ public class MainCameraController : MonoBehaviour
     {
         OVRInput.Update();
 
-        if (OVRInput.Get(OVRInput.Button.Two))
-            gameObject.transform.position = startPosition + controller.transform.position;
+        //if (OVRInput.Get(OVRInput.Button.Two))
+        //{
+            Vector3 diffPos = controller.transform.position - controllerStartPos;
+            gameObject.transform.position = cameraStartPos + diffPos;
+            
+            gameObject.transform.rotation = controller.transform.rotation;
+        //}
     }
 
 }

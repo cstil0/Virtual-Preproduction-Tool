@@ -7,34 +7,45 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Security.Principal;
 using System.Text;
+using UnityEditor.PackageManager;
+using System.Globalization;
 
 public class PipeReceiver : MonoBehaviour
 {
+    // HAY UN LIO CON EL NOMBRE DE ESTA VARIABLE Y EL DEL THREAD EN SI!! CAMBIAR!!!
     Thread receiveThread;
     NamedPipeClientStream pipeClient;
-    public string recievedMessage;
+    string recievedMessage;
     public Camera ScreenCamera;
+    Vector3 startPos;
+    Vector3 remoteStartPos;
+    Vector3 currPos;
 
     void recieveThread()
     {
         while (true)
         {
-                //Create Client Instance
-                NamedPipeClientStream client = new NamedPipeClientStream(".", "MyCOMApp",
-                               PipeDirection.InOut, PipeOptions.None,
-                               TokenImpersonationLevel.Impersonation);
+            //Create Client Instance
+            NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", "MyCOMApp",
+                            PipeDirection.InOut, PipeOptions.None,
+                            TokenImpersonationLevel.Impersonation);
 
-                //Connect to server
-                client.Connect();
-                //Created stream for reading and writing
-                StreamString clientStream = new StreamString(client);
-                //Read from Server
-                recievedMessage = clientStream.ReadString();
-                Debug.Log("Recieved:" + recievedMessage);
-                //Send Message to Server
-                clientStream.WriteString("Bye from client");
-                //Close client
-                client.Close();
+            //Connect to server
+            pipeClient.Connect();
+            //Created stream for reading and writing
+            StreamString clientStream = new StreamString(pipeClient);
+            //Read from Server
+            recievedMessage = clientStream.ReadString();
+            string[] splittedMessage = recievedMessage.Split(" ");
+            currPos = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
+            
+            if (remoteStartPos != null) {
+                remoteStartPos = currPos;
+            }
+
+            Debug.Log("Recieved:" + recievedMessage);
+            //Close client
+            pipeClient.Close();
         }
     }
 
@@ -43,6 +54,8 @@ public class PipeReceiver : MonoBehaviour
         // stop thread when object is disabled
         if (receiveThread != null)
             receiveThread.Abort();
+
+        //Close client
         pipeClient.Close();
     }
 
@@ -53,6 +66,8 @@ public class PipeReceiver : MonoBehaviour
         receiveThread = new Thread(recieveThread);
         receiveThread.IsBackground = true;
         receiveThread.Start();
+
+        startPos = ScreenCamera.transform.position;
     }
 
     // Update is called once per frame
@@ -60,9 +75,12 @@ public class PipeReceiver : MonoBehaviour
     {
         if (recievedMessage != null)
         {
-            string[] splittedMessage = recievedMessage.Split(" ");
-            ScreenCamera.transform.position = new Vector3(int.Parse(splittedMessage[0]), int.Parse(splittedMessage[1]), int.Parse(splittedMessage[2]));
-            Debug.Log("Vector3: " + ScreenCamera.transform.position);
+            Vector3 remotePosDiff = currPos - remoteStartPos;
+            ScreenCamera.transform.position = remotePosDiff + startPos;
         }
+        //if (!receiveThread.IsAlive)
+        //{
+        //    receiveThread.Start();
+        //}
     }
 }

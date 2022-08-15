@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System;
 using System.IO;
 using System.Text;
+using System.Globalization;
 
 public class PipeSender : MonoBehaviour
 {
@@ -21,10 +22,10 @@ public class PipeSender : MonoBehaviour
         StreamString serverStream = new StreamString(server);
         //Send Message to Client
         Vector3 cameraPos = screenCamera.transform.position;
-        serverStream.WriteString(cameraPos.x.ToString() + " " + cameraPos.y.ToString() + " " + cameraPos.z.ToString());
-        //Read from Client
-        string dataFromClient = serverStream.ReadString();
-        UnityEngine.Debug.Log("Received from Client: " + dataFromClient);
+        string specifier = "G";
+        // ESTO ASÍ ES MUY FEO
+        serverStream.WriteString(cameraPos.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
+        Debug.Log("Position Sent!!");
         //Close Connection
         server.Close();
     }
@@ -38,6 +39,6 @@ public class PipeSender : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        SendMessage();
     }
 }
