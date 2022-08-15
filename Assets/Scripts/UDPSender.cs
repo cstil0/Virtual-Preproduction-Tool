@@ -17,7 +17,6 @@ public class UDPSender: MonoBehaviour
     UdpClient client;
     public int serverPort;
     public string ipAddress;
-    Vector3 lastRot;
 
     // main thread that listens to UDP messages through a defined port
     void UDPTest()
@@ -41,10 +40,9 @@ public class UDPSender: MonoBehaviour
         byte[] message = Encoding.ASCII.GetBytes(cameraPos.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
-        Vector3 rotation = screenCamera.transform.rotation.eulerAngles - lastRot; 
-        message = Encoding.ASCII.GetBytes(rotation.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + rotation.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + rotation.z.ToString(specifier, CultureInfo.InvariantCulture));
+        Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
+        message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
-        lastRot = screenCamera.transform.rotation.eulerAngles;
 
         client.Close();
     }

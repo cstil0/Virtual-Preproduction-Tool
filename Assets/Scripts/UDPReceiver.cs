@@ -22,6 +22,9 @@ public class UDPReceiver : MonoBehaviour
     Vector3 startPos;
     Vector3 remoteStartPos;
     Vector3 currPos;
+
+    Vector3 startRot;
+    Vector3 remoteStartRot;
     Vector3 currRot;
 
     // main thread that listens to UDP messages through a defined port
@@ -44,7 +47,7 @@ public class UDPReceiver : MonoBehaviour
                 string[] splittedMessage = receivedMessage.Split(" ");
                 currPos = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
 
-                if (remoteStartPos == null)
+                if (remoteStartPos == new Vector3(0.0f, 0.0f, 0.0f))
                 {
                     remoteStartPos = new Vector3(currPos.x, currPos.y, currPos.z);
                 }
@@ -56,6 +59,11 @@ public class UDPReceiver : MonoBehaviour
 
                 splittedMessage = receivedMessage.Split(" ");
                 currRot = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
+
+                if (remoteStartRot == new Vector3(0.0f, 0.0f, 0.0f))
+                {
+                    remoteStartRot = new Vector3(currRot.x, currRot.y, currRot.z);
+                }
             }
             catch (Exception e)
             {
@@ -79,7 +87,9 @@ public class UDPReceiver : MonoBehaviour
         receiveThread.Start();
 
         startPos = ScreenCamera.transform.position;
+        startRot = ScreenCamera.transform.rotation.eulerAngles;
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -87,7 +97,9 @@ public class UDPReceiver : MonoBehaviour
         {
             Vector3 remotePosDiff = currPos - remoteStartPos;
             ScreenCamera.transform.position = remotePosDiff + startPos;
-            ScreenCamera.transform.Rotate(currRot);
+
+            Vector3 remoteRotDiff = remoteStartRot - currRot;
+            ScreenCamera.transform.rotation = Quaternion.Euler(remoteRotDiff + startRot);
         }
     }
 }

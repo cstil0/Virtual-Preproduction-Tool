@@ -7,6 +7,12 @@ public class MainCameraController : MonoBehaviour
     public GameObject controller;
     Vector3 cameraStartPos;
     Vector3 controllerStartPos;
+
+    Vector3 cameraStartRot;
+    Vector3 controllerStartRot;
+
+    bool buttonDown;
+
     //Vector3 lastRotation
 
     // Start is called before the first frame update
@@ -14,6 +20,11 @@ public class MainCameraController : MonoBehaviour
     {
         cameraStartPos = gameObject.transform.position;
         controllerStartPos = controller.transform.position;
+
+        cameraStartRot = gameObject.transform.rotation.eulerAngles;
+        controllerStartRot = controller.transform.rotation.eulerAngles;
+
+        buttonDown = false;
     }
 
     // Update is called once per frame
@@ -21,13 +32,29 @@ public class MainCameraController : MonoBehaviour
     {
         OVRInput.Update();
 
-        //if (OVRInput.Get(OVRInput.Button.Two))
-        //{
+        if (OVRInput.Get(OVRInput.Button.Two))
+        {
+            if (!buttonDown)
+            {
+                cameraStartPos = gameObject.transform.position;
+                controllerStartPos = controller.transform.position;
+
+                cameraStartRot = gameObject.transform.rotation.eulerAngles;
+                controllerStartRot = controller.transform.rotation.eulerAngles;
+            }
+
             Vector3 diffPos = controller.transform.position - controllerStartPos;
             gameObject.transform.position = cameraStartPos + diffPos;
-            
-            gameObject.transform.rotation = controller.transform.rotation;
-        //}
+
+            Vector3 diffRot = controller.transform.rotation.eulerAngles - controllerStartRot;
+            gameObject.transform.rotation = Quaternion.Euler(cameraStartRot + diffRot);
+
+            buttonDown = true;
+        }
+        else if (buttonDown)
+        {
+            buttonDown = false;
+        }
     }
 
 }
