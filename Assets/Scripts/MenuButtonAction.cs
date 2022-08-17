@@ -13,7 +13,9 @@ public class MenuButtonAction : MonoBehaviour
 
     bool triggerOn;
     bool buttonDown;
-    bool isFirstTime;
+    // used to know if the button was already released at least once when comming from previous menu to avoid pressing the new button after the change
+    bool buttonReleasedOnce;
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,10 +25,8 @@ public class MenuButtonAction : MonoBehaviour
         button.GetComponent<Button>().colors = colors;
 
         triggerOn = true;
-
         //panelText.GetComponent<Text>() = debugText;
     }
-
     private void OnTriggerExit(Collider other)
     {
         var colors = button.GetComponent<Button>().colors;
@@ -34,39 +34,39 @@ public class MenuButtonAction : MonoBehaviour
         button.GetComponent<Button>().colors = colors;
 
         triggerOn = false;
-        buttonDown = false;
-
-
     }
+
+
     // Start is called before the first frame update
     void Start()
     {
         // IGUAL NO ÉS NECESSARI FER-HO SI JA HO FA L'ENABLE
         triggerOn = false;
         buttonDown = false;
-        isFirstTime = true;
+        buttonReleasedOnce = false;
 
         string debugText = "Debug panel working correctly";
         Text textComponent = debugPanelText.GetComponent<Text>();
         textComponent.text = debugText;
     }
+
     void OnEnable()
     {
         triggerOn = false;
         buttonDown = false;
-        isFirstTime = true;
+        buttonReleasedOnce = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         OVRInput.Update();
-
+        // AIXÒ ESTARIA MÉS BONIC A UN TRIGGER STAY PER ESTALVIARNOS EL TRIGGERON
         // if button is pressed, controller is touching the menu and at least one time the controller has exit the menu
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
         {
             // do it only once when the button was pressed
-            if (!buttonDown && !isFirstTime)
+            if (!buttonDown && buttonReleasedOnce)
             {
                 // change menu
                 buttonDown = true;
@@ -82,16 +82,20 @@ public class MenuButtonAction : MonoBehaviour
                 var colors = button.GetComponent<Button>().colors;
                 colors.normalColor = Color.white;
                 button.GetComponent<Button>().colors = colors;
+
+                // POTSER AIXÒ NO ÉS NECESSARI
+                buttonReleasedOnce = false;
             }
+            //else if (!buttonDown)
+            //    buttonReleasedOnce = true;
         }
         else
         {
             buttonDown = false;
-            // used to know if it is the first time that controller exits the menu, to avoid having the controller on the button after changing menu
-            isFirstTime = false;
+            buttonReleasedOnce = true;
         }
 
-        string debugText = isFirstTime.ToString();
+        string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nMenuButtonAction";
         Text textComponent = debugPanelText.GetComponent<Text>();
         textComponent.text = debugText;
 

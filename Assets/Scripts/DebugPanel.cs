@@ -7,6 +7,7 @@ public class DebugPanel : MonoBehaviour
 {
     bool keyDown;
     public GameObject canvas;
+
     // Start is called before the first frame update
     void Start()
     {

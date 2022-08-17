@@ -328,7 +328,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 170530979}
   handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 0}
+  debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   itemPrefab: {fileID: 4520276278300485777, guid: 189fd3eef4efe374da15e2e174863f89,
     type: 3}
@@ -356,7 +356,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170530979}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
@@ -632,8 +632,8 @@ GameObject:
   - component: {fileID: 221788184}
   - component: {fileID: 221788183}
   - component: {fileID: 221788187}
-  - component: {fileID: 221788188}
   - component: {fileID: 221788189}
+  - component: {fileID: 221788190}
   m_Layer: 5
   m_Name: Lighting Button
   m_TagString: Untagged
@@ -764,27 +764,11 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221788181}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &221788188
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221788181}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &221788189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,6 +787,22 @@ MonoBehaviour:
   canvas: {fileID: 989086354}
   currMenuPanel: {fileID: 1237137997}
   newMenuPanel: {fileID: 592494078}
+--- !u!54 &221788190
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221788181}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
 --- !u!1 &231107366
 GameObject:
   m_ObjectHideFlags: 0
@@ -1968,7 +1968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 403726936}
   handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 0}
+  debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   itemPrefab: {fileID: 1001561155019339003, guid: a0148e814c638eb499e8793f896b2d11,
     type: 3}
@@ -1996,7 +1996,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403726936}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
@@ -3623,7 +3623,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &831937901
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3632,7 +3632,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831937894}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
@@ -3755,6 +3755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
+  debugPanelText: {fileID: 1250510732}
   m_parentHeldObject: 0
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 1584832908}
@@ -3775,10 +3776,10 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 2
+  m_CollisionDetection: 0
 --- !u!1 &896559779
 GameObject:
   m_ObjectHideFlags: 0
@@ -5340,27 +5341,6 @@ Transform:
   m_Father: {fileID: 992952168}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1307054018 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1732268206786806, guid: c6a74181d4000004887343fb87b3c53a,
-    type: 3}
-  m_PrefabInstance: {fileID: 334928286}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1307054022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1307054018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67638c4de1b4e3441933d6816c22f5ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 0}
-  m_animator: {fileID: 9500000, guid: ca20b3907ff1c794cb89c1ad2cce8282, type: 3}
-  anim_frames: 4
 --- !u!1 &1347145977
 GameObject:
   m_ObjectHideFlags: 0
@@ -5930,7 +5910,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1578024890}
   handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 0}
+  debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   itemPrefab: {fileID: 9195308507420792288, guid: 75e54243e6d204bf7a1c6910b40e77f2,
     type: 3}
@@ -5958,7 +5938,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578024890}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
@@ -6411,6 +6391,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1584832910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1584832906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d0876aa1728d840b6faf3fd4e29b59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugPanelText: {fileID: 1250510732}
 --- !u!1 &1606785151
 GameObject:
   m_ObjectHideFlags: 0
@@ -6563,7 +6556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1606785151}
   handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 0}
+  debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   itemPrefab: {fileID: 8743182773991339718, guid: ce93ff107136054478856e4ed60e7c47,
     type: 3}
@@ -6591,7 +6584,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1606785151}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
@@ -6775,7 +6768,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1609511216}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
@@ -7090,7 +7083,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &1803688661
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7099,7 +7092,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1803688654}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
@@ -7256,7 +7249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1814684605}
   handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 0}
+  debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   itemPrefab: {fileID: 5164547246944068110, guid: 5b30038a78fd3a94282ddaeb01562b45,
     type: 3}
@@ -7284,7 +7277,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1814684605}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
@@ -7474,7 +7467,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832551504}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
@@ -7642,7 +7635,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884965498}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
@@ -7662,7 +7655,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!1001 &1895262323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7673,6 +7666,11 @@ PrefabInstance:
     - target: {fileID: 3637314768533231044, guid: 189fd3eef4efe374da15e2e174863f89,
         type: 3}
       propertyPath: m_Mass
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637314768533231044, guid: 189fd3eef4efe374da15e2e174863f89,
+        type: 3}
+      propertyPath: m_IsKinematic
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3637314768533231044, guid: 189fd3eef4efe374da15e2e174863f89,
@@ -7688,17 +7686,17 @@ PrefabInstance:
     - target: {fileID: 3886870360205423147, guid: 189fd3eef4efe374da15e2e174863f89,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 30
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 3886870360205423147, guid: 189fd3eef4efe374da15e2e174863f89,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 30
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 3886870360205423147, guid: 189fd3eef4efe374da15e2e174863f89,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 30
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 3886870360205423147, guid: 189fd3eef4efe374da15e2e174863f89,
         type: 3}
@@ -7755,6 +7753,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: ancient_vase
       objectReference: {fileID: 0}
+    - target: {fileID: 6633673974425419924, guid: 189fd3eef4efe374da15e2e174863f89,
+        type: 3}
+      propertyPath: debugPanelText
+      value: 
+      objectReference: {fileID: 1250510732}
+    - target: {fileID: 6633673974425419924, guid: 189fd3eef4efe374da15e2e174863f89,
+        type: 3}
+      propertyPath: debugTextPanel
+      value: 
+      objectReference: {fileID: 1250510732}
+    - target: {fileID: 6633673974425419924, guid: 189fd3eef4efe374da15e2e174863f89,
+        type: 3}
+      propertyPath: m_grabPoints.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6633673974425419924, guid: 189fd3eef4efe374da15e2e174863f89,
+        type: 3}
+      propertyPath: m_grabPoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 1584832907}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 189fd3eef4efe374da15e2e174863f89, type: 3}
 --- !u!1 &1964602097
@@ -9023,7 +9041,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2101871509}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}

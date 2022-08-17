@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+using UnityEngine.UI;
+
 /// <summary>
 /// Allows grabbing and throwing of objects with the OVRGrabbable component on them.
 /// </summary>
@@ -30,6 +33,9 @@ public class OVRGrabber : MonoBehaviour
     // Grip trigger thresholds for picking up objects, with some hysteresis.
     public float grabBegin = 0.55f;
     public float grabEnd = 0.35f;
+
+    // BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public GameObject debugPanelText;
 
     // Demonstrates parenting the held object to the hand's transform when grabbed.
     // When false, the grabbed object is moved every FixedUpdate using MovePosition.
@@ -238,7 +244,7 @@ public class OVRGrabber : MonoBehaviour
         Collider closestGrabbableCollider = null;
 
         // Iterate grab candidates and find the closest grabbable candidate
-		foreach (OVRGrabbable grabbable in m_grabCandidates.Keys)
+        foreach (OVRGrabbable grabbable in m_grabCandidates.Keys)
         {
             bool canGrab = !(grabbable.isGrabbed && !grabbable.allowOffhandGrab);
             if (!canGrab)
@@ -262,10 +268,13 @@ public class OVRGrabber : MonoBehaviour
         }
 
         // Disable grab volumes to prevent overlaps
-        GrabVolumeEnable(false);
+        // POR ALGUN MOTIVO NO PASA DE AQUÍ AL LLAMAR A ESTA FUNCIÓN, PERO SOLO LA PRIMERA VEZ QUE SE LE DA AL BOTÓN
+        // SI PONGO UN BOOLEANO PARA QUE ENTRE EN CADA FRAME MIENTRAS SE ESTÁ APRETANDO EL BOTÓN, ENTONCES SI QUE SIGUE :(
+        //GrabVolumeEnable(false);
 
         if (closestGrabbable != null)
         {
+            debugPanelText.GetComponent<Text>().text = "Grabbing: " + closestGrabbable.gameObject.name;
             if (closestGrabbable.isGrabbed)
             {
                 closestGrabbable.grabbedBy.OffhandGrabbed(closestGrabbable);

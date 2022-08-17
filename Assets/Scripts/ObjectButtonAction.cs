@@ -13,7 +13,7 @@ public class ObjectButtonAction : MonoBehaviour
 
     bool triggerOn;
     bool buttonDown;
-    bool isFirstTime;
+    bool buttonReleasedOnce;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -35,7 +35,6 @@ public class ObjectButtonAction : MonoBehaviour
         button.GetComponent<Button>().colors = colors;
 
         triggerOn = false;
-        buttonDown = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -43,7 +42,7 @@ public class ObjectButtonAction : MonoBehaviour
         // POTSER NO ÉS NECESSARI FER-HO SI JA HO ESTÀ FENT EL ENABLE
         triggerOn = false;
         buttonDown = false;
-        isFirstTime = true;
+        buttonReleasedOnce = false;
 
 
         string debugText = "Debug panel working correctly";
@@ -55,7 +54,7 @@ public class ObjectButtonAction : MonoBehaviour
     {
         triggerOn = false;
         buttonDown = false;
-        isFirstTime = true;
+        buttonReleasedOnce = false;
     }
 
     // Update is called once per frame
@@ -65,21 +64,25 @@ public class ObjectButtonAction : MonoBehaviour
         // if button is pressed and hand is touching the menu, instantiate the object
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
         {
-            // do it only once when the button is pressed
-            if (!buttonDown && !isFirstTime)
+            // do it only once when the button is pressed and after button was released at least once
+            if (!buttonDown && buttonReleasedOnce)
             {
                 buttonDown = true;
+                //isFirstTime = false;
                 ItemsMenu itemsMenu = canvas.GetComponent<ItemsMenu>();
                 itemsMenu.ObjectButton(itemPrefab, handController);
+
+                // AIXÒ POTSER NO CAL
+                buttonReleasedOnce = false;
             }
         }
         else
         {
             buttonDown = false;
-            isFirstTime = false;
+            buttonReleasedOnce = true;
         }
 
-        string debugText = isFirstTime.ToString();
+        string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nObjectButtonAction";
         Text textComponent = debugPanelText.GetComponent<Text>();
         textComponent.text = debugText;
 
