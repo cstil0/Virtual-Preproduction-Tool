@@ -45,9 +45,9 @@ public class ObjectButtonAction : MonoBehaviour
         buttonReleasedOnce = false;
 
 
-        string debugText = "Debug panel working correctly";
-        Text textComponent = debugPanelText.GetComponent<Text>();
-        textComponent.text = debugText;
+        //string debugText = "Debug panel working correctly";
+        //Text textComponent = debugPanelText.GetComponent<Text>();
+        //textComponent.text = debugText;
     }
 
     private void OnEnable()
@@ -70,7 +70,7 @@ public class ObjectButtonAction : MonoBehaviour
                 buttonDown = true;
                 //isFirstTime = false;
                 ItemsMenu itemsMenu = canvas.GetComponent<ItemsMenu>();
-                itemsMenu.ObjectButton(itemPrefab, handController);
+                itemsMenu.SpawnObject(itemPrefab, handController);
 
                 // AIXÒ POTSER NO CAL
                 buttonReleasedOnce = false;
@@ -82,9 +82,9 @@ public class ObjectButtonAction : MonoBehaviour
             buttonReleasedOnce = true;
         }
 
-        string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nObjectButtonAction";
-        Text textComponent = debugPanelText.GetComponent<Text>();
-        textComponent.text = debugText;
+        //string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nObjectButtonAction";
+        //Text textComponent = debugPanelText.GetComponent<Text>();
+        //textComponent.text = debugText;
 
     }
 }

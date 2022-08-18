@@ -274,7 +274,6 @@ public class OVRGrabber : MonoBehaviour
 
         if (closestGrabbable != null)
         {
-            debugPanelText.GetComponent<Text>().text = "Grabbing: " + closestGrabbable.gameObject.name;
             if (closestGrabbable.isGrabbed)
             {
                 closestGrabbable.grabbedBy.OffhandGrabbed(closestGrabbable);

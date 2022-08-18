@@ -45,9 +45,9 @@ public class MenuButtonAction : MonoBehaviour
         buttonDown = false;
         buttonReleasedOnce = false;
 
-        string debugText = "Debug panel working correctly";
-        Text textComponent = debugPanelText.GetComponent<Text>();
-        textComponent.text = debugText;
+        //string debugText = "Debug panel working correctly";
+        //Text textComponent = debugPanelText.GetComponent<Text>();
+        //textComponent.text = debugText;
     }
 
     void OnEnable()
@@ -95,9 +95,9 @@ public class MenuButtonAction : MonoBehaviour
             buttonReleasedOnce = true;
         }
 
-        string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nMenuButtonAction";
-        Text textComponent = debugPanelText.GetComponent<Text>();
-        textComponent.text = debugText;
+        //string debugText = "Dow: " + buttonDown.ToString() + " Rel: " + buttonReleasedOnce.ToString() + " Trig " + triggerOn.ToString() + "\nMenuButtonAction";
+        //Text textComponent = debugPanelText.GetComponent<Text>();
+        //textComponent.text = debugText;
 
     }
 }
