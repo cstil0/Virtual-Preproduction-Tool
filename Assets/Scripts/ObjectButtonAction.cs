@@ -18,8 +18,7 @@ public class ObjectButtonAction : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var colors = button.GetComponent<Button>().colors;
-        colors.normalColor = Color.blue;
-        //colors.normalColor = new Color(149, 149, 149);
+        colors.normalColor = new Color(149, 149, 149);
         button.GetComponent<Button>().colors = colors;
 
         triggerOn = true;
