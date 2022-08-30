@@ -330,8 +330,11 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 0}
+  newMenuPanel: {fileID: 0}
   itemPrefab: {fileID: 8514456621400895808, guid: bf0bc1d525409a443be9656d0d4a3b7d,
     type: 3}
+  typeOfButton: 1
 --- !u!54 &170530985
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -634,6 +637,7 @@ GameObject:
   - component: {fileID: 221788187}
   - component: {fileID: 221788189}
   - component: {fileID: 221788190}
+  - component: {fileID: 221788191}
   m_Layer: 5
   m_Name: Lighting Button
   m_TagString: Untagged
@@ -803,6 +807,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &221788191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221788181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 221788181}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 1237137997}
+  newMenuPanel: {fileID: 592494078}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &231107366
 GameObject:
   m_ObjectHideFlags: 0
@@ -1986,8 +2010,11 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 0}
+  newMenuPanel: {fileID: 0}
   itemPrefab: {fileID: 4582510836043532223, guid: 804af68da064aef479115fe52e091b4c,
     type: 3}
+  typeOfButton: 1
 --- !u!54 &403726942
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3484,6 +3511,7 @@ GameObject:
   - component: {fileID: 831937899}
   - component: {fileID: 831937901}
   - component: {fileID: 831937900}
+  - component: {fileID: 831937902}
   m_Layer: 5
   m_Name: People Button
   m_TagString: Untagged
@@ -3653,6 +3681,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &831937902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831937894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 831937894}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 1237137997}
+  newMenuPanel: {fileID: 908388035}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &844866193
 GameObject:
   m_ObjectHideFlags: 0
@@ -5981,8 +6029,11 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 0}
+  newMenuPanel: {fileID: 0}
   itemPrefab: {fileID: 7661358264679941839, guid: 2eb4bfa2cacb8884ca68ecb001fce9d9,
     type: 3}
+  typeOfButton: 1
 --- !u!54 &1578024896
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6627,8 +6678,11 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 0}
+  newMenuPanel: {fileID: 0}
   itemPrefab: {fileID: 5673322000826537852, guid: bac5722f26c65534ab3b3d5d4317a2ac,
     type: 3}
+  typeOfButton: 1
 --- !u!54 &1606785157
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6673,6 +6727,7 @@ GameObject:
   - component: {fileID: 1609511221}
   - component: {fileID: 1609511223}
   - component: {fileID: 1609511222}
+  - component: {fileID: 1609511224}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -6842,6 +6897,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1609511224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609511216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1609511216}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 908388035}
+  newMenuPanel: {fileID: 1237137997}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &1667746589
 GameObject:
   m_ObjectHideFlags: 0
@@ -6997,6 +7072,7 @@ GameObject:
   - component: {fileID: 1803688659}
   - component: {fileID: 1803688661}
   - component: {fileID: 1803688660}
+  - component: {fileID: 1803688662}
   m_Layer: 5
   m_Name: VFX Button
   m_TagString: Untagged
@@ -7166,6 +7242,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1803688662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803688654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1803688654}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 1237137997}
+  newMenuPanel: {fileID: 238554837}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &1814684605
 GameObject:
   m_ObjectHideFlags: 0
@@ -7320,8 +7416,11 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 0}
+  newMenuPanel: {fileID: 0}
   itemPrefab: {fileID: 6022243262293280542, guid: 9b30c42369b31114fa2dfd979d4fb3a8,
     type: 3}
+  typeOfButton: 1
 --- !u!54 &1814684611
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7372,6 +7471,7 @@ GameObject:
   - component: {fileID: 1832551509}
   - component: {fileID: 1832551511}
   - component: {fileID: 1832551510}
+  - component: {fileID: 1832551512}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -7541,6 +7641,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1832551512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832551504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1832551504}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 592494078}
+  newMenuPanel: {fileID: 1237137997}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &1884965498
 GameObject:
   m_ObjectHideFlags: 0
@@ -7556,6 +7676,7 @@ GameObject:
   - component: {fileID: 1884965503}
   - component: {fileID: 1884965504}
   - component: {fileID: 1884965505}
+  - component: {fileID: 1884965506}
   m_Layer: 5
   m_Name: Props Button
   m_TagString: Untagged
@@ -7725,6 +7846,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &1884965506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884965498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1884965498}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 1237137997}
+  newMenuPanel: {fileID: 818087570}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &1935511521
 GameObject:
   m_ObjectHideFlags: 0
@@ -8899,6 +9040,7 @@ GameObject:
   - component: {fileID: 2101871514}
   - component: {fileID: 2101871516}
   - component: {fileID: 2101871515}
+  - component: {fileID: 2101871517}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -9068,6 +9210,26 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2101871517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101871509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 2101871509}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 818087570}
+  newMenuPanel: {fileID: 1237137997}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0
 --- !u!1 &2122701922
 GameObject:
   m_ObjectHideFlags: 0
@@ -9163,6 +9325,7 @@ GameObject:
   - component: {fileID: 2143720720}
   - component: {fileID: 2143720722}
   - component: {fileID: 2143720721}
+  - component: {fileID: 2143720723}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -9332,3 +9495,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 18.48, y: 15.9, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2143720723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143720715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5c2d94c69113d47bcaa6af9efa2871, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 2143720715}
+  handController: {fileID: 1584832906}
+  debugPanelText: {fileID: 1250510732}
+  canvas: {fileID: 989086354}
+  currMenuPanel: {fileID: 238554837}
+  newMenuPanel: {fileID: 1237137997}
+  itemPrefab: {fileID: 0}
+  typeOfButton: 0

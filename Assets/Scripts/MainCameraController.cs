@@ -22,7 +22,9 @@ public class MainCameraController : MonoBehaviour
         controllerStartPos = controller.transform.position;
 
         cameraStartRot = gameObject.transform.rotation.eulerAngles;
+        //cameraStartRot = gameObject.transform.rotation;
         controllerStartRot = controller.transform.rotation.eulerAngles;
+        //controllerStartRot = controller.transform.rotation;
 
         buttonDown = false;
     }
@@ -40,12 +42,15 @@ public class MainCameraController : MonoBehaviour
                 controllerStartPos = controller.transform.position;
 
                 cameraStartRot = gameObject.transform.rotation.eulerAngles;
+                //cameraStartRot = gameObject.transform.rotation;
                 controllerStartRot = controller.transform.rotation.eulerAngles;
+                //controllerStartRot = controller.transform.rotation;
             }
 
             Vector3 diffPos = controller.transform.position - controllerStartPos;
             gameObject.transform.position = cameraStartPos + diffPos;
 
+            // S'HAURIA DE MIRAR COM FER OPERACIONS AMB QUATERNIONS
             Vector3 diffRot = controller.transform.rotation.eulerAngles - controllerStartRot;
             gameObject.transform.rotation = Quaternion.Euler(cameraStartRot + diffRot);
 

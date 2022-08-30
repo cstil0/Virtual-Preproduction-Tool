@@ -26,6 +26,7 @@ public class UDPReceiver : MonoBehaviour
     Vector3 startRot;
     Vector3 remoteStartRot;
     Vector3 currRot;
+    //Quaternion currRot;
 
     // main thread that listens to UDP messages through a defined port
     void UDPTest()
@@ -45,6 +46,7 @@ public class UDPReceiver : MonoBehaviour
                 Debug.Log("Position: " + receivedMessage);
 
                 string[] splittedMessage = receivedMessage.Split(" ");
+                //string[] splittedMessage = receivedMessage.Split(", ");
                 currPos = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
 
                 if (remoteStartPos == new Vector3(0.0f, 0.0f, 0.0f))
@@ -58,12 +60,19 @@ public class UDPReceiver : MonoBehaviour
                 Debug.Log("Rotation: " + receivedMessage);
 
                 splittedMessage = receivedMessage.Split(" ");
+                //splittedMessage = receivedMessage.Split(", ");
                 currRot = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
+                //currRot = new Quaternion(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture), float.Parse(splittedMessage[3], CultureInfo.InvariantCulture));
 
                 if (remoteStartRot == new Vector3(0.0f, 0.0f, 0.0f))
                 {
                     remoteStartRot = new Vector3(currRot.x, currRot.y, currRot.z);
                 }
+                //if (remoteStartRot == new Quaternion(0.0f, 0.0f, 0.0f, 0.0f))
+                //{
+                //    remoteStartRot = new Quaternion(currRot.x, currRot.y, currRot.z, currRot.w);
+                //}
+
             }
             catch (Exception e)
             {
@@ -88,6 +97,7 @@ public class UDPReceiver : MonoBehaviour
 
         startPos = ScreenCamera.transform.position;
         startRot = ScreenCamera.transform.rotation.eulerAngles;
+        //startRot = ScreenCamera.transform.rotation;
     }
 
     // Update is called once per frame
@@ -98,6 +108,7 @@ public class UDPReceiver : MonoBehaviour
             Vector3 remotePosDiff = currPos - remoteStartPos;
             ScreenCamera.transform.position = remotePosDiff + startPos;
 
+            // S'HAURIA DE MIRAR COM FER OPERACIONS AMB QUATERNIONS
             Vector3 remoteRotDiff = remoteStartRot - currRot;
             ScreenCamera.transform.rotation = Quaternion.Euler(remoteRotDiff + startRot);
         }

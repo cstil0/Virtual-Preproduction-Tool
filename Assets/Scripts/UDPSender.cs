@@ -26,22 +26,18 @@ public class UDPSender: MonoBehaviour
 
         // sending data
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
-        //int count = 4;
-        // send a couple of sample messages:
-        //for (int num = 1; num <= count; num++)
-        //{
-        //    byte[] message = new byte[num];
-        //    client.Send(message, message.Length, target);
-        //    //Debug.Log("Sent: " + message);
-        //}
+
         Vector3 cameraPos = screenCamera.transform.position;
         string specifier = "G";
         // ESTO ASÍ ES MUY FEO
-        byte[] message = Encoding.ASCII.GetBytes(cameraPos.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
+        byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
+        //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
         Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
+        //Vector3 cameraRot = screenCamera.transform.rotation;
         message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
+        //message = Encoding.ASCII.GetBytes(cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
         client.Close();
