@@ -18,6 +18,9 @@ public class UDPSender: MonoBehaviour
     public int serverPort;
     public string ipAddress;
 
+    bool resetStart;
+    bool buttonDown;
+
     // main thread that listens to UDP messages through a defined port
     void UDPTest()
     {
@@ -27,17 +30,19 @@ public class UDPSender: MonoBehaviour
         // sending data
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
 
-        Vector3 cameraPos = screenCamera.transform.position;
-        string specifier = "G";
-        // ESTO ASÍ ES MUY FEO
-        byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
-        //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture));
+        byte[] message = Encoding.ASCII.GetBytes(resetStart.ToString());
         client.Send(message, message.Length, target);
 
-        Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
-        //Vector3 cameraRot = screenCamera.transform.rotation;
-        message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
-        //message = Encoding.ASCII.GetBytes(cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
+        Vector3 cameraPos = screenCamera.transform.position;
+        string specifier = "G";
+        //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
+        message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture));
+        client.Send(message, message.Length, target);
+
+        //Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
+        Quaternion cameraRot = screenCamera.transform.rotation;
+        //message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
+        message = Encoding.ASCII.GetBytes(cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
         client.Close();
@@ -46,12 +51,27 @@ public class UDPSender: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        buttonDown = false;
         UDPTest();
     }
 
     // Update is called once per frame
     void Update()
     {
+        OVRInput.Update();
+
+        if (OVRInput.Get(OVRInput.Button.Two))
+        {
+            if (!buttonDown)
+                resetStart = true;
+            else
+                resetStart = false;
+            
+            buttonDown = true;
+        }
+
+        else if (resetStart)
+            resetStart = false;
         UDPTest();
     }
 }

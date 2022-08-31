@@ -5392,7 +5392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenCamera: {fileID: 231107369}
   serverPort: 8051
-  ipAddress: 192.168.0.26
+  ipAddress: 192.168.0.12
 --- !u!4 &1287183032
 Transform:
   m_ObjectHideFlags: 0

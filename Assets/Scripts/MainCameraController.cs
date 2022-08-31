@@ -44,8 +44,8 @@ public class MainCameraController : MonoBehaviour
             // Quaternion sum and substraction are done with prodtucts
             Quaternion diffRot = controller.transform.rotation * Quaternion.Inverse(controllerStartRot);
             gameObject.transform.rotation = diffRot * cameraStartRot;
-
             buttonDown = true;
+
         }
         else if (buttonDown)
         {
