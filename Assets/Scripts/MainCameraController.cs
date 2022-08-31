@@ -8,24 +8,14 @@ public class MainCameraController : MonoBehaviour
     Vector3 cameraStartPos;
     Vector3 controllerStartPos;
 
-    Vector3 cameraStartRot;
-    Vector3 controllerStartRot;
+    Quaternion cameraStartRot;
+    Quaternion controllerStartRot;
 
     bool buttonDown;
-
-    //Vector3 lastRotation
 
     // Start is called before the first frame update
     void Start()
     {
-        cameraStartPos = gameObject.transform.position;
-        controllerStartPos = controller.transform.position;
-
-        cameraStartRot = gameObject.transform.rotation.eulerAngles;
-        //cameraStartRot = gameObject.transform.rotation;
-        controllerStartRot = controller.transform.rotation.eulerAngles;
-        //controllerStartRot = controller.transform.rotation;
-
         buttonDown = false;
     }
 
@@ -38,21 +28,22 @@ public class MainCameraController : MonoBehaviour
         {
             if (!buttonDown)
             {
+                // save the start position and rotation of both the controller and the camera, so that it resets every time the button is pressed
                 cameraStartPos = gameObject.transform.position;
                 controllerStartPos = controller.transform.position;
 
-                cameraStartRot = gameObject.transform.rotation.eulerAngles;
-                //cameraStartRot = gameObject.transform.rotation;
-                controllerStartRot = controller.transform.rotation.eulerAngles;
-                //controllerStartRot = controller.transform.rotation;
+                cameraStartRot = gameObject.transform.rotation;
+                controllerStartRot = controller.transform.rotation;
             }
 
+            // Compute the new rotation and position of the camera taking the difference with respect to the original one
+            // In this way they are not affecting the "ideal" start position and orientation of each other
             Vector3 diffPos = controller.transform.position - controllerStartPos;
             gameObject.transform.position = cameraStartPos + diffPos;
 
-            // S'HAURIA DE MIRAR COM FER OPERACIONS AMB QUATERNIONS
-            Vector3 diffRot = controller.transform.rotation.eulerAngles - controllerStartRot;
-            gameObject.transform.rotation = Quaternion.Euler(cameraStartRot + diffRot);
+            // Quaternion sum and substraction are done with prodtucts
+            Quaternion diffRot = controller.transform.rotation * Quaternion.Inverse(controllerStartRot);
+            gameObject.transform.rotation = diffRot * cameraStartRot;
 
             buttonDown = true;
         }

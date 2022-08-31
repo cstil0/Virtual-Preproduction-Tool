@@ -34,7 +34,7 @@ public class ObjectButtonController : MonoBehaviour
     {
         // Change color to make hover effect
         var colors = button.GetComponent<Button>().colors;
-        colors.normalColor = new Color(149, 149, 149);
+        colors.normalColor = Color.blue;
         button.GetComponent<Button>().colors = colors;
 
         triggerOn = true;
