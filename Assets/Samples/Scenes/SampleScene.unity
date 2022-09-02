@@ -330,8 +330,8 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 0}
-  newMenuPanel: {fileID: 0}
+  currMenu: {fileID: 818087570}
+  newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 8514456621400895808, guid: bf0bc1d525409a443be9656d0d4a3b7d,
     type: 3}
   typeOfButton: 1
@@ -780,13 +780,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221788181}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 221788181}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   currMenuPanel: {fileID: 1237137997}
@@ -820,11 +820,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 221788181}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 592494078}
+  currMenu: {fileID: 1237137997}
+  newMenu: {fileID: 592494078}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &231107366
@@ -2010,8 +2010,8 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 0}
-  newMenuPanel: {fileID: 0}
+  currMenu: {fileID: 818087570}
+  newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 4582510836043532223, guid: 804af68da064aef479115fe52e091b4c,
     type: 3}
   typeOfButton: 1
@@ -3641,7 +3641,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831937894}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
@@ -3694,11 +3694,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 831937894}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 908388035}
+  currMenu: {fileID: 1237137997}
+  newMenu: {fileID: 908388035}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &844866193
@@ -6029,8 +6029,8 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 0}
-  newMenuPanel: {fileID: 0}
+  currMenu: {fileID: 0}
+  newMenu: {fileID: 0}
   itemPrefab: {fileID: 7661358264679941839, guid: 2eb4bfa2cacb8884ca68ecb001fce9d9,
     type: 3}
   typeOfButton: 1
@@ -6678,8 +6678,8 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 0}
-  newMenuPanel: {fileID: 0}
+  currMenu: {fileID: 0}
+  newMenu: {fileID: 0}
   itemPrefab: {fileID: 5673322000826537852, guid: bac5722f26c65534ab3b3d5d4317a2ac,
     type: 3}
   typeOfButton: 1
@@ -6857,7 +6857,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1609511216}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
@@ -6910,11 +6910,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1609511216}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 908388035}
-  newMenuPanel: {fileID: 1237137997}
+  currMenu: {fileID: 908388035}
+  newMenu: {fileID: 592494078}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &1667746589
@@ -7202,7 +7202,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1803688654}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
@@ -7255,11 +7255,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1803688654}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 238554837}
+  currMenu: {fileID: 238554837}
+  newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &1814684605
@@ -7416,8 +7416,8 @@ MonoBehaviour:
   handController: {fileID: 1584832906}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 0}
-  newMenuPanel: {fileID: 0}
+  currMenu: {fileID: 0}
+  newMenu: {fileID: 0}
   itemPrefab: {fileID: 6022243262293280542, guid: 9b30c42369b31114fa2dfd979d4fb3a8,
     type: 3}
   typeOfButton: 1
@@ -7601,7 +7601,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1832551504}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
@@ -7654,11 +7654,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1832551504}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 592494078}
-  newMenuPanel: {fileID: 1237137997}
+  currMenu: {fileID: 592494078}
+  newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &1884965498
@@ -7806,13 +7806,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1884965498}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1884965498}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
   currMenuPanel: {fileID: 1237137997}
@@ -7859,11 +7859,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1884965498}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 818087570}
+  currMenu: {fileID: 1237137997}
+  newMenu: {fileID: 818087570}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &1935511521
@@ -9170,7 +9170,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2101871509}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
@@ -9223,11 +9223,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 2101871509}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 818087570}
-  newMenuPanel: {fileID: 1237137997}
+  currMenu: {fileID: 0}
+  newMenu: {fileID: 0}
   itemPrefab: {fileID: 0}
   typeOfButton: 0
 --- !u!1 &2122701922
@@ -9508,10 +9508,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 2143720715}
-  handController: {fileID: 1584832906}
+  handController: {fileID: 861928155}
   debugPanelText: {fileID: 1250510732}
   canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 238554837}
-  newMenuPanel: {fileID: 1237137997}
+  currMenu: {fileID: 238554837}
+  newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
   typeOfButton: 0

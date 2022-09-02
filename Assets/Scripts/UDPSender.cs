@@ -70,8 +70,12 @@ public class UDPSender: MonoBehaviour
             buttonDown = true;
         }
 
-        else if (resetStart)
+        else if (buttonDown)
+        {
             resetStart = false;
+            buttonDown = false;
+        }
+        
         UDPTest();
     }
 }
