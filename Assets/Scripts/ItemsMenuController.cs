@@ -139,7 +139,7 @@ public class ItemsMenuController : MonoBehaviour
                 else if (typeOfButton == eTypeOfButton.Object)
                 {
                     //isFirstTime = false;
-                    SpawnObject(itemPrefab, handController);
+                    SpawnObject();
                 }
 
                 // AIXÒ POTSER NO CAL
@@ -159,17 +159,30 @@ public class ItemsMenuController : MonoBehaviour
     }
 
     // to instantiate the object that is passed according to the pressed button in the menu
-    public void SpawnObject(GameObject prefab, GameObject handController)
+    public void SpawnObject()
     {
+        Vector3 attachPoint = itemPrefab.transform.GetChild(0).position;
+        debugPanelText.GetComponent<Text>().text = attachPoint.ToString();
         // access the script RotationScale in the prefab
-        rotationScale = prefab.GetComponentInChildren<RotationScale>();
-        Vector3 rotation = rotationScale.rotation;
+        rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = rotationScale.scale;
 
-        GameObject objectInstance = Instantiate(prefab);
+        GameObject objectInstance = Instantiate(itemPrefab);
+        Vector3 handRotation = handController.transform.rotation.eulerAngles;
+        Vector3 handRoty = new Vector3(0.0f, handRotation.y + 180.0f, 0.0f);
+        //objectInstance.transform.position = handController.transform.position;
+        objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);
+        objectInstance.transform.localScale = scale;
         objectInstance.transform.position = handController.transform.position;
         //objectInstance.transform.rotation = Quaternion.Euler(rotation);
-        objectInstance.transform.localScale = scale;
+        objectInstance.transform.Translate(-attachPoint, handController.transform);
+
+
+        //GameObject objectInstance2 = Instantiate(itemPrefab);
+        ////objectInstance.transform.position = handController.transform.position;
+        //objectInstance.transform.localScale = scale;
+        //objectInstance.transform.Translate(handController.transform.position-attachPoint.position, handController.transform);
+
 
     }
 }
