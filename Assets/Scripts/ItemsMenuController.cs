@@ -169,12 +169,15 @@ public class ItemsMenuController : MonoBehaviour
 
         GameObject objectInstance = Instantiate(itemPrefab);
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
+        // només ens interessa la rotació de la y. +180 per què quedi com necessitem
         Vector3 handRoty = new Vector3(0.0f, handRotation.y + 180.0f, 0.0f);
         //objectInstance.transform.position = handController.transform.position;
+        // sumem les dues rotacions
         objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);
         objectInstance.transform.localScale = scale;
         objectInstance.transform.position = handController.transform.position;
         //objectInstance.transform.rotation = Quaternion.Euler(rotation);
+        // translate trasllada desde la posició a la que estem tantes unitats
         objectInstance.transform.Translate(-attachPoint, handController.transform);
 
 

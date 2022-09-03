@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1048041552198834361}
   - component: {fileID: 4510623910726803682}
   - component: {fileID: 841051679797379422}
+  - component: {fileID: 9066504198676702658}
   m_Layer: 0
   m_Name: LowPolyTree
   m_TagString: Untagged
@@ -113,6 +114,18 @@ MonoBehaviour:
   m_snapOrientation: 0
   m_snapOffset: {fileID: 0}
   m_grabPoints: []
+--- !u!114 &9066504198676702658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001561155019339003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b25a1d845c14df348a1d8f6a91dbb890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3587833653197377927
 GameObject:
   m_ObjectHideFlags: 0
