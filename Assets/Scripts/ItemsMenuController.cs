@@ -30,8 +30,7 @@ public class ItemsMenuController : MonoBehaviour
 
     // TREURE TRIGGER ON
     bool triggerOn;
-    bool primaryButtonDown;
-    bool secondaryButtonDown;
+    bool buttonDown;
     bool buttonReleasedOnce;
 
     private void OnTriggerEnter(Collider other)
@@ -97,24 +96,14 @@ public class ItemsMenuController : MonoBehaviour
     {
         // POTSER NO ÉS NECESSARI FER-HO SI JA HO ESTÀ FENT EL ENABLE
         triggerOn = false;
-        primaryButtonDown = false;
-        secondaryButtonDown = false;
+        buttonDown = false;
         buttonReleasedOnce = false;
-
-        // start with all menus deactivated until user shows the items menu
-        int n_menus = canvas.transform.childCount;
-        for (int i = 0; i < n_menus; i++)
-        {
-            GameObject curr_child = canvas.transform.GetChild(i).gameObject;
-            curr_child.SetActive(false);
-        }
     }
 
     private void OnEnable()
     {
         triggerOn = false;
-        primaryButtonDown = false;
-        secondaryButtonDown = false;
+        buttonDown = false;
         buttonReleasedOnce = false;
 
         var colors = button.GetComponent<Button>().colors;
@@ -125,44 +114,15 @@ public class ItemsMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        OVRInput.Update();
-        if (OVRInput.Get(OVRInput.Button.PrimaryHandTrigger))
-        {
-            // do it only if it is the first time it is pressed
-            if (!primaryButtonDown)
-            {
-                primaryButtonDown = true;
-                canvas.transform.GetChild(0).gameObject.SetActive(true);
-            }
-            //if (OVRInput.GetDown(OVRInput.Button.One)) { 
-            //if (Input.GetKeyDown(KeyCode.M)) || Input.GetJoystickNames(Button.Three))
-            //{
-        }
-        // once it is up again, set it to false
-        else
-        {
-            primaryButtonDown = false;
-            int n_menus = canvas.transform.childCount;
-            bool any_active = false;
-            // iterate through all child menus and set all to inactive
-            for (int i = 0; i < n_menus; i++)
-            {
-                GameObject curr_child = canvas.transform.GetChild(i).gameObject;
-                // if active then at least one element is active
-                any_active = curr_child.activeSelf || any_active;
-                curr_child.SetActive(false);
-            }
-        }
-
         // CREC QUE ESTARIA BÉ POSAR LES DUES ACCIONS EN AQUEST MATEIX SCRIPT, PERÒ NO M'HE ATREVIT A CANVIAR-HO PER ARA JA QUE HE FET MOLTS CANVIS
         // TAMBÉ S'HA DE FER ENCARA EL CANVI DE MENUBUTTONACTION A AQUEST
         // if button is pressed and hand is touching the menu do an action
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
         {
             // do it only once when the button is pressed and after button was released at least once
-            if (!secondaryButtonDown && buttonReleasedOnce)
+            if (!buttonDown && buttonReleasedOnce)
             {
-                secondaryButtonDown = true;
+                buttonDown = true;
                 // if button type is category, change menu to the corresponding one
                 if (typeOfButton == eTypeOfButton.Category)
                 {
@@ -188,7 +148,7 @@ public class ItemsMenuController : MonoBehaviour
         }
         else
         {
-            secondaryButtonDown  = false;
+            buttonDown  = false;
             buttonReleasedOnce = true;
         }
     }
