@@ -18,5 +18,10 @@ public class LimitRotation : MonoBehaviour
         Vector3 currRot = gameObject.transform.rotation.eulerAngles;
         Vector3 limitRot = new Vector3(rotation.x, currRot.y, rotation.y);
         gameObject.transform.rotation = Quaternion.Euler(limitRot);
+
+        // make it touch always the floor
+        Vector3 position = gameObject.transform.position;
+        gameObject.transform.position = new Vector3(position.x, 0.0f, position.z);
+
     }
 }

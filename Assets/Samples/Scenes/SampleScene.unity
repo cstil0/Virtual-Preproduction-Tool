@@ -785,15 +785,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 221788181}
-  handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 592494078}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &221788190
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -925,7 +916,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 191
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 8d9befe070d86424788052630231f7f9, type: 2}
   m_TargetDisplay: 1
   m_TargetEye: 3
   m_HDR: 1
@@ -3649,15 +3640,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 831937894}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 908388035}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &831937900
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4233,7 +4215,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992952167}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7190447, y: 2.22926, z: -4.3421526}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6867,15 +6849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1609511216}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 908388035}
-  newMenuPanel: {fileID: 1237137997}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &1609511222
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7215,15 +7188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1803688654}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 238554837}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &1803688660
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7617,15 +7581,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1832551504}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 592494078}
-  newMenuPanel: {fileID: 1237137997}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &1832551510
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7825,15 +7780,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 1884965498}
-  handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 1237137997}
-  newMenuPanel: {fileID: 818087570}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!65 &1884965504
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9192,15 +9138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 2101871509}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 818087570}
-  newMenuPanel: {fileID: 1237137997}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &2101871515
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9480,15 +9417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1ad874242f19b4f8a11afe0e7d4e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 2143720715}
-  handController: {fileID: 1584832906}
-  debugPanelText: {fileID: 1250510732}
-  canvas: {fileID: 989086354}
-  currMenuPanel: {fileID: 238554837}
-  newMenuPanel: {fileID: 1237137997}
-  triggerOn: 0
-  buttonDown: 0
-  buttonReleasedOnce: 0
 --- !u!54 &2143720721
 Rigidbody:
   m_ObjectHideFlags: 0
