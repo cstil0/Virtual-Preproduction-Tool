@@ -13,6 +13,7 @@ public class LimitRotation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Transform attachPoint = gameObject.transform.GetChild(0);
         RotationScale rotScale = gameObject.GetComponent<RotationScale>();
         Vector3 rotation = rotScale.rotation;
         Vector3 currRot = gameObject.transform.rotation.eulerAngles;
@@ -21,7 +22,7 @@ public class LimitRotation : MonoBehaviour
 
         // make it touch always the floor
         Vector3 position = gameObject.transform.position;
-        gameObject.transform.position = new Vector3(position.x, 0.0f, position.z);
+        gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
 
     }
 }

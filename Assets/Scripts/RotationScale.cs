@@ -5,7 +5,7 @@ using UnityEngine;
 public class RotationScale : MonoBehaviour
 {
     public Vector3 rotation;
-    public Vector3 scale;
+    public float scale = 1.0f;
 
     // Start is called before the first frame update
     void Start()

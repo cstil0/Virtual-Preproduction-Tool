@@ -1,5 +1,26 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Valve",
+      "url": "https://registry.npmjs.org/",
+      "scopes": [
+        "com.valvesoftware",
+        "com.valvesoftware.openvr"
+      ]
+    },
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "jp.keijiro"
+      ]
+    }
+  ],
   "dependencies": {
+    "com.microsoft.mixedreality.toolkit.examples": "file:MixedReality/com.microsoft.mixedreality.toolkit.examples-2.8.2.tgz",
+    "com.microsoft.mixedreality.toolkit.extensions": "file:MixedReality/com.microsoft.mixedreality.toolkit.extensions-2.8.2.tgz",
+    "com.microsoft.mixedreality.toolkit.foundation": "file:MixedReality/com.microsoft.mixedreality.toolkit.foundation-2.8.2.tgz",
+    "com.microsoft.mixedreality.toolkit.standardassets": "file:MixedReality/com.microsoft.mixedreality.toolkit.standardassets-2.8.2.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.cinemachine": "2.8.6",
     "com.unity.collab-proxy": "1.17.1",
@@ -18,7 +39,7 @@
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.8",
     "com.unity.webrtc": "2.4.0-exp.6",
-    "com.unity.xr.interaction.toolkit": "2.0.2",
+    "com.unity.xr.interaction.toolkit": "2.1.1",
     "com.unity.xr.management": "4.2.1",
     "com.unity.xr.oculus": "3.0.2",
     "com.unity.xr.openxr": "1.4.2",
@@ -55,22 +76,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "Valve",
-      "url": "https://registry.npmjs.org/",
-      "scopes": [
-        "com.valvesoftware",
-        "com.valvesoftware.openvr"
-      ]
-    },
-    {
-      "name": "Keijiro",
-      "url": "https://registry.npmjs.com",
-      "scopes": [
-        "jp.keijiro"
-      ]
-    }
-  ]
+  }
 }

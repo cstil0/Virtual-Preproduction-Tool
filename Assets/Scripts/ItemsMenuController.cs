@@ -117,12 +117,50 @@ public class ItemsMenuController : MonoBehaviour
         // CREC QUE ESTARIA BÉ POSAR LES DUES ACCIONS EN AQUEST MATEIX SCRIPT, PERÒ NO M'HE ATREVIT A CANVIAR-HO PER ARA JA QUE HE FET MOLTS CANVIS
         // TAMBÉ S'HA DE FER ENCARA EL CANVI DE MENUBUTTONACTION A AQUEST
         // if button is pressed and hand is touching the menu do an action
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
         {
+            //    // do it only once when the button is pressed and after button was released at least once
+            //    if (!buttonDown && buttonReleasedOnce)
+            //    {
+            //        buttonDown = true;
+            //        // if button type is category, change menu to the corresponding one
+            //        if (typeOfButton == eTypeOfButton.Category)
+            //        {
+            //            ChangeMenu();
+
+            //            // HO HE POSAT A L'ENABLE PER TANT JA NO HAURIA DE FER FALTA
+            //            //// change color to avoid having the hover one when comming back
+            //            //var colors = button.GetComponent<Button>().colors;
+            //            //colors.normalColor = Color.white;
+            //            //button.GetComponent<Button>().colors = colors;
+            //        }
+
+            //        // if button type is objet, spawn the corresponding item
+            //        else if (typeOfButton == eTypeOfButton.Object)
+            //        {
+            //            //isFirstTime = false;
+            //            SpawnObject();
+            //        }
+
+            //        // AIXÒ POTSER NO CAL
+            //        buttonReleasedOnce = false;
+            //    }
+            //}
+            //else
+            //{
+            //    buttonDown  = false;
+            //    buttonReleasedOnce = true;
+            //}
             // do it only once when the button is pressed and after button was released at least once
-            if (!buttonDown && buttonReleasedOnce)
+            if (!buttonDown)
             {
                 buttonDown = true;
+            }
+        }
+        else
+        {
+            if (buttonDown && triggerOn)
+            {
                 // if button type is category, change menu to the corresponding one
                 if (typeOfButton == eTypeOfButton.Category)
                 {
@@ -141,16 +179,11 @@ public class ItemsMenuController : MonoBehaviour
                     //isFirstTime = false;
                     SpawnObject();
                 }
-
-                // AIXÒ POTSER NO CAL
-                buttonReleasedOnce = false;
             }
+            buttonDown = false;
         }
-        else
-        {
-            buttonDown  = false;
-            buttonReleasedOnce = true;
-        }
+
+
     }
     public void ChangeMenu()
     {
@@ -165,7 +198,7 @@ public class ItemsMenuController : MonoBehaviour
         debugPanelText.GetComponent<Text>().text = attachPoint.ToString();
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
-        Vector3 scale = rotationScale.scale;
+        Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
         GameObject objectInstance = Instantiate(itemPrefab);
         Vector3 handRotation = handController.transform.rotation.eulerAngles;

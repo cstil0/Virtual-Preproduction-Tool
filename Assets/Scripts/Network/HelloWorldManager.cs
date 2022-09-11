@@ -45,9 +45,11 @@ namespace HelloWorld
             while(NetworkManager.Singleton == null)
                 yield return null;
 
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isPlaying)
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
                 NetworkManager.Singleton.StartHost();
-            else if (Application.platform == RuntimePlatform.Android)
+            else if (Application.isPlaying)
+                NetworkManager.Singleton.StartClient();
+            else
                 NetworkManager.Singleton.StartClient();
         }
         void OnEnable()
