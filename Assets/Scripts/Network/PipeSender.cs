@@ -6,10 +6,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Globalization;
+using UnityEditor.PackageManager;
 
 public class PipeSender : MonoBehaviour
 {
     public Camera screenCamera;
+    bool resetStart;
     //StreamString streamString;
 
     void SendMessage()
@@ -20,12 +22,21 @@ public class PipeSender : MonoBehaviour
         server.WaitForConnection();
         //Created stream for reading and writing
         StreamString serverStream = new StreamString(server);
-        //Send Message to Client
-        Vector3 cameraPos = screenCamera.transform.position;
+
+        string message = resetStart.ToString();
+        serverStream.WriteString(message);
+
         string specifier = "G";
-        // ESTO ASÍ ES MUY FEO
-        serverStream.WriteString(cameraPos.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
-        Debug.Log("Position Sent!!");
+        Vector3 cameraPos = screenCamera.transform.position;
+        message = cameraPos.ToString(specifier, CultureInfo.InvariantCulture);
+        serverStream.WriteString(message);
+
+        //Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
+        Quaternion cameraRot = screenCamera.transform.rotation;
+        //message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
+        message = cameraRot.ToString(specifier, CultureInfo.InvariantCulture);
+        serverStream.WriteString(message);
+
         //Close Connection
         server.Close();
     }

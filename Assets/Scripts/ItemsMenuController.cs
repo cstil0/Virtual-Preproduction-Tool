@@ -159,7 +159,7 @@ public class ItemsMenuController : MonoBehaviour
         }
         else
         {
-            if (buttonDown && triggerOn)
+            if (buttonDown && triggerOn && buttonReleasedOnce)
             {
                 // if button type is category, change menu to the corresponding one
                 if (typeOfButton == eTypeOfButton.Category)
@@ -182,6 +182,7 @@ public class ItemsMenuController : MonoBehaviour
             }
             buttonDown = false;
         }
+        buttonReleasedOnce = true;
 
 
     }
