@@ -8,7 +8,7 @@ namespace HelloWorld
     {
         private void Start()
         {
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
             {
                 NetworkManager.Singleton.StartClient();
             }

@@ -1838,7 +1838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 0, z: 0}
-  scale: 100
+  scale: 110
 --- !u!114 &5741177900129314388
 MonoBehaviour:
   m_ObjectHideFlags: 0

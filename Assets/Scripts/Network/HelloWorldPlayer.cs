@@ -19,9 +19,7 @@ namespace HelloWorld
         {
             if (NetworkManager.Singleton.IsServer)
             {
-                var randomPosition = GetRandomPositionOnPlane();
-                transform.position = randomPosition;
-                Position.Value = randomPosition;
+                Position.Value = gameObject.transform.position;
             }
             else
             {

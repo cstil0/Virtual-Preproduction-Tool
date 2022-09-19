@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 6139947295845814229}
   - component: {fileID: 2307418757150749783}
   - component: {fileID: 5150682085352208126}
+  - component: {fileID: 3128263442220595177}
   m_Layer: 0
   m_Name: DementorPrefab
   m_TagString: Untagged
@@ -221,6 +222,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2950.832, y: 6282.976, z: 1398.2389}
   m_Center: {x: 85.74402, y: 1714.2542, z: 1188.4265}
+--- !u!114 &3128263442220595177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4887716481823231701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a8e57fe7cda1a479b7612716a61536, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1
 --- !u!1 &5130076212581452453
 GameObject:
   m_ObjectHideFlags: 0
