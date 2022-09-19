@@ -6,12 +6,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Globalization;
-using UnityEditor.PackageManager;
 
 public class PipeSender : MonoBehaviour
 {
     public Camera screenCamera;
     bool resetStart;
+    bool buttonDown;
     //StreamString streamString;
 
     void SendMessage()
@@ -44,12 +44,30 @@ public class PipeSender : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        buttonDown = false;
         SendMessage();
     }
 
     // Update is called once per frame
     void Update()
     {
-        SendMessage();
+        OVRInput.Update();
+
+        if (OVRInput.Get(OVRInput.Button.Two))
+        {
+            SendMessage();
+            if (!buttonDown)
+                resetStart = true;
+            else
+                resetStart = false;
+
+            buttonDown = true;
+        }
+
+        else if (buttonDown)
+        {
+            resetStart = false;
+            buttonDown = false;
+        }
     }
 }

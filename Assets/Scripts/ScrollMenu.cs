@@ -33,7 +33,7 @@ public class ScrollMenu : MonoBehaviour
     void Update()
     {
         float speed = 1.5f;
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn){
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn){
             ScrollRect scrollRect = gameObject.GetComponent<ScrollRect>();
             RectTransform rectTrans = gameObject.GetComponent<RectTransform>();
             Vector3 localHandPos = gameObject.transform.InverseTransformPoint(handController.transform.position);
@@ -52,9 +52,12 @@ public class ScrollMenu : MonoBehaviour
             if (!currMenu.active)
                 continue;
 
-            RectTransform rt = menusPanel.GetComponent<RectTransform>();
+            RectTransform menus_rt = menusPanel.GetComponent<RectTransform>();
+            RectTransform currPanel_rt = currMenu.GetComponent<RectTransform>();
             float newHeight = currMenu.transform.childCount * 18.5f;
-            rt.sizeDelta = new Vector2(rt.rect.width, newHeight);
+            float newPosY = 4.5f - 0.33f * (74.0f - newHeight);
+            currPanel_rt.anchoredPosition = new Vector3(currPanel_rt.position.x, newPosY, currPanel_rt.position.z);
+            menus_rt.sizeDelta = new Vector2(menus_rt.rect.width, newHeight);
         }
     }
 }

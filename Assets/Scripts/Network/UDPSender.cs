@@ -62,6 +62,8 @@ public class UDPSender: MonoBehaviour
 
         if (OVRInput.Get(OVRInput.Button.Two))
         {
+            UDPTest();
+
             if (!buttonDown)
                 resetStart = true;
             else
@@ -74,8 +76,6 @@ public class UDPSender: MonoBehaviour
         {
             resetStart = false;
             buttonDown = false;
-        }
-        
-        UDPTest();
+        }        
     }
 }
