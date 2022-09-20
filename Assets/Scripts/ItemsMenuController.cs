@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -214,6 +215,7 @@ public class ItemsMenuController : MonoBehaviour
         // translate trasllada desde la posició a la que estem tantes unitats
         objectInstance.transform.Translate(-attachPoint, handController.transform);
 
+        objectInstance.GetComponent<NetworkObject>().Spawn();
 
         //GameObject objectInstance2 = Instantiate(itemPrefab);
         ////objectInstance.transform.position = handController.transform.position;
