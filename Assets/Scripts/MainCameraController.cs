@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class MainCameraController : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class MainCameraController : MonoBehaviour
     void Start()
     {
         buttonDown = false;
+
+        //gameObject.GetComponent<NetworkObject>().Spawn();
     }
 
     // Update is called once per frame
@@ -24,7 +27,7 @@ public class MainCameraController : MonoBehaviour
     {
         OVRInput.Update();
 
-        if (OVRInput.Get(OVRInput.Button.Two))
+        if (OVRInput.Get(OVRInput.Button.Two) && gameObject.name == "MainCamera 1")
         {
             if (!buttonDown)
             {

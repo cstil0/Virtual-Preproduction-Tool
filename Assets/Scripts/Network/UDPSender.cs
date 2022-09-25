@@ -51,8 +51,16 @@ public class UDPSender: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        buttonDown = false;
-        UDPTest();
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(true);
+            buttonDown = false;
+            UDPTest();
+        }
     }
 
     // Update is called once per frame
