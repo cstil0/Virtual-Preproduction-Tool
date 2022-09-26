@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7765012371505851568}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Attach Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 4089259381384216083}
   - component: {fileID: -2632759893981246707}
   - component: {fileID: -1657352418009524937}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: HangingTorch
   m_TagString: Untagged
   m_Icon: {fileID: 0}

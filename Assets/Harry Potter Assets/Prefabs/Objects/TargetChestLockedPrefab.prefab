@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139905}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139907}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139909}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139911}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139913}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default LeftLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139915}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139917}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default RightLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139919}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Special1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139921}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Special2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139923}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default Special3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +319,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139925}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Default VFX Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +350,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139927}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Geo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -382,7 +382,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139929}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: leftBar_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -413,7 +413,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139931}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: leftBlock1_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -444,7 +444,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139933}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: leftBlock2_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,7 +475,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139935}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: leftBlock3_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -506,7 +506,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139937}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: leftBlock4_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139939}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lid_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,7 +568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139941}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rightBar_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -599,7 +599,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139943}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rightBlock1_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -630,7 +630,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139945}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rightBlock2_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,7 +661,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139947}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rightBlock3_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -692,7 +692,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139949}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rightBlock4_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -723,7 +723,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139951}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: target_chest_locked01(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -756,7 +756,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139953}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: target_chest_locked01_mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -789,7 +789,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4659966851946139955}
   - component: {fileID: 4659966851949740065}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: target_chest_locked01_mesh_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -885,7 +885,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139959}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: target_chest_locked01_prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -935,7 +935,7 @@ GameObject:
   - component: {fileID: 2096101157660143443}
   - component: {fileID: -126769901681588338}
   - component: {fileID: -2661948907090516173}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TargetChestLockedPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1091,7 +1091,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139961}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: trunk_Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1133,7 +1133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4659966851946139963}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TSM3WorldJoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1165,7 +1165,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7552449113914303018}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Attach Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}

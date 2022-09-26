@@ -2453,6 +2453,11 @@ PrefabInstance:
       propertyPath: m_TargetTexture
       value: 
       objectReference: {fileID: 8400000, guid: 0b3d78b395b1de746bcd793b3aed45eb, type: 2}
+    - target: {fileID: 5781834974586894724, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 1215
+      objectReference: {fileID: 0}
     - target: {fileID: 5781834974586894726, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Enabled
@@ -4467,6 +4472,18 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &861928166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861928155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16eb94117c56c14089121bf1ac96a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &896559779
 GameObject:
   m_ObjectHideFlags: 0
@@ -5666,7 +5683,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2015248, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 703
+      value: 1727
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: _trackingOriginType
@@ -5840,6 +5857,18 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &1150833493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150833486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16eb94117c56c14089121bf1ac96a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1167965396
 GameObject:
   m_ObjectHideFlags: 0
@@ -6974,7 +7003,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1351307108}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d89e48c253968e41bbfc968e80fef93, type: 3}
   m_Name: 
@@ -9134,6 +9163,11 @@ PrefabInstance:
       propertyPath: m_TargetTexture
       value: 
       objectReference: {fileID: 8400000, guid: 6dd0c5854692807469e131d48cf79853, type: 2}
+    - target: {fileID: 5781834974586894724, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 1215
+      objectReference: {fileID: 0}
     - target: {fileID: 5781834974586894726, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Enabled
@@ -9856,19 +9890,6 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 5781834975337223585}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &1825172521
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825172511}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1825172522
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12272,6 +12293,11 @@ PrefabInstance:
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 985966955
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781834974586894724, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 1215
       objectReference: {fileID: 0}
     - target: {fileID: 5781834974586894726, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}

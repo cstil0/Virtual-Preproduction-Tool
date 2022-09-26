@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3142504350510330883}
   - component: {fileID: 5936090234802717341}
   - component: {fileID: 2839299069275840066}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 5176713630131261582}
   - component: {fileID: -541642682441805678}
   - component: {fileID: -5788399440413586632}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Nimbus2k
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 2363534696221085984}
   - component: {fileID: 3830168011943473933}
   - component: {fileID: 8349412267674561180}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1428117103011231474}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Attach Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +353,7 @@ GameObject:
   - component: {fileID: 6247115191844325556}
   - component: {fileID: 3576206485239736157}
   - component: {fileID: 7994557552032165696}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,7 +436,7 @@ GameObject:
   - component: {fileID: 6151183781129235438}
   - component: {fileID: 4106071216227674623}
   - component: {fileID: 3129183749963174345}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Vert
   m_TagString: Untagged
   m_Icon: {fileID: 0}

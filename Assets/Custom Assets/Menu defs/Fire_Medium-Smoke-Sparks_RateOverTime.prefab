@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3526262468004259027}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: AttachPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: -765724638515250179}
   - component: {fileID: 2948207187797253668}
   - component: {fileID: 6755897657403938380}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fire_Medium-Smoke-Sparks_RateOverTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5041,6 +5041,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 984207891930175163, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1441652197001272519, guid: 9981e4cec22644c10bd12f28ca683bae,
         type: 3}
       propertyPath: m_RootOrder
@@ -5101,6 +5106,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ParticleSystem_Fire_RateOverTime_Medium
       objectReference: {fileID: 0}
+    - target: {fileID: 7685568948667721206, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7919878490494356873, guid: 9981e4cec22644c10bd12f28ca683bae,
         type: 3}
       propertyPath: m_SortingFudge
@@ -5140,6 +5150,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Smoke_RateOverTime
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017941345898534900, guid: 3cf692a56f30a4c2ba321db57e966c0e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5290603011084889797, guid: 3cf692a56f30a4c2ba321db57e966c0e,
         type: 3}
@@ -5275,6 +5290,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Sparks_RateOverTime
+      objectReference: {fileID: 0}
+    - target: {fileID: 4957288164747090111, guid: b80d6728ed796486a9794e8f98467142,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b80d6728ed796486a9794e8f98467142, type: 3}

@@ -1,13 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LimitRotation : MonoBehaviour
 {
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    bool alreadyTriggered = other.GetComponent<CheckControllerTriggered>().alreadyTriggered;
+    //    if (gameObject.transform.childCount > 0 && !alreadyTriggered)
+    //        checkChildMaterials(gameObject, true);
+    //}
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (gameObject.transform.childCount > 0)
+    //        checkChildMaterials(gameObject, false);
+    //}
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //LimitRotation.alreadyTriggered = false;
     }
 
     // Update is called once per frame

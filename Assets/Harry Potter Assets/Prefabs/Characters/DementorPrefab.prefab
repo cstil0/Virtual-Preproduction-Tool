@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8841203727452749123}
   - component: {fileID: 7088813860615792037}
   - component: {fileID: 6965359074006944595}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: material_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 3128263442220595177}
   - component: {fileID: -7476910711505085277}
   - component: {fileID: 4163294854017097319}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DementorPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +291,7 @@ GameObject:
   - component: {fileID: 2316366068035949712}
   - component: {fileID: 8502948267341288004}
   - component: {fileID: 3773883610155082958}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ID31
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6636912433709706815}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Attach Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 5344733306440151469}
   - component: {fileID: 222046234652289061}
   - component: {fileID: 5179397208051476865}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ID41
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,7 @@ GameObject:
   - component: {fileID: 5162430622679449035}
   - component: {fileID: 2782792316026762768}
   - component: {fileID: 1148206933487123922}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ID21
   m_TagString: Untagged
   m_Icon: {fileID: 0}

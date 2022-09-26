@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7028925789632168334}
   - component: {fileID: 6152397473577536551}
   - component: {fileID: 3257017663238736316}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_25_hair_1_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 4931492851425240053}
   - component: {fileID: -3979069315284278196}
   - component: {fileID: -9117791468541277660}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SeverusSnapePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: 7359826442851014065}
   - component: {fileID: 6468674385128065785}
   - component: {fileID: 7942002298942723753}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_40_head_0.4_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,7 +340,7 @@ GameObject:
   - component: {fileID: 6892093749616014772}
   - component: {fileID: 3673034479527079644}
   - component: {fileID: 5795291457219532554}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_24_jaw_0.4_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 2150316052954485284}
   - component: {fileID: 455492482631251898}
   - component: {fileID: 2636139103696417242}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_24_cape_0.1_16_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -504,7 +504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3998355190078213518}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: AttachPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 1808255157894713018}
   - component: {fileID: 8381109971755541808}
   - component: {fileID: 6263137722857346903}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_7_eyelash_1_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -620,7 +620,7 @@ GameObject:
   - component: {fileID: 410105653429577}
   - component: {fileID: 113169168620156450}
   - component: {fileID: 1059787681853976908}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_24_hands_0.4_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -703,7 +703,7 @@ GameObject:
   - component: {fileID: 2670884664780792752}
   - component: {fileID: 1118333361907713852}
   - component: {fileID: 3179903346168409955}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_4_eye_0.7_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   - component: {fileID: 4015172371851141345}
   - component: {fileID: 8143165121171317918}
   - component: {fileID: 8820770046131915987}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_6_eyeborder_1_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -869,7 +869,7 @@ GameObject:
   - component: {fileID: 2966780525542839386}
   - component: {fileID: 339285747362678429}
   - component: {fileID: 7976521956292519257}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model001_24_shoes_1_0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}

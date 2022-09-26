@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1556366375735597628}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: AttachPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 2258967116911654274}
   - component: {fileID: 3497077601968485984}
   - component: {fileID: 7426553228937372966}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: spotligt_lo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 7225574837421220186}
   - component: {fileID: 4906168821470507416}
   - component: {fileID: 7201801296925480852}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 7123768079262936594}
   - component: {fileID: 916263875962707354}
   - component: {fileID: 4413983204298296577}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: focus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
