@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 170530984}
   - component: {fileID: 170530986}
   - component: {fileID: 170530985}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Objects Button 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 200635809}
   - component: {fileID: 200635811}
   - component: {fileID: 200635810}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 220917685}
   - component: {fileID: 220917687}
   - component: {fileID: 220917686}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -784,7 +784,7 @@ GameObject:
   - component: {fileID: 221788187}
   - component: {fileID: 221788190}
   - component: {fileID: 221788191}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Lighting Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -954,7 +954,7 @@ GameObject:
   - component: {fileID: 238554838}
   - component: {fileID: 238554840}
   - component: {fileID: 238554839}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: VFX Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1032,7 +1032,7 @@ GameObject:
   - component: {fileID: 287666052}
   - component: {fileID: 287666054}
   - component: {fileID: 287666053}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1112,7 +1112,7 @@ GameObject:
   - component: {fileID: 319837093}
   - component: {fileID: 319837095}
   - component: {fileID: 319837094}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1918,7 +1918,7 @@ GameObject:
   - component: {fileID: 403726941}
   - component: {fileID: 403726943}
   - component: {fileID: 403726942}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Objects Button 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2187,7 +2187,7 @@ GameObject:
   - component: {fileID: 462841642}
   - component: {fileID: 462841644}
   - component: {fileID: 462841643}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2271,7 +2271,7 @@ GameObject:
   - component: {fileID: 471817136}
   - component: {fileID: 471817135}
   - component: {fileID: 471817134}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Objects Button 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2577,7 +2577,7 @@ GameObject:
   - component: {fileID: 550185698}
   - component: {fileID: 550185700}
   - component: {fileID: 550185699}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2657,7 +2657,7 @@ GameObject:
   - component: {fileID: 592494079}
   - component: {fileID: 592494081}
   - component: {fileID: 592494080}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Lighting Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2733,7 +2733,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599086134}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Menus panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3967,7 +3967,7 @@ GameObject:
   - component: {fileID: 818087571}
   - component: {fileID: 818087573}
   - component: {fileID: 818087572}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Objects Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4051,7 +4051,7 @@ GameObject:
   - component: {fileID: 831937901}
   - component: {fileID: 831937900}
   - component: {fileID: 831937902}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Characters Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4319,7 +4319,7 @@ GameObject:
   - component: {fileID: 856537040}
   - component: {fileID: 856537042}
   - component: {fileID: 856537041}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: General Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4495,7 +4495,7 @@ GameObject:
   - component: {fileID: 896559780}
   - component: {fileID: 896559782}
   - component: {fileID: 896559781}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4582,7 +4582,7 @@ GameObject:
   - component: {fileID: 908388038}
   - component: {fileID: 908388039}
   - component: {fileID: 908388037}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Characters Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4717,7 +4717,7 @@ GameObject:
   - component: {fileID: 989086359}
   - component: {fileID: 989086362}
   - component: {fileID: 989086361}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4910,7 +4910,7 @@ GameObject:
   - component: {fileID: 993649103}
   - component: {fileID: 993649102}
   - component: {fileID: 993649107}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Previous Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5175,7 +5175,7 @@ GameObject:
   - component: {fileID: 1061821573}
   - component: {fileID: 1061821575}
   - component: {fileID: 1061821574}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5430,7 +5430,7 @@ GameObject:
   - component: {fileID: 1121565078}
   - component: {fileID: 1121565077}
   - component: {fileID: 1121565076}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Character Button 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5633,6 +5633,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: OVRPlayerController
       objectReference: {fileID: 0}
+    - target: {fileID: 134650, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 168962, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -5693,6 +5701,14 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 1125068011842588, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660603843503870, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
 --- !u!4 &1142537653 stripped
@@ -5724,7 +5740,7 @@ GameObject:
   - component: {fileID: 1148619320}
   - component: {fileID: 1148619322}
   - component: {fileID: 1148619321}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5880,7 +5896,7 @@ GameObject:
   - component: {fileID: 1167965397}
   - component: {fileID: 1167965399}
   - component: {fileID: 1167965398}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6040,7 +6056,7 @@ GameObject:
   - component: {fileID: 1237137998}
   - component: {fileID: 1237138000}
   - component: {fileID: 1237137999}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Items Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6624,7 +6640,7 @@ GameObject:
   - component: {fileID: 1332635068}
   - component: {fileID: 1332635074}
   - component: {fileID: 1332635073}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Menu Space Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6774,7 +6790,7 @@ GameObject:
   - component: {fileID: 1337476158}
   - component: {fileID: 1337476160}
   - component: {fileID: 1337476159}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7032,7 +7048,7 @@ GameObject:
   - component: {fileID: 1443922154}
   - component: {fileID: 1443922156}
   - component: {fileID: 1443922155}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7347,7 +7363,7 @@ GameObject:
   - component: {fileID: 1555864105}
   - component: {fileID: 1555864107}
   - component: {fileID: 1555864106}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7427,7 +7443,7 @@ GameObject:
   - component: {fileID: 1567921830}
   - component: {fileID: 1567921832}
   - component: {fileID: 1567921831}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7511,7 +7527,7 @@ GameObject:
   - component: {fileID: 1578024895}
   - component: {fileID: 1578024897}
   - component: {fileID: 1578024896}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Fire Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8147,7 +8163,7 @@ GameObject:
   - component: {fileID: 1590508740}
   - component: {fileID: 1590508739}
   - component: {fileID: 1590508738}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Character Button 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8322,7 +8338,7 @@ GameObject:
   - component: {fileID: 1606785156}
   - component: {fileID: 1606785158}
   - component: {fileID: 1606785157}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Focus Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8497,7 +8513,7 @@ GameObject:
   - component: {fileID: 1609511223}
   - component: {fileID: 1609511222}
   - component: {fileID: 1609511224}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8671,7 +8687,7 @@ GameObject:
   - component: {fileID: 1635278468}
   - component: {fileID: 1635278467}
   - component: {fileID: 1635278472}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Next Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8841,7 +8857,7 @@ GameObject:
   - component: {fileID: 1650977977}
   - component: {fileID: 1650977976}
   - component: {fileID: 1650977975}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Character Button 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9072,7 +9088,7 @@ GameObject:
   - component: {fileID: 1750057727}
   - component: {fileID: 1750057729}
   - component: {fileID: 1750057728}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9287,7 +9303,7 @@ GameObject:
   - component: {fileID: 1785069570}
   - component: {fileID: 1785069572}
   - component: {fileID: 1785069571}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9371,7 +9387,7 @@ GameObject:
   - component: {fileID: 1803688661}
   - component: {fileID: 1803688660}
   - component: {fileID: 1803688662}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: VFX Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9712,7 +9728,7 @@ GameObject:
   - component: {fileID: 1814684610}
   - component: {fileID: 1814684612}
   - component: {fileID: 1814684611}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Character Button 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9945,7 +9961,7 @@ GameObject:
   - component: {fileID: 1832551511}
   - component: {fileID: 1832551510}
   - component: {fileID: 1832551512}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10115,7 +10131,7 @@ GameObject:
   - component: {fileID: 1878880894}
   - component: {fileID: 1878880896}
   - component: {fileID: 1878880895}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10199,7 +10215,7 @@ GameObject:
   - component: {fileID: 1884965504}
   - component: {fileID: 1884965505}
   - component: {fileID: 1884965506}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Objects Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10441,7 +10457,7 @@ GameObject:
   - component: {fileID: 1953880265}
   - component: {fileID: 1953880267}
   - component: {fileID: 1953880266}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11265,7 +11281,7 @@ GameObject:
   - component: {fileID: 2015108916}
   - component: {fileID: 2015108918}
   - component: {fileID: 2015108917}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11689,7 +11705,7 @@ GameObject:
   - component: {fileID: 2101871516}
   - component: {fileID: 2101871515}
   - component: {fileID: 2101871517}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11859,7 +11875,7 @@ GameObject:
   - component: {fileID: 2122701923}
   - component: {fileID: 2122701925}
   - component: {fileID: 2122701924}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11943,7 +11959,7 @@ GameObject:
   - component: {fileID: 2143720722}
   - component: {fileID: 2143720721}
   - component: {fileID: 2143720723}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Back Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12117,7 +12133,7 @@ GameObject:
   - component: {fileID: 2146690623}
   - component: {fileID: 2146690622}
   - component: {fileID: 2146690621}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Item Character Button 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
