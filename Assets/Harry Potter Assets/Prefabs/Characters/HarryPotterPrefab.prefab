@@ -1299,7 +1299,6 @@ GameObject:
   - component: {fileID: 1398309233545083715}
   - component: {fileID: 4950248099906757721}
   - component: {fileID: 8193042436042920041}
-  - component: {fileID: 519518436855189320}
   - component: {fileID: 6732543868642042558}
   - component: {fileID: 6331354929935506151}
   m_Layer: 10
@@ -1402,24 +1401,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 0, z: 0}
   scale: 1.2
---- !u!114 &519518436855189320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 591521951342212818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugPanelText: {fileID: 0}
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
 --- !u!114 &6732543868642042558
 MonoBehaviour:
   m_ObjectHideFlags: 0

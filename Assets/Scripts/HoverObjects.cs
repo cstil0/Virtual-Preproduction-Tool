@@ -29,7 +29,7 @@ public class HoverObjects : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.LogError(e.Message);
+                Debug.Log(e.Message);
             }
 
             // recursive call to check also for childs
@@ -47,6 +47,15 @@ public class HoverObjects : MonoBehaviour
             alreadyTriggered = true;
             currentCollider = other.gameObject;
             changeColorMaterials(currentCollider, true);
+
+            try
+            {
+                currentCollider.GetComponent<LimitRotation>().objectSelected(gameObject);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message);
+            }
         }
     }
 
