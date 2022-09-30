@@ -12,6 +12,17 @@ public class LimitRotation : MonoBehaviour
 
     bool triggerOn;
     bool buttonDown;
+
+    bool isBehindPlayer(Vector3 position)
+    {
+        Vector3 center = new Vector3(0.0f, 0.0f, 0.0f);
+
+        if (position.x < center.x || position.z < center.z)
+            return true;
+        else
+            return false;
+    }
+
     //bool alreadyTriggered;
     private void OnTriggerEnter(Collider other)
     {
@@ -43,6 +54,8 @@ public class LimitRotation : MonoBehaviour
     void Update()
     {
         Vector3 position = new Vector3();
+        Vector3 limitRot = new Vector3();
+
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
         {
             if (!buttonDown)
@@ -52,7 +65,14 @@ public class LimitRotation : MonoBehaviour
                 buttonDown = true;
             }
 
-            position = currentHand.transform.position + startPosDiff;
+            Vector3 localPosition = currentHand.transform.localPosition + startPosDiff;
+            Vector3 globalPosition = currentHand.transform.position + startPosDiff;
+            position = isBehindPlayer(localPosition) ? gameObject.transform.position : globalPosition;
+
+            RotationScale rotScale = gameObject.GetComponent<RotationScale>();
+            Vector3 rotation = rotScale.rotation;
+            Vector3 currRot = currentHand.transform.rotation.eulerAngles;
+            limitRot = new Vector3(rotation.x, - currRot.y + rotation.y - 180.0f, rotation.y);
         }
         else
         {
@@ -63,16 +83,16 @@ public class LimitRotation : MonoBehaviour
             }
             //alreadyTriggered = false;
             position = gameObject.transform.position;
+
+            Vector3 rotation = gameObject.transform.rotation.eulerAngles;
+            limitRot = rotation;
         }
         Transform attachPoint = gameObject.transform.GetChild(0);
 
         // make it touch always the floor
         gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
 
-        RotationScale rotScale = gameObject.GetComponent<RotationScale>();
-        Vector3 rotation = rotScale.rotation;
-        Vector3 currRot = gameObject.transform.rotation.eulerAngles;
-        Vector3 limitRot = new Vector3(rotation.x, currRot.y, rotation.y);
+
         gameObject.transform.rotation = Quaternion.Euler(limitRot);
 
     }
