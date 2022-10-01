@@ -357,7 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 170530979}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -937,7 +937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 221788181}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 592494078}
@@ -2042,7 +2042,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 403726936}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -2342,7 +2342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 471817132}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -3757,68 +3757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c560b65bba1c4dd42b7722a8866593f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &773190230
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250510732}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1347145978}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.3, y: -0.2}
-  m_SizeDelta: {x: 94.4, y: 15.6}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &773190231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250510732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 5
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 40
-    m_Alignment: 1
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: Debug messages
---- !u!222 &773190232
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250510732}
-  m_CullTransparentMesh: 1
 --- !u!1 &773200030 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100014, guid: ce816f2e6abb0504092c23ed9b970dfd,
@@ -4204,7 +4142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 831937894}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 908388035}
@@ -4405,7 +4343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabBegin: 0.55
   grabEnd: 0.35
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   m_parentHeldObject: 0
   m_moveHandPosition: 0
   m_gripTransform: {fileID: 1584832908}
@@ -4802,7 +4740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Canvas: {fileID: 989086354}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
 --- !u!114 &989086360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5501,7 +5439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1121565074}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -6331,24 +6269,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242036993}
   m_CullTransparentMesh: 1
---- !u!1 &1250510732
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 773190230}
-  - component: {fileID: 773190232}
-  - component: {fileID: 773190231}
-  m_Layer: 3
-  m_Name: Text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1273328198
 GameObject:
   m_ObjectHideFlags: 0
@@ -6890,83 +6810,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337476157}
-  m_CullTransparentMesh: 1
---- !u!1 &1347145977
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1347145978}
-  - component: {fileID: 1347145980}
-  - component: {fileID: 1347145979}
-  m_Layer: 3
-  m_Name: Panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1347145978
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1347145977}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 37}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 773190230}
-  m_Father: {fileID: 1964602104}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -141.965, y: -18988.82}
-  m_SizeDelta: {x: -598.07, y: -441.79883}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1347145979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1347145977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.47202176, g: 0.44054827, b: 0.5660378, a: 0.6156863}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1347145980
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1347145977}
   m_CullTransparentMesh: 1
 --- !u!1 &1347591643
 GameObject:
@@ -7683,7 +7526,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1578024890}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -8179,7 +8022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25d0876aa1728d840b6faf3fd4e29b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
 --- !u!1 &1590508736
 GameObject:
   m_ObjectHideFlags: 0
@@ -8266,7 +8109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1590508736}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -8494,7 +8337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1606785151}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -8698,7 +8541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1609511216}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 908388035}
   newMenu: {fileID: 1237137997}
@@ -8960,7 +8803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1650977973}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -9572,7 +9415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1803688654}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 238554837}
@@ -9884,7 +9727,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1814684605}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
@@ -10146,7 +9989,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1832551504}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 592494078}
   newMenu: {fileID: 1237137997}
@@ -10400,7 +10243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 1884965498}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 818087570}
@@ -10689,17 +10532,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964602097}
   m_LocalRotation: {x: -0, y: 0.00000046193594, z: -0, w: -1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.10890091}
+  m_LocalPosition: {x: 0, y: 0, z: 0.29}
   m_LocalScale: {x: 0.0063705966, y: 0.0063705966, z: 0.0063705966}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1347145978}
+  - {fileID: 1987195545}
   m_Father: {fileID: 144798005}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.91461635, y: 120.81817}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 700, y: 464}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1964602105
@@ -10714,7 +10557,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6970cef549f5a4b468abba1af1e8ff1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 1964602097}
+  cameraTextures: []
 --- !u!1 &1966392767 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100010, guid: ce816f2e6abb0504092c23ed9b970dfd,
@@ -10779,6 +10622,99 @@ MonoBehaviour:
   HeightOffset: 0
   MinimumHeight: 0
   MaximumHeight: 0
+--- !u!1 &1987195544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1987195545}
+  - component: {fileID: 1987195548}
+  - component: {fileID: 1987195547}
+  - component: {fileID: 1987195546}
+  m_Layer: 3
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1987195545
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987195544}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1964602104}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 77.6, y: 37.9}
+  m_SizeDelta: {x: 100, y: 56.25}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1987195546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987195544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6970cef549f5a4b468abba1af1e8ff1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTextures:
+  - {fileID: 8400000, guid: 9c34fe104b641b8458a0c46484619133, type: 2}
+  - {fileID: 8400000, guid: 6dd0c5854692807469e131d48cf79853, type: 2}
+  - {fileID: 8400000, guid: 0b3d78b395b1de746bcd793b3aed45eb, type: 2}
+--- !u!114 &1987195547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987195544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 80a1c8f6b23616540b98ee0f8752e908, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1987195548
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987195544}
+  m_CullTransparentMesh: 1
 --- !u!1 &1996306987
 GameObject:
   m_ObjectHideFlags: 0
@@ -11890,7 +11826,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 2101871509}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 818087570}
   newMenu: {fileID: 1237137997}
@@ -12144,7 +12080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 2143720715}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 238554837}
   newMenu: {fileID: 1237137997}
@@ -12236,7 +12172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 2146690619}
   handController: {fileID: 861928155}
-  debugPanelText: {fileID: 1250510732}
+  debugPanelText: {fileID: 0}
   canvas: {fileID: 989086354}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
