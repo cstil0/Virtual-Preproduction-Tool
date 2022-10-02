@@ -11,6 +11,8 @@ public class FollowPath : MonoBehaviour
     Vector3 startPosition;
     Quaternion startRotation;
 
+    Animator animator;
+
     bool isPlaying;
 
     void move(Vector3 targetPoint)
@@ -35,6 +37,8 @@ public class FollowPath : MonoBehaviour
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
+
+        animator = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -52,6 +56,7 @@ public class FollowPath : MonoBehaviour
         if (isPlaying && pointsCount < pathPositions.Length)
         {
             Vector3 currTarget = pathPositions[pointsCount];
+            animator.SetFloat("Speed", posSpeed);
             move(currTarget);
             if (gameObject.transform.position == currTarget)
             {
