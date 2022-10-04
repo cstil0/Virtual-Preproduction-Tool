@@ -56,12 +56,17 @@ public class FollowPath : MonoBehaviour
         if (isPlaying && pointsCount < pathPositions.Length)
         {
             Vector3 currTarget = pathPositions[pointsCount];
-            animator.SetFloat("Speed", posSpeed);
+            animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
             move(currTarget);
             if (gameObject.transform.position == currTarget)
             {
                 pointsCount++;
             }
+        }
+        else
+        {
+            // do a fade out fade in to idle animation
+            animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
         }
     }
 }
