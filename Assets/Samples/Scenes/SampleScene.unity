@@ -3954,11 +3954,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathPositions:
-  - {x: 0, y: 0, z: -8.71}
-  - {x: -2.1, y: 0, z: -8.71}
-  - {x: 1, y: 0, z: -7}
-  - {x: 1, y: 0, z: -5}
+  handController: {fileID: 861928155}
+  pathPositions: []
   posSpeed: 3
   rotSpeed: 7
 --- !u!1 &752469284

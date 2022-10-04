@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Processors;
 
 public class FollowPath : MonoBehaviour
 {
-    public Vector3[] pathPositions;
+    public GameObject handController;
+    public List<Vector3> pathPositions;
     public float posSpeed = 5.0f;
     public float rotSpeed = 10.0f;
     int pointsCount;
@@ -14,6 +16,19 @@ public class FollowPath : MonoBehaviour
     Animator animator;
 
     bool isPlaying;
+    bool buttonDown;
+    bool triggerOn;
+    bool isSelected;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        triggerOn = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        triggerOn = false;
+    }
 
     void move(Vector3 targetPoint)
     {
@@ -32,8 +47,13 @@ public class FollowPath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pathPositions = new List<Vector3>();
         pointsCount = 0;
+
         isPlaying = false;
+        buttonDown = false;
+        triggerOn = false;
+        isSelected = false;
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
@@ -44,6 +64,27 @@ public class FollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        {
+            if (!buttonDown && triggerOn)
+            {
+                buttonDown = true;
+                // first touch will select the character, and the second one will unselect it
+                isSelected = !isSelected;
+                Debug.Log("Selected: " + isSelected);
+            }
+
+            else if (!buttonDown && isSelected)
+            {
+                buttonDown = true;
+                Vector3 controllerPos = handController.transform.position;
+                Vector3 newPoint = new Vector3(controllerPos.x, gameObject.transform.position.y, controllerPos.z);
+                pathPositions.Add(newPoint);
+            }
+        }
+        else
+            buttonDown = false;
+
         if (Input.GetKeyDown(KeyCode.P))
             isPlaying = !isPlaying;
         else if (Input.GetKeyDown(KeyCode.S)){
@@ -53,7 +94,7 @@ public class FollowPath : MonoBehaviour
             pointsCount = 0;
         }
 
-        if (isPlaying && pointsCount < pathPositions.Length)
+        if (isPlaying && pointsCount < pathPositions.Count)
         {
             Vector3 currTarget = pathPositions[pointsCount];
             animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
@@ -65,7 +106,7 @@ public class FollowPath : MonoBehaviour
         }
         else
         {
-            // do a fade out fade in to idle animation
+            // do smooth transition from walk to idle taking the delta time
             animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
         }
     }
