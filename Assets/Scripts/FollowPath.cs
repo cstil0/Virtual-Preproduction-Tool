@@ -71,7 +71,6 @@ public class FollowPath : MonoBehaviour
                 buttonDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelected = !isSelected;
-                Debug.Log("Selected: " + isSelected);
             }
 
             else if (!buttonDown && isSelected)
@@ -92,6 +91,16 @@ public class FollowPath : MonoBehaviour
             gameObject.transform.position = startPosition;
             gameObject.transform.rotation = startRotation;
             pointsCount = 0;
+        }
+        else if (Input.GetKeyDown(KeyCode.M) && isSelected)
+        {
+            posSpeed += 0.1f;
+            rotSpeed += 0.1f;
+        }
+        else if (Input.GetKeyUp(KeyCode.N) && isSelected)
+        {
+            posSpeed -= 0.1f;
+            rotSpeed -= 0.1f;
         }
 
         if (isPlaying && pointsCount < pathPositions.Count)
