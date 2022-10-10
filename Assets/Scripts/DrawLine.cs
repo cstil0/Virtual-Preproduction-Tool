@@ -3,33 +3,72 @@ using UnityEngine;
 
 public class DrawLine : MonoBehaviour
 {
+    // singleton
+    public static DrawLine instance = null;
+
     public GameObject linePrefab;
     public GameObject handController;
     private GameObject currentLine;
-    private LineRenderer lineRenderer;
     private EdgeCollider2D edgeCollider;
     private List<Vector2> fingerPositions = new List<Vector2>();
 
+    private LineRenderer lineRenderer;
+    public int countPoints;
     bool buttonDown;
+    public bool continueLine;
 
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+    }
     private void Start()
     {
         buttonDown = false;
+        continueLine = false;
+        countPoints = 0;
     }
+
     void Update()
     {
+        //if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        //{
+        //    CreateLine();
+        //}
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
-            CreateLine();
-        }
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && buttonDown == false)
-        {
-            buttonDown = true;
-            Vector2 tempFingerPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if (Vector2.Distance(tempFingerPos, fingerPositions[fingerPositions.Count - 1]) > .1f)
+            if (!buttonDown)
             {
-                UpdateLine(tempFingerPos);
+                buttonDown = true;
+
+                if (continueLine)
+                {
+                    if (countPoints == 0)
+                    {
+                        GameObject line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
+                        lineRenderer = line.GetComponent<LineRenderer>();
+                        lineRenderer.SetPosition(countPoints, handController.transform.position);
+                        lineRenderer.positionCount = 2;
+                        countPoints += 1;
+                    }
+                    else
+                    {
+                        lineRenderer.SetPosition(countPoints, handController.transform.position);
+                        lineRenderer.positionCount += 1;
+                        countPoints += 1;
+                    }
+                }
+                else
+                {
+                    countPoints = 0;
+                }
             }
+        }
+        else
+        {
+            buttonDown = false;
         }
     }
 

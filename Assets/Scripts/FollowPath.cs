@@ -22,12 +22,14 @@ public class FollowPath : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        triggerOn = true;
+        if (other.gameObject.layer == 3)
+            triggerOn = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        triggerOn = false;
+        if (other.gameObject.layer == 3)
+            triggerOn = false;
     }
 
     void move(Vector3 targetPoint)
@@ -71,6 +73,7 @@ public class FollowPath : MonoBehaviour
                 buttonDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelected = !isSelected;
+                DrawLine.instance.continueLine = isSelected;
             }
 
             else if (!buttonDown && isSelected)
