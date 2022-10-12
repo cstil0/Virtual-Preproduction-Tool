@@ -44,7 +44,14 @@ public class HoverObjects : MonoBehaviour
         if (!alreadyTriggered && other.gameObject.layer == 10)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-            if (followPath != null && !followPath.isSelected)
+            bool isSelected = false;
+            if (followPath != null)
+            {
+                followPath.triggerOn = true;
+                isSelected = followPath.isSelected;
+            }
+
+            if (!isSelected)
             {
                 alreadyTriggered = true;
                 currentCollider = other.gameObject;
@@ -83,7 +90,14 @@ public class HoverObjects : MonoBehaviour
         if (other.gameObject == currentCollider)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-            if (followPath != null && !followPath.isSelected)
+            bool isSelected = false;
+            if (followPath != null)
+            {
+                followPath.triggerOn = false;
+                isSelected = followPath.isSelected;
+            }
+
+            if (!isSelected)
             {
                 alreadyTriggered = false;
                 currentCollider = other.gameObject;

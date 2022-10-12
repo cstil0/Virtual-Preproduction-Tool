@@ -17,20 +17,20 @@ public class FollowPath : MonoBehaviour
 
     bool isPlaying;
     bool buttonDown;
-    bool triggerOn;
+    public bool triggerOn;
     public bool isSelected;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == 3)
-            triggerOn = true;
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.layer == 3)
+    //        triggerOn = true;
+    //}
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.layer == 3)
-            triggerOn = false;
-    }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject.layer == 3)
+    //        triggerOn = false;
+    //}
 
     void move(Vector3 targetPoint)
     {
