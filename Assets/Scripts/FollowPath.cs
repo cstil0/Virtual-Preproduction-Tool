@@ -18,7 +18,7 @@ public class FollowPath : MonoBehaviour
     bool isPlaying;
     bool buttonDown;
     bool triggerOn;
-    bool isSelected;
+    public bool isSelected;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -66,6 +66,29 @@ public class FollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        //{
+        //    if (!buttonDown && triggerOn)
+        //    {
+        //        buttonDown = true;
+        //        // first touch will select the character, and the second one will unselect it
+        //        isSelected = !isSelected;
+        //        // NO FARÀ FALTA EN EL CAS CONTINU
+        //        DrawLine.instance.continueLine = isSelected;
+        //    }
+
+        //    else if (!buttonDown && isSelected)
+        //    {
+        //        buttonDown = true;
+        //        Vector3 controllerPos = handController.transform.position;
+        //        Vector3 newPoint = new Vector3(controllerPos.x, gameObject.transform.position.y, controllerPos.z);
+        //        pathPositions.Add(newPoint);
+        //    }
+        //}
+        //else
+        //    buttonDown = false;
+
+        // CONTINUOUS CASE
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
             if (!buttonDown && triggerOn)
@@ -73,27 +96,48 @@ public class FollowPath : MonoBehaviour
                 buttonDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelected = !isSelected;
-                DrawLine.instance.continueLine = isSelected;
+                DrawLine.instance.startLine = false;
             }
 
             else if (!buttonDown && isSelected)
             {
-                buttonDown = true;
                 Vector3 controllerPos = handController.transform.position;
                 Vector3 newPoint = new Vector3(controllerPos.x, gameObject.transform.position.y, controllerPos.z);
                 pathPositions.Add(newPoint);
+
+                // ONLY FOR CONTINUOUS CASE
+                DrawLine.instance.startLine = isSelected;
             }
         }
         else
             buttonDown = false;
 
+
         if (Input.GetKeyDown(KeyCode.P))
+        {
+            GameObject[] lines;
+            lines = GameObject.FindGameObjectsWithTag("Line");
+
+            for (int i=0; i<lines.Length; i++)
+            {
+                lines[0].GetComponent<LineRenderer>().enabled = false;
+            }
+
             isPlaying = !isPlaying;
+        }
         else if (Input.GetKeyDown(KeyCode.S)){
             isPlaying = false;
             gameObject.transform.position = startPosition;
             gameObject.transform.rotation = startRotation;
             pointsCount = 0;
+
+            GameObject[] lines;
+            lines = GameObject.FindGameObjectsWithTag("Line");
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[0].GetComponent<LineRenderer>().enabled = true;
+            }
         }
         else if (Input.GetKeyDown(KeyCode.M) && isSelected)
         {

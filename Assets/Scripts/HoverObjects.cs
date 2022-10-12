@@ -8,7 +8,7 @@ public class HoverObjects : MonoBehaviour
     GameObject currentCollider;
 
     // recursive function that iterates through all materials of the tree and changes their color
-    private void changeColorMaterials(GameObject currentParent, bool triggerEnter)
+    private void changeColorMaterials(GameObject currentParent, Color color)
     {
         for (int i = 0; i < currentParent.transform.childCount; i++)
         {
@@ -23,8 +23,7 @@ public class HoverObjects : MonoBehaviour
 
                 foreach (Material material in materials)
                 {
-                    material.color = triggerEnter ? Color.blue : Color.white;
-
+                    material.color = color;
                 }
             }
             catch (System.Exception e)
@@ -34,7 +33,7 @@ public class HoverObjects : MonoBehaviour
 
             // recursive call to check also for childs
             if (currChild.transform.childCount > 0)
-                changeColorMaterials(currChild, triggerEnter);
+                changeColorMaterials(currChild, color);
 
         }
     }
@@ -44,17 +43,36 @@ public class HoverObjects : MonoBehaviour
         // change the color only to the first object that collided with the controller, only if it is an item
         if (!alreadyTriggered && other.gameObject.layer == 10)
         {
-            alreadyTriggered = true;
-            currentCollider = other.gameObject;
-            changeColorMaterials(currentCollider, true);
+            FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+            if (followPath != null && !followPath.isSelected)
+            {
+                alreadyTriggered = true;
+                currentCollider = other.gameObject;
+                changeColorMaterials(currentCollider, Color.blue);
 
-            try
-            {
-                currentCollider.GetComponent<LimitRotation>().objectSelected(gameObject);
+                // if the object has a limit rotation script mark it as selected
+                try
+                {
+                    currentCollider.GetComponent<LimitRotation>().objectSelected(gameObject);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.Log(e.Message);
+                }
             }
-            catch (System.Exception e)
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        // selecting the object to define a path can happen whenever the hand is triggering it that's why we check it here
+        if (other.gameObject.layer == 10)
+        {
+            FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+            Color color = followPath.isSelected ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
+            if (followPath != null)
             {
-                Debug.Log(e.Message);
+                changeColorMaterials(currentCollider, color);
             }
         }
     }
@@ -64,9 +82,13 @@ public class HoverObjects : MonoBehaviour
         // change the color to white tho the first collider
         if (other.gameObject == currentCollider)
         {
-            alreadyTriggered = false;
-            currentCollider = other.gameObject;
-            changeColorMaterials(currentCollider, false);
+            FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+            if (followPath != null && !followPath.isSelected)
+            {
+                alreadyTriggered = false;
+                currentCollider = other.gameObject;
+                changeColorMaterials(currentCollider, Color.white);
+            }
         }
     }
 
@@ -79,6 +101,6 @@ public class HoverObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

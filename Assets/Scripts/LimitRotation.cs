@@ -33,11 +33,11 @@ public class LimitRotation : MonoBehaviour
         //}
     }
 
-            public void objectSelected(GameObject handCollider)
-        {
-            currentHand = handCollider;
-            triggerOn = true;
-        }
+    public void objectSelected(GameObject handCollider)
+    {
+        currentHand = handCollider;
+        triggerOn = true;
+    }
 
     // Start is called before the first frame update
     void Start()
