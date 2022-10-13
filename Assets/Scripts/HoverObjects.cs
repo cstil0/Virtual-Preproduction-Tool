@@ -95,14 +95,15 @@ public class HoverObjects : MonoBehaviour
             {
                 followPath.triggerOn = false;
                 isSelected = followPath.isSelected;
+                alreadyTriggered = false;
             }
-
             if (!isSelected)
             {
                 alreadyTriggered = false;
                 currentCollider = other.gameObject;
                 changeColorMaterials(currentCollider, Color.white);
             }
+
         }
     }
 

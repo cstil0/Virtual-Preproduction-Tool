@@ -1765,6 +1765,7 @@ GameObject:
   - component: {fileID: 9132825663270333017}
   - component: {fileID: -5197298480624417484}
   - component: {fileID: -8464974251432868818}
+  - component: {fileID: 4582117475484485687}
   m_Layer: 10
   m_Name: RonWeasleyPrefab
   m_TagString: Untagged
@@ -1933,6 +1934,24 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &4582117475484485687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860607193858789416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 0}
+  pathPositions: []
+  posSpeed: 5
+  rotSpeed: 10
+  triggerOn: 0
+  isSelected: 0
 --- !u!1 &5949649267549057907
 GameObject:
   m_ObjectHideFlags: 0

@@ -120,7 +120,7 @@ public class FollowPath : MonoBehaviour
 
             for (int i=0; i<lines.Length; i++)
             {
-                lines[0].GetComponent<LineRenderer>().enabled = false;
+                lines[i].GetComponent<LineRenderer>().enabled = false;
             }
 
             isPlaying = !isPlaying;
@@ -136,7 +136,7 @@ public class FollowPath : MonoBehaviour
 
             for (int i = 0; i < lines.Length; i++)
             {
-                lines[0].GetComponent<LineRenderer>().enabled = true;
+                lines[i].GetComponent<LineRenderer>().enabled = true;
             }
         }
         else if (Input.GetKeyDown(KeyCode.M) && isSelected)

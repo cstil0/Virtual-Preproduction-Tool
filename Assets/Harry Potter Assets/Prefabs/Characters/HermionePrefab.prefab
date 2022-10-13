@@ -1009,6 +1009,7 @@ GameObject:
   - component: {fileID: 6299190968970101836}
   - component: {fileID: 6417704792700868793}
   - component: {fileID: -143057188713542657}
+  - component: {fileID: 4959851314096101964}
   m_Layer: 10
   m_Name: HermionePrefab
   m_TagString: Untagged
@@ -1169,6 +1170,24 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &4959851314096101964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363716948649037561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 0}
+  pathPositions: []
+  posSpeed: 5
+  rotSpeed: 10
+  triggerOn: 0
+  isSelected: 0
 --- !u!1 &2434902922500085160
 GameObject:
   m_ObjectHideFlags: 0

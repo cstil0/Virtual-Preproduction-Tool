@@ -1301,6 +1301,7 @@ GameObject:
   - component: {fileID: 8193042436042920041}
   - component: {fileID: 6732543868642042558}
   - component: {fileID: 6331354929935506151}
+  - component: {fileID: 7626359596524338551}
   m_Layer: 10
   m_Name: HarryPotterPrefab
   m_TagString: Untagged
@@ -1443,6 +1444,24 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &7626359596524338551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 591521951342212818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 0}
+  pathPositions: []
+  posSpeed: 5
+  rotSpeed: 10
+  triggerOn: 0
+  isSelected: 0
 --- !u!1 &591521951342212820
 GameObject:
   m_ObjectHideFlags: 0
