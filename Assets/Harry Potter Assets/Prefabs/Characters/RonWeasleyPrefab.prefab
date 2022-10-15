@@ -1841,7 +1841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 0, z: 0}
-  scale: 110
+  scale: 150
 --- !u!114 &5741177900129314388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1854,7 +1854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPanelText: {fileID: 0}
   m_allowOffhandGrab: 1
   m_snapPosition: 0
   m_snapOrientation: 0
@@ -1948,8 +1947,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handController: {fileID: 0}
   pathPositions: []
-  posSpeed: 5
-  rotSpeed: 10
+  posSpeed: 3
+  rotSpeed: 7
   triggerOn: 0
   isSelected: 0
 --- !u!1 &5949649267549057907

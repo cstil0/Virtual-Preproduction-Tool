@@ -27,9 +27,6 @@ using UnityEngine.UI;
 /// </summary>
 public class OVRGrabbable : MonoBehaviour
 {
-    // BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public GameObject debugPanelText;
-
     [SerializeField]
     protected bool m_allowOffhandGrab = true;
     [SerializeField]

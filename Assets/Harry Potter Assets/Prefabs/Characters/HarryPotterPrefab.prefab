@@ -1458,8 +1458,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handController: {fileID: 0}
   pathPositions: []
-  posSpeed: 5
-  rotSpeed: 10
+  posSpeed: 3
+  rotSpeed: 7
   triggerOn: 0
   isSelected: 0
 --- !u!1 &591521951342212820

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HoverObjects : MonoBehaviour
 {
     bool alreadyTriggered;
+    bool alreadySelected;
     GameObject currentCollider;
 
     // recursive function that iterates through all materials of the tree and changes their color
@@ -28,7 +30,7 @@ public class HoverObjects : MonoBehaviour
             }
             catch (System.Exception e)
             {
-                Debug.Log(e.Message);
+                //Debug.Log(e.Message);
             }
 
             // recursive call to check also for childs
@@ -64,7 +66,7 @@ public class HoverObjects : MonoBehaviour
                 }
                 catch (System.Exception e)
                 {
-                    Debug.Log(e.Message);
+                    //Debug.Log(e.Message);
                 }
             }
         }
@@ -77,9 +79,12 @@ public class HoverObjects : MonoBehaviour
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
             Color color = followPath.isSelected ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
-            if (followPath != null)
+
+            // change color only if selected state has changed to avoid slowing performance
+            if (followPath != null && alreadySelected != followPath.isSelected)
             {
                 changeColorMaterials(currentCollider, color);
+                alreadySelected = followPath.isSelected;
             }
         }
     }
@@ -111,6 +116,7 @@ public class HoverObjects : MonoBehaviour
     void Start()
     {
         alreadyTriggered = false;
+        alreadySelected = false;
     }
 
     // Update is called once per frame

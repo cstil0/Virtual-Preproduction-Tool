@@ -7,8 +7,8 @@ public class FollowPath : MonoBehaviour
 {
     public GameObject handController;
     public List<Vector3> pathPositions;
-    public float posSpeed = 5.0f;
-    public float rotSpeed = 10.0f;
+    public float posSpeed = 3.0f;
+    public float rotSpeed = 7.0f;
     int pointsCount;
     Vector3 startPosition;
     Quaternion startRotation;
@@ -49,6 +49,7 @@ public class FollowPath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
         pointsCount = 0;
 

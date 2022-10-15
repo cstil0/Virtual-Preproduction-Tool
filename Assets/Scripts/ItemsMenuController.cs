@@ -8,7 +8,6 @@ public class ItemsMenuController : MonoBehaviour
 {
     public GameObject button;
     public GameObject handController;
-    public GameObject debugPanelText;
     public GameObject canvas;
     RotationScale rotationScale;
 
@@ -197,7 +196,6 @@ public class ItemsMenuController : MonoBehaviour
     public void SpawnObject()
     {
         Vector3 attachPoint = itemPrefab.transform.GetChild(0).position;
-        debugPanelText.GetComponent<Text>().text = attachPoint.ToString();
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);

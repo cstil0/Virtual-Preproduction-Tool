@@ -12,8 +12,6 @@ public class ActivateDisableMenu : MonoBehaviour
     // since i am unable to use getKeyDown, only Get
     bool key_down = false;
 
-    public GameObject debugPanelText;
-
     // start with all menus deactivated until user shows the items menu
     void Start()
     {
