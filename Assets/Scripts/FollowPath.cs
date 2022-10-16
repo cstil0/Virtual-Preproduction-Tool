@@ -114,7 +114,7 @@ public class FollowPath : MonoBehaviour
             buttonDown = false;
 
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
         {
             GameObject[] lines;
             lines = GameObject.FindGameObjectsWithTag("Line");
@@ -126,7 +126,8 @@ public class FollowPath : MonoBehaviour
 
             isPlaying = !isPlaying;
         }
-        else if (Input.GetKeyDown(KeyCode.S)){
+        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
+        {
             isPlaying = false;
             gameObject.transform.position = startPosition;
             gameObject.transform.rotation = startRotation;

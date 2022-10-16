@@ -96,10 +96,10 @@ GameObject:
   - component: {fileID: 1148474772494986936}
   - component: {fileID: 9040004342911614108}
   - component: {fileID: 2973348254051033594}
-  - component: {fileID: 4931492851425240053}
   - component: {fileID: -3979069315284278196}
   - component: {fileID: -9117791468541277660}
   - component: {fileID: 4127888833281750695}
+  - component: {fileID: 1719863989355297064}
   m_Layer: 10
   m_Name: SeverusSnapePrefab
   m_TagString: Untagged
@@ -187,24 +187,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 0, z: 0}
   scale: 1
---- !u!114 &4931492851425240053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987685053142188864}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugPanelText: {fileID: 0}
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
 --- !u!114 &-3979069315284278196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,6 +247,26 @@ MonoBehaviour:
   rotSpeed: 7
   triggerOn: 0
   isSelected: 0
+--- !u!95 &1719863989355297064
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987685053142188864}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1189163469148614034
 GameObject:
   m_ObjectHideFlags: 0

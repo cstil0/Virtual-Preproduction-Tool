@@ -28,15 +28,11 @@ public class HoverObjects : MonoBehaviour
                     material.color = color;
                 }
             }
-            catch (System.Exception e)
-            {
-                //Debug.Log(e.Message);
-            }
+            catch (System.Exception e){}
 
             // recursive call to check also for childs
             if (currChild.transform.childCount > 0)
                 changeColorMaterials(currChild, color);
-
         }
     }
 
@@ -62,12 +58,9 @@ public class HoverObjects : MonoBehaviour
                 // if the object has a limit rotation script mark it as selected
                 try
                 {
-                    currentCollider.GetComponent<LimitRotation>().objectSelected(gameObject);
+                    currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, true);
                 }
-                catch (System.Exception e)
-                {
-                    //Debug.Log(e.Message);
-                }
+                catch (System.Exception e) { }
             }
         }
     }
@@ -78,13 +71,17 @@ public class HoverObjects : MonoBehaviour
         if (other.gameObject.layer == 10)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-            Color color = followPath.isSelected ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
 
             // change color only if selected state has changed to avoid slowing performance
-            if (followPath != null && alreadySelected != followPath.isSelected)
+            if (followPath != null)
             {
-                changeColorMaterials(currentCollider, color);
-                alreadySelected = followPath.isSelected;
+                Color color = followPath.isSelected ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
+
+                if (alreadySelected != followPath.isSelected)
+                {
+                    changeColorMaterials(currentCollider, color);
+                    alreadySelected = followPath.isSelected;
+                }
             }
         }
     }
@@ -94,7 +91,17 @@ public class HoverObjects : MonoBehaviour
         // change the color to white tho the first collider
         if (other.gameObject == currentCollider)
         {
+            try
+            {
+                currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
+            }
+            catch (System.Exception e)
+            {
+                //Debug.Log(e.Message);
+            }
+
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+            // if the object has a limit rotation script mark it as selected
             bool isSelected = false;
             if (followPath != null)
             {
@@ -105,7 +112,7 @@ public class HoverObjects : MonoBehaviour
             if (!isSelected)
             {
                 alreadyTriggered = false;
-                currentCollider = other.gameObject;
+                //currentCollider = other.gameObject;
                 changeColorMaterials(currentCollider, Color.white);
             }
 
