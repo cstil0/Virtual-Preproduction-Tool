@@ -39,7 +39,7 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // change the color only to the first object that collided with the controller, only if it is an item
-        if (!alreadyTriggered && other.gameObject.layer == 10)
+        if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 9))
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
             bool isSelected = false;
@@ -68,7 +68,7 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // selecting the object to define a path can happen whenever the hand is triggering it that's why we check it here
-        if (other.gameObject.layer == 10)
+        if (other.gameObject.layer == 10 || other.gameObject.layer == 9)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
 

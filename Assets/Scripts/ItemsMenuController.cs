@@ -195,23 +195,25 @@ public class ItemsMenuController : MonoBehaviour
     // to instantiate the object that is passed according to the pressed button in the menu
     public void SpawnObject()
     {
-        Vector3 attachPoint = itemPrefab.transform.GetChild(0).position;
+        Transform attachPoint = itemPrefab.transform.GetChild(0);
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
         GameObject objectInstance = Instantiate(itemPrefab);
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
+        Vector3 handPosition = handController.transform.position;
         // només ens interessa la rotació de la y. +180 per què quedi com necessitem
-        Vector3 handRoty = new Vector3(0.0f, handRotation.y + 180.0f, 0.0f);
+        Vector3 handRoty = new Vector3(0.0f, handRotation.y, 0.0f);
         //objectInstance.transform.position = handController.transform.position;
         // sumem les dues rotacions
         objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);
         objectInstance.transform.localScale = scale;
-        objectInstance.transform.position = handController.transform.position;
+        // take local position from attachpont because we do not want to take it referent to the parent
+        objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.localPosition.y, handPosition.z) + rotationScale.rotation;
         //objectInstance.transform.rotation = Quaternion.Euler(rotation);
         // translate trasllada desde la posició a la que estem tantes unitats
-        objectInstance.transform.Translate(-attachPoint, handController.transform);
+        //objectInstance.transform.Translate(-attachPoint, handController.transform);
 
         objectInstance.GetComponent<NetworkObject>().Spawn();
 

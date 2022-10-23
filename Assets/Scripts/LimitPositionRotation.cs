@@ -73,7 +73,7 @@ public class LimitPositionRotation : MonoBehaviour
             RotationScale rotScale = gameObject.GetComponent<RotationScale>();
             Vector3 rotation = rotScale.rotation;
             Vector3 currRot = currentHand.transform.rotation.eulerAngles;
-            limitRot = new Vector3(-rotation.x, - currRot.y + rotation.y - 180.0f, -rotation.z);
+            limitRot = new Vector3(-rotation.x, - currRot.y + rotation.y, -rotation.z);
         }
         else
         {
@@ -90,7 +90,8 @@ public class LimitPositionRotation : MonoBehaviour
         Transform attachPoint = gameObject.transform.GetChild(0);
 
         // make it touch always the floor
-        gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
+        gameObject.transform.position = new Vector3(position.x, position.y, position.z);
+        //gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
 
 
         gameObject.transform.rotation = Quaternion.Euler(limitRot);

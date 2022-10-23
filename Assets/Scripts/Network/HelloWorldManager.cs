@@ -8,16 +8,16 @@ namespace HelloWorld
     {
         private void Start()
         {
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
-            {
-                NetworkManager.Singleton.StartClient();
-            }
-            else
-            {
-                NetworkManager.Singleton.StartHost();
-            }
+            //if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
+            //{
+            //    NetworkManager.Singleton.StartClient();
+            //}
+            //else
+            //{
+            //    NetworkManager.Singleton.StartHost();
+            //}
 
-            //NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartHost();
 
         }
         void OnGUI()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class FollowPath : MonoBehaviour
     public float rotSpeed = 7.0f;
     int pointsCount;
     Vector3 startPosition;
+    Vector3 startDiffPosition;
     Quaternion startRotation;
 
     Animator animator;
@@ -39,11 +41,20 @@ public class FollowPath : MonoBehaviour
 
         float posStep = posSpeed * Time.deltaTime;
         float rotStep = rotSpeed * Time.deltaTime;
+
         gameObject.transform.position = Vector3.MoveTowards(currentPos, targetPoint, posStep);
-        // compute the new formard direction where we will rotate to
-        Vector3 newForward = Vector3.RotateTowards(transform.forward, targetDirection, rotStep, 0.0f);
-        // compute the new rotation using this forward
-        gameObject.transform.rotation = Quaternion.LookRotation(newForward);
+
+        // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
+        try
+        {
+            Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
+
+            // compute the new formard direction where we will rotate to
+            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirection + originalRotation, rotStep, 0.0f);
+            // compute the new rotation using this forward
+            gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
+            //gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(originalRotation.x, newForward.y, originalRotation.z));
+        } catch (Exception e) {}
     }
 
     // Start is called before the first frame update
@@ -61,7 +72,8 @@ public class FollowPath : MonoBehaviour
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
 
-        animator = gameObject.GetComponent<Animator>();
+        if (gameObject.GetComponent<Animator>())
+            animator = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -98,12 +110,14 @@ public class FollowPath : MonoBehaviour
                 // first touch will select the character, and the second one will unselect it
                 isSelected = !isSelected;
                 DrawLine.instance.startLine = false;
+                startPosition = gameObject.transform.position;
+                startDiffPosition = handController.transform.position - startPosition;
             }
 
             else if (!buttonDown && isSelected)
             {
                 Vector3 controllerPos = handController.transform.position;
-                Vector3 newPoint = new Vector3(controllerPos.x, gameObject.transform.position.y, controllerPos.z);
+                Vector3 newPoint = new Vector3(controllerPos.x, startDiffPosition.y - controllerPos.y, controllerPos.z);
                 pathPositions.Add(newPoint);
 
                 // ONLY FOR CONTINUOUS CASE
@@ -155,7 +169,10 @@ public class FollowPath : MonoBehaviour
         if (isPlaying && pointsCount < pathPositions.Count)
         {
             Vector3 currTarget = pathPositions[pointsCount];
-            animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
+
+            if (animator != null)
+                animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
+
             move(currTarget);
             if (gameObject.transform.position == currTarget)
             {
@@ -164,8 +181,9 @@ public class FollowPath : MonoBehaviour
         }
         else
         {
-            // do smooth transition from walk to idle taking the delta time
-            animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
+            if (animator != null)
+                // do smooth transition from walk to idle taking the delta time
+                animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
         }
     }
 }
