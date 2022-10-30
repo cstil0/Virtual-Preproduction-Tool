@@ -18,8 +18,8 @@ namespace HelloWorld
             //}
 
             NetworkManager.Singleton.StartHost();
-
         }
+
         void OnGUI()
         {
             GUILayout.BeginArea(new Rect(10, 10, 300, 300));
