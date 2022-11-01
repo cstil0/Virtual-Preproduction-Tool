@@ -3806,7 +3806,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f655382ab160b80439d24fa7164aa22d, type: 2}
+  - {fileID: 2100000, guid: 718290f510c0d8c40bc68b3ced141cd9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4797,7 +4797,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &755831987
 Transform:
   m_ObjectHideFlags: 0
@@ -12730,7 +12730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1804031605
 Transform:
   m_ObjectHideFlags: 0
@@ -12768,7 +12768,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 192.168.0.12
+    Address: 192.168.0.117
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:

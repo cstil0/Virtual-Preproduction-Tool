@@ -17,7 +17,7 @@ namespace HelloWorld
             //    NetworkManager.Singleton.StartHost();
             //}
 
-            NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.StartClient();
         }
 
         void OnGUI()
