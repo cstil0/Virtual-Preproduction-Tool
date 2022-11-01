@@ -77,7 +77,7 @@ public class ModesManager : MonoBehaviour
                 }
             }
                 
-            NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+            //NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
             SceneManager.LoadScene("MainScene");
         }
     }

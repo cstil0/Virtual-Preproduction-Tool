@@ -8956,7 +8956,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenCamera: {fileID: 1825172517}
   serverPort: 8050
-  ipAddress: 192.168.137.154
+  ipAddress: 192.168.0.12
 --- !u!4 &1287183032
 Transform:
   m_ObjectHideFlags: 0
@@ -12768,7 +12768,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 192.168.0.117
+    Address: 192.168.0.17
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:
@@ -12795,7 +12795,7 @@ MonoBehaviour:
     PlayerPrefab: {fileID: 0}
     NetworkPrefabs:
     - Override: 0
-      Prefab: {fileID: 591521951342212818, guid: 6a3562bc118a2b343a0ae580ab682f4f,
+      Prefab: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
         type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
