@@ -28,6 +28,9 @@ public class ModesManager : MonoBehaviour
     public GameObject leftHand;
     public GameObject rightHand;
 
+    // BORRAR!!!!!!!!!!!!!!
+    public GameObject HarryPrefab;
+
     public enum eRoleType
     {
         NOT_DEFINED,
@@ -76,8 +79,8 @@ public class ModesManager : MonoBehaviour
                     return;
                 }
             }
-                
-            //NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+
+            NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
             SceneManager.LoadScene("MainScene");
         }
     }
@@ -102,12 +105,26 @@ public class ModesManager : MonoBehaviour
             {
                 NetworkManager.Singleton.StartClient();
                 //Display.displays[1].Activate();
-                GameObject.Find("OVRPlayerController").SetActive(false);
+                GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 1;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
+                GameObject.Find("UDP Sender").SetActive(false);
+                GameObject.Find("NDI Receiver").SetActive(true);
             }
             else if (role == eRoleType.ASSISTANT)
             {
                 NetworkManager.Singleton.StartHost();
+
+                GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 0;
+                GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 1;
+                GameObject.Find("UDP Sender").SetActive(true);
+                GameObject.Find("NDI Receiver").SetActive(false);
+
+                RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
+
+                GameObject objectInstance = Instantiate(HarryPrefab);
+                objectInstance.transform.position = new Vector3(0.0f, 0.0f, -10f);
+                objectInstance.GetComponent<NetworkObject>().Spawn();
+
                 //Display.displays[0].Activate();
             }
 
@@ -129,6 +146,8 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("OVRPlayerController").GetComponent<OVRPassthroughLayer>().enabled = false;
             }
         }
+
+
     }
 
     private void Awake()

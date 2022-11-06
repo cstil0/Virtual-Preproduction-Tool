@@ -3707,7 +3707,7 @@ Transform:
   - {fileID: 183047852}
   - {fileID: 602565766}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &629105619
 GameObject:
@@ -3793,7 +3793,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 661131923}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -4781,50 +4781,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!1 &755831986
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 755831987}
-  - component: {fileID: 755831988}
-  m_Layer: 0
-  m_Name: Host Client Starter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &755831987
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 755831986}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.092698, y: 0.87186044, z: -3.2043734}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &755831988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 755831986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c560b65bba1c4dd42b7722a8866593f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &773200030 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100014, guid: ce816f2e6abb0504092c23ed9b970dfd,
@@ -6696,6 +6652,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Big Screen
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 464f0cb9b32e5df4e81c8608c1c133b2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 464f0cb9b32e5df4e81c8608c1c133b2,
         type: 3}
@@ -8955,8 +8916,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenCamera: {fileID: 1825172517}
-  serverPort: 8050
-  ipAddress: 192.168.0.12
+  serverPort: 8051
+  ipAddress: 192.168.0.28
 --- !u!4 &1287183032
 Transform:
   m_ObjectHideFlags: 0
@@ -12142,7 +12103,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1661246476
 MonoBehaviour:
@@ -12768,7 +12729,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 192.168.0.17
+    Address: 192.168.0.28
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:

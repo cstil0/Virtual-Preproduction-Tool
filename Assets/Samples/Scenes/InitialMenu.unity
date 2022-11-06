@@ -532,63 +532,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189288630}
   m_CullTransparentMesh: 1
---- !u!1 &196290129
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 196290132}
-  - component: {fileID: 196290131}
-  - component: {fileID: 196290130}
-  m_Layer: 0
-  m_Name: Host Client Starter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &196290130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196290129}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28a1e4f931ea7a46bbc4f89c9a5024d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &196290131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196290129}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c560b65bba1c4dd42b7722a8866593f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &196290132
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196290129}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.092698, y: 0.87186044, z: -3.2043734}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &201630345
 GameObject:
   m_ObjectHideFlags: 0
@@ -1975,7 +1918,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1184666873
 MonoBehaviour:
@@ -1998,6 +1941,8 @@ MonoBehaviour:
   canvas: {fileID: 1437724729}
   leftHand: {fileID: 488803713}
   rightHand: {fileID: 1648952534}
+  HarryPrefab: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
+    type: 3}
 --- !u!1 &1403832406
 GameObject:
   m_ObjectHideFlags: 0
