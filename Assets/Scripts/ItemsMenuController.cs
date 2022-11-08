@@ -176,8 +176,15 @@ public class ItemsMenuController : MonoBehaviour
                 // if button type is objet, spawn the corresponding item
                 else if (typeOfButton == eTypeOfButton.Object)
                 {
-                    //isFirstTime = false;
-                    SpawnObject();
+                    // we need a try/catch since if we are debugging and host or client are not connected it will rise an error and
+                    // multiple characters appear since button down never gets false
+                    try
+                    {
+                        SpawnObject();
+                    }
+                    catch (Exception e){
+                        Debug.Log("Spawn Error: " + e.Message);
+                    }
                 }
             }
             buttonDown = false;
@@ -195,7 +202,7 @@ public class ItemsMenuController : MonoBehaviour
     // to instantiate the object that is passed according to the pressed button in the menu
     public void SpawnObject()
     {
-        Transform attachPoint = itemPrefab.transform.GetChild(0);
+        Vector3 attachPoint = itemPrefab.transform.GetChild(0).localPosition;
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
@@ -210,7 +217,8 @@ public class ItemsMenuController : MonoBehaviour
         objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);
         objectInstance.transform.localScale = scale;
         // take local position from attachpont because we do not want to take it referent to the parent
-        objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.localPosition.y, handPosition.z) + rotationScale.rotation;
+        objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.y, handPosition.z) /*+ rotationScale.rotation*/;
+        objectInstance.transform.position -= objectInstance.transform.forward * attachPoint.z;
         //objectInstance.transform.rotation = Quaternion.Euler(rotation);
         // translate trasllada desde la posició a la que estem tantes unitats
         //objectInstance.transform.Translate(-attachPoint, handController.transform);
