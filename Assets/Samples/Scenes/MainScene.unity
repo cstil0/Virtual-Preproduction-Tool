@@ -3343,7 +3343,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &542983535
 GameObject:
   m_ObjectHideFlags: 0
@@ -8113,6 +8113,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: isInsightPassthroughEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: SnapRotation
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 14300000, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
@@ -12850,7 +12854,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &1785069569
 GameObject:
   m_ObjectHideFlags: 0
@@ -13115,6 +13119,7 @@ GameObject:
   - component: {fileID: 1804031605}
   - component: {fileID: 1804031607}
   - component: {fileID: 1804031606}
+  - component: {fileID: 1804031608}
   m_Layer: 0
   m_Name: Network manager
   m_TagString: Untagged
@@ -13331,6 +13336,24 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     SpawnTimeout: 1
     EnableNetworkLogs: 1
+--- !u!114 &1804031608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804031604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 0}
+  pathPositions: []
+  posSpeed: 20
+  rotSpeed: 7
+  triggerOn: 0
+  isSelectedForPath: 0
 --- !u!1 &1814684605
 GameObject:
   m_ObjectHideFlags: 0
@@ -13573,7 +13596,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!4 &1828398787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 9f5a24a380916d14db9775daab4fe333,

@@ -7,7 +7,9 @@ public class HoverObjects : MonoBehaviour
 {
     bool alreadyTriggered;
     bool alreadySelected;
+    bool alreadySelectedForPath;
     GameObject currentCollider;
+    GameObject currentSelectedForPath;
 
     // recursive function that iterates through all materials of the tree and changes their color
     private void changeColorMaterials(GameObject currentParent, Color color)
@@ -41,18 +43,19 @@ public class HoverObjects : MonoBehaviour
         // change the color only to the first object that collided with the controller, only if it is an item
         if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 9))
         {
+            currentCollider = other.gameObject;
+
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
             bool isSelected = false;
             if (followPath != null)
             {
                 followPath.triggerOn = true;
-                isSelected = followPath.isSelected;
+                isSelected = followPath.isSelectedForPath;
             }
 
             if (!isSelected)
             {
                 alreadyTriggered = true;
-                currentCollider = other.gameObject;
                 changeColorMaterials(currentCollider, Color.blue);
 
                 // if the object has a limit rotation script mark it as selected
@@ -72,15 +75,19 @@ public class HoverObjects : MonoBehaviour
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
 
-            // change color only if selected state has changed to avoid slowing performance
-            if (followPath != null)
+            // check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
+            if (currentSelectedForPath == null)
             {
-                Color color = followPath.isSelected ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
-
-                if (alreadySelected != followPath.isSelected)
+                currentSelectedForPath = other.gameObject;
+            }
+            if (followPath != null && currentSelectedForPath == other.gameObject)
+            {
+                // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
+                if (alreadySelected != followPath.isSelectedForPath)
                 {
+                    Color color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
                     changeColorMaterials(currentCollider, color);
-                    alreadySelected = followPath.isSelected;
+                    alreadySelected = followPath.isSelectedForPath;
                 }
             }
         }
@@ -88,9 +95,10 @@ public class HoverObjects : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        // change the color to white tho the first collider
+        // change the color to white to the first collider
         if (other.gameObject == currentCollider)
         {
+            Debug.Log("SAME COLLIDER");
             try
             {
                 currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
@@ -106,16 +114,22 @@ public class HoverObjects : MonoBehaviour
             if (followPath != null)
             {
                 followPath.triggerOn = false;
-                isSelected = followPath.isSelected;
+                Debug.Log("GO IS SELECTED: " + isSelected);
                 alreadyTriggered = false;
+                // we just want to define a path for a single object
+                if (other.gameObject != currentSelectedForPath)
+                    followPath.isSelectedForPath = false;
+                isSelected = followPath.isSelectedForPath;
+
             }
             if (!isSelected)
             {
                 alreadyTriggered = false;
                 //currentCollider = other.gameObject;
                 changeColorMaterials(currentCollider, Color.white);
+                if (other.gameObject == currentSelectedForPath)
+                    currentSelectedForPath = null;
             }
-
         }
     }
 
@@ -124,6 +138,8 @@ public class HoverObjects : MonoBehaviour
     {
         alreadyTriggered = false;
         alreadySelected = false;
+        currentSelectedForPath = null;
+        currentCollider = null;
     }
 
     // Update is called once per frame

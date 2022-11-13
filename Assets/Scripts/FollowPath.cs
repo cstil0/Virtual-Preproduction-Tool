@@ -8,7 +8,7 @@ public class FollowPath : MonoBehaviour
 {
     public GameObject handController;
     public List<Vector3> pathPositions;
-    public float posSpeed = 3.0f;
+    public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
     int pointsCount;
     Vector3 startPosition;
@@ -20,7 +20,7 @@ public class FollowPath : MonoBehaviour
     bool isPlaying;
     bool buttonDown;
     public bool triggerOn;
-    public bool isSelected;
+    public bool isSelectedForPath;
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -50,7 +50,8 @@ public class FollowPath : MonoBehaviour
             Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
 
             // compute the new formard direction where we will rotate to
-            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirection + originalRotation, rotStep, 0.0f);
+            Vector3 targetDirectionXZ = new Vector3(targetDirection.x, 0.0f, targetDirection.z);
+            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
             // compute the new rotation using this forward
             gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
             //gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(originalRotation.x, newForward.y, originalRotation.z));
@@ -67,7 +68,7 @@ public class FollowPath : MonoBehaviour
         isPlaying = false;
         buttonDown = false;
         triggerOn = false;
-        isSelected = false;
+        isSelectedForPath = false;
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
@@ -108,20 +109,20 @@ public class FollowPath : MonoBehaviour
             {
                 buttonDown = true;
                 // first touch will select the character, and the second one will unselect it
-                isSelected = !isSelected;
+                isSelectedForPath = !isSelectedForPath;
                 DrawLine.instance.startLine = false;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
             }
 
-            else if (!buttonDown && isSelected)
+            else if (!buttonDown && isSelectedForPath)
             {
                 Vector3 controllerPos = handController.transform.position;
                 Vector3 newPoint = new Vector3(controllerPos.x, startDiffPosition.y - controllerPos.y, controllerPos.z);
                 pathPositions.Add(newPoint);
 
                 // ONLY FOR CONTINUOUS CASE
-                DrawLine.instance.startLine = isSelected;
+                DrawLine.instance.startLine = isSelectedForPath;
             }
         }
         else
@@ -155,12 +156,12 @@ public class FollowPath : MonoBehaviour
                 lines[i].GetComponent<LineRenderer>().enabled = true;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.M) && isSelected)
+        else if (Input.GetKeyDown(KeyCode.M) && isSelectedForPath)
         {
             posSpeed += 0.1f;
             rotSpeed += 0.1f;
         }
-        else if (Input.GetKeyUp(KeyCode.N) && isSelected)
+        else if (Input.GetKeyUp(KeyCode.N) && isSelectedForPath)
         {
             posSpeed -= 0.1f;
             rotSpeed -= 0.1f;

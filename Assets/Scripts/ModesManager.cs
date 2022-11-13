@@ -105,6 +105,8 @@ public class ModesManager : MonoBehaviour
             {
                 NetworkManager.Singleton.StartClient();
                 //Display.displays[1].Activate();
+                // TOT AIXÒ SERIA MÉS MACO GESTIONAR-HO AMB EVENTS!! ARA QUE SÉ COM FUNCIONEN:)
+                // O BUENO NO SÉ SI SERÀ POSSIBLE JA QUE NO SÓN SCRIPTS MEUS I PER TANT HO HAURIA DE POSAR EN ALGUN ALTRE DINS EL MATEIX OBJECTE UNA MICA AMB COLA POTSER
                 GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 1;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("UDP Sender").SetActive(false);
@@ -136,6 +138,11 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("Big Screen").SetActive(false);
                 GameObject.Find("OVRCameraRig").GetComponent<OVRManager>().isInsightPassthroughEnabled = true;
                 GameObject.Find("OVRCameraRig").GetComponent<OVRPassthroughLayer>().enabled = true;
+
+                // Desactivate thumbstick movement
+                OVRPlayerController playerController = GameObject.Find("OVRPlayerController").GetComponent<OVRPlayerController>();
+                playerController.EnableLinearMovement = false;
+                playerController.EnableRotation = false;
             }
             else if (mode == eModeType.VIRTUALREALITY)
             {
@@ -144,6 +151,12 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("Big Screen").SetActive(true);
                 GameObject.Find("OVRCameraRig").GetComponent<OVRManager>().isInsightPassthroughEnabled = false;
                 GameObject.Find("OVRPlayerController").GetComponent<OVRPassthroughLayer>().enabled = false;
+
+                // Activate thumbstick movement
+                OVRPlayerController playerController = GameObject.Find("OVRPlayerController").GetComponent<OVRPlayerController>();
+                playerController.EnableLinearMovement = true;
+                playerController.EnableRotation = true;
+
             }
         }
 
