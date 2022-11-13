@@ -11,6 +11,9 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
+using System.Net;
+using static Facebook.WitAi.WitTexts;
+using System.Net.Sockets;
 
 public class ModesManager : MonoBehaviour
 {
@@ -80,9 +83,26 @@ public class ModesManager : MonoBehaviour
                 }
             }
 
-            NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+            if (role == eRoleType.DIRECTOR)
+                NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+            else if (role == eRoleType.ASSISTANT)
+                NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
+
             SceneManager.LoadScene("MainScene");
         }
+    }
+
+    private string getLocalIPV4()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        return "";
     }
 
     private void OnEnable()
@@ -118,7 +138,11 @@ public class ModesManager : MonoBehaviour
 
                 GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 1;
-                GameObject.Find("UDP Sender").SetActive(true);
+                GameObject UDPSender = GameObject.Find("UDP Sender");
+                UDPSender.SetActive(true);
+                // if we are in assistant mode, the ip of the screen camera corresponds to the one the user inputs
+                UDPSender.GetComponent<UDPSender>().ipAddress = IPAddress.text;
+
                 GameObject.Find("NDI Receiver").SetActive(false);
 
                 RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
@@ -156,7 +180,6 @@ public class ModesManager : MonoBehaviour
                 OVRPlayerController playerController = GameObject.Find("OVRPlayerController").GetComponent<OVRPlayerController>();
                 playerController.EnableLinearMovement = true;
                 playerController.EnableRotation = true;
-
             }
         }
 
@@ -174,17 +197,25 @@ public class ModesManager : MonoBehaviour
         // by default, if app is being run in PC, it enables the mouse input and disable OVR input
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
         {
+            role = eRoleType.DIRECTOR;
+
             canvas.GetComponent<EventSystem>().enabled = true;
             UIHelpers.SetActive(false);
             leftHand.SetActive(false);
             rightHand.SetActive(false);
+
+            IPAddress.text = "Set Headset IP";
         }
         else
         {
+            role = eRoleType.ASSISTANT;
+
             canvas.GetComponent<EventSystem>().enabled = false;
             UIHelpers.SetActive(true);
             leftHand.SetActive(true);
             rightHand.SetActive(true);
+
+            IPAddress.text = "Set Screen Scene IP";
         }
 
         errorText.SetActive(false);
@@ -197,8 +228,12 @@ public class ModesManager : MonoBehaviour
         // pressing D key is used for debug purposes to use Oculus Link and enable OVR input again
         if (Input.GetKeyDown(KeyCode.D))
         {
+            role = eRoleType.ASSISTANT;
+
             canvas.GetComponent<EventSystem>().enabled = false;
             UIHelpers.SetActive(true);
+
+            IPAddress.text = "Set Screen Scene IP";
         }
     }
 }

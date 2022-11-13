@@ -98,7 +98,6 @@ public class HoverObjects : MonoBehaviour
         // change the color to white to the first collider
         if (other.gameObject == currentCollider)
         {
-            Debug.Log("SAME COLLIDER");
             try
             {
                 currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
@@ -114,7 +113,6 @@ public class HoverObjects : MonoBehaviour
             if (followPath != null)
             {
                 followPath.triggerOn = false;
-                Debug.Log("GO IS SELECTED: " + isSelected);
                 alreadyTriggered = false;
                 // we just want to define a path for a single object
                 if (other.gameObject != currentSelectedForPath)
