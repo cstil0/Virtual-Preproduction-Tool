@@ -1672,8 +1672,6 @@ MonoBehaviour:
   canvas: {fileID: 1437724729}
   leftHand: {fileID: 488803713}
   rightHand: {fileID: 1648952534}
-  HarryPrefab: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-    type: 3}
 --- !u!1 &1403832406
 GameObject:
   m_ObjectHideFlags: 0

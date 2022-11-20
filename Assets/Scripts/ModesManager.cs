@@ -12,7 +12,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 using System.Net;
-using static Facebook.WitAi.WitTexts;
 using System.Net.Sockets;
 
 public class ModesManager : MonoBehaviour
@@ -30,9 +29,6 @@ public class ModesManager : MonoBehaviour
     public GameObject canvas;
     public GameObject leftHand;
     public GameObject rightHand;
-
-    // BORRAR!!!!!!!!!!!!!!
-    public GameObject HarryPrefab;
 
     public enum eRoleType
     {
@@ -143,13 +139,13 @@ public class ModesManager : MonoBehaviour
                 // if we are in assistant mode, the ip of the screen camera corresponds to the one the user inputs
                 UDPSender.GetComponent<UDPSender>().ipAddress = IPAddress.text;
 
-                GameObject.Find("NDI Receiver").SetActive(false);
+                GameObject.Find("NDI Receiver").SetActive(true);
 
-                RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
+                //RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
 
-                GameObject objectInstance = Instantiate(HarryPrefab);
-                objectInstance.transform.position = new Vector3(0.0f, 0.0f, -10f);
-                objectInstance.GetComponent<NetworkObject>().Spawn();
+                //GameObject objectInstance = Instantiate(HarryPrefab);
+                //objectInstance.transform.position = new Vector3(0.0f, 0.0f, -10f);
+                //objectInstance.GetComponent<NetworkObject>().Spawn();
 
                 //Display.displays[0].Activate();
             }

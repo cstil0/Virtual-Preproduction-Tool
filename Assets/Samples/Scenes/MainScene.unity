@@ -9178,6 +9178,7 @@ MonoBehaviour:
   screenCamera: {fileID: 1825172517}
   serverPort: 8050
   ipAddress: 192.168.0.31
+  OVRPlayer: {fileID: 1972393813}
 --- !u!4 &1287183032
 Transform:
   m_ObjectHideFlags: 0

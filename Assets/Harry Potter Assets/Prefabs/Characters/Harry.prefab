@@ -2296,7 +2296,7 @@ GameObject:
   - component: {fileID: 6041353035775967807}
   m_Layer: 10
   m_Name: Harry
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2436,7 +2436,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!114 &6041353035775967807
 MonoBehaviour:
   m_ObjectHideFlags: 0

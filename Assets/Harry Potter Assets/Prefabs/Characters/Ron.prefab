@@ -1447,7 +1447,7 @@ GameObject:
   - component: {fileID: 4474220508368712860}
   m_Layer: 10
   m_Name: Ron
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1612,7 +1612,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &5535187154301198511
 GameObject:
   m_ObjectHideFlags: 0

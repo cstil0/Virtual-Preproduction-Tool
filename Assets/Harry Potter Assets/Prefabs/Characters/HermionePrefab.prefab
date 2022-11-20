@@ -1105,7 +1105,7 @@ GameObject:
   - component: {fileID: 6531556123476692572}
   m_Layer: 10
   m_Name: HermionePrefab
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1262,7 +1262,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &2554725135732049217
 GameObject:
   m_ObjectHideFlags: 0

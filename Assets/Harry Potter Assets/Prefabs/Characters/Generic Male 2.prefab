@@ -2306,7 +2306,7 @@ GameObject:
   - component: {fileID: 1117933791440004527}
   m_Layer: 10
   m_Name: Generic Male 2
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2470,7 +2470,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1001 &1544028163019627204
 PrefabInstance:
   m_ObjectHideFlags: 0

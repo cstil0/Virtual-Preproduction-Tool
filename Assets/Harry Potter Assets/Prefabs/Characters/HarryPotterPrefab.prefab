@@ -1304,7 +1304,7 @@ GameObject:
   - component: {fileID: 7626359596524338551}
   m_Layer: 10
   m_Name: HarryPotterPrefab
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1461,7 +1461,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &591521951342212820
 GameObject:
   m_ObjectHideFlags: 0

@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 8315099669566825226}
   m_Layer: 0
   m_Name: ScarecrowPrefab
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

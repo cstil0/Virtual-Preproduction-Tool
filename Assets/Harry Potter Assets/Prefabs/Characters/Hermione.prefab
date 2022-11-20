@@ -828,7 +828,7 @@ GameObject:
   - component: {fileID: 7665370424222204050}
   m_Layer: 10
   m_Name: Hermione
-  m_TagString: Untagged
+  m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -994,7 +994,7 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
-  isSelected: 0
+  isSelectedForPath: 0
 --- !u!1 &3197174828599646553
 GameObject:
   m_ObjectHideFlags: 0
