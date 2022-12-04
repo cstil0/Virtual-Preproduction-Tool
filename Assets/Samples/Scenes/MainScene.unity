@@ -4047,7 +4047,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 661131923}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -8398,7 +8398,6 @@ GameObject:
   - component: {fileID: 1178942741}
   - component: {fileID: 1178942740}
   - component: {fileID: 1178942742}
-  - component: {fileID: 1178942743}
   m_Layer: 0
   m_Name: NDI Receiver
   m_TagString: Untagged
@@ -8455,18 +8454,6 @@ MonoBehaviour:
   _targetRenderer: {fileID: 1374559422}
   _targetMaterialProperty: _EmissionMap
   _resources: {fileID: 11400000, guid: 69304b86950074db7ba8caba75214004, type: 2}
---- !u!114 &1178942743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1178942739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7679e5eb3c902c340af45fa6bfa455ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1218555669
 GameObject:
   m_ObjectHideFlags: 0
@@ -9177,7 +9164,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screenCamera: {fileID: 1825172517}
   serverPort: 8050
-  ipAddress: 192.168.0.31
+  ipAddress: 192.168.0.10
+  sceneRotation: 0
   OVRPlayer: {fileID: 1972393813}
 --- !u!4 &1287183032
 Transform:
@@ -9667,12 +9655,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1351307108}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d89e48c253968e41bbfc968e80fef93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenCamera: {fileID: 0}
+  screenCamera: {fileID: 1825172517}
+  serverPort: 0
+  ipAddress: 
+  sceneRotation: 0
+  OVRPlayer: {fileID: 0}
 --- !u!4 &1374559421 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 464f0cb9b32e5df4e81c8608c1c133b2,
@@ -14357,7 +14349,7 @@ GameObject:
   - component: {fileID: 1964602099}
   - component: {fileID: 1964602098}
   - component: {fileID: 1964602105}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14710,7 +14702,7 @@ GameObject:
   - component: {fileID: 1987195545}
   - component: {fileID: 1987195548}
   - component: {fileID: 1987195547}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}

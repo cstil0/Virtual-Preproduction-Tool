@@ -13,9 +13,13 @@ public class LimitPositionRotation : MonoBehaviour
     bool triggerOn;
     bool buttonDown;
 
-    bool isBehindPlayer(Vector3 position)
+    bool isBehindPlayer()
     {
-        if (position.z < 0.2f)
+        Transform OVRPlayer = GameObject.Find("OVRPlayerController").transform;
+        // get hand position in local coordinates of OVRPlayer
+        Vector3 localPosition = OVRPlayer.InverseTransformPoint(currentHand.transform.position);
+
+        if (localPosition.z < 0.2f)
             return true;
         else
             return false;
@@ -65,10 +69,9 @@ public class LimitPositionRotation : MonoBehaviour
                 buttonDown = true;
             }
 
-            Transform OVRPlayer = GameObject.Find("OVRPlayerController").transform;
-            Vector3 localPosition = OVRPlayer.InverseTransformPoint(currentHand.transform.position);
             Vector3 globalPosition = currentHand.transform.position + startPosDiff;
-            position = isBehindPlayer(localPosition) ? gameObject.transform.position : globalPosition;
+            //position = isBehindPlayer() ? gameObject.transform.position : globalPosition;
+            position = globalPosition;
 
             RotationScale rotScale = gameObject.GetComponent<RotationScale>();
             Vector3 rotation = rotScale.rotation;

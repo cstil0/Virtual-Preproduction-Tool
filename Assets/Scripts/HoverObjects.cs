@@ -56,7 +56,7 @@ public class HoverObjects : MonoBehaviour
             if (!isSelected)
             {
                 alreadyTriggered = true;
-                changeColorMaterials(currentCollider, Color.blue);
+                changeColorMaterials(currentCollider, UnityEngine.Color.blue);
 
                 // if the object has a limit rotation script mark it as selected
                 try
@@ -64,6 +64,13 @@ public class HoverObjects : MonoBehaviour
                     currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, true);
                 }
                 catch (System.Exception e) { }
+
+                // if it is camera, change the one that will send UDP
+                if (other.gameObject.layer == 9)
+                {
+                    UDPSender.instance.screenCamera = other.gameObject.GetComponent<Camera>();
+                    UDPSender.instance.sendChangeCamera();
+                }
             }
         }
     }
@@ -85,7 +92,13 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (alreadySelected != followPath.isSelectedForPath)
                 {
-                    Color color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
+                    Color color = new Color();
+                    // check if it is item or camera
+                    if (other.gameObject.layer == 10)
+                        color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
+                    else if (other.gameObject.layer == 9)
+                        color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.black;
+
                     changeColorMaterials(currentCollider, color);
                     alreadySelected = followPath.isSelectedForPath;
                 }
@@ -124,7 +137,15 @@ public class HoverObjects : MonoBehaviour
             {
                 alreadyTriggered = false;
                 //currentCollider = other.gameObject;
-                changeColorMaterials(currentCollider, Color.white);
+
+                // check if it is item or camera
+                Color color = new Color();
+                if (other.gameObject.layer == 10)
+                    color = Color.white;
+                else if (other.gameObject.layer == 9)
+                    color = Color.black;
+                changeColorMaterials(currentCollider, color);
+
                 if (other.gameObject == currentSelectedForPath)
                     currentSelectedForPath = null;
             }
