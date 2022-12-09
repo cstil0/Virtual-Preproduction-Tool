@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Line
   - Items
+  - DirectorPanel
   layers:
   - Default
   - TransparentFX

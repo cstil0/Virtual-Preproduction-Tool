@@ -80,9 +80,13 @@ public class ModesManager : MonoBehaviour
             }
 
             if (role == eRoleType.DIRECTOR)
+            {
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+            }
             else if (role == eRoleType.ASSISTANT)
+            {
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
+            }
 
             SceneManager.LoadScene("MainScene");
         }
@@ -127,6 +131,11 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("UDP Sender").SetActive(false);
                 GameObject.Find("NDI Receiver").SetActive(true);
+
+                GameObject eventSytem = GameObject.Find("EventSystem");
+                eventSytem.GetComponent<EventSystem>().enabled = false;
+                GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
+                directorCanvas.GetComponent<EventSystem>().enabled = true;
             }
             else if (role == eRoleType.ASSISTANT)
             {
@@ -140,6 +149,12 @@ public class ModesManager : MonoBehaviour
                 UDPSender.GetComponent<UDPSender>().ipAddress = IPAddress.text;
 
                 GameObject.Find("NDI Receiver").SetActive(true);
+
+                GameObject eventSytem = GameObject.Find("EventSystem");
+                eventSytem.GetComponent<EventSystem>().enabled = true;
+                GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
+                directorCanvas.GetComponent<EventSystem>().enabled = false;
+
 
                 //RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
 
@@ -211,7 +226,7 @@ public class ModesManager : MonoBehaviour
             leftHand.SetActive(true);
             rightHand.SetActive(true);
 
-            IPAddress.text = "Set Screen Scene IP";
+            IPAddress.text = "Set Director's PC IP";
         }
 
         errorText.SetActive(false);
