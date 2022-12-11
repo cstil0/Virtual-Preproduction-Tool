@@ -193,8 +193,6 @@ public class ModesManager : MonoBehaviour
                 playerController.EnableRotation = true;
             }
         }
-
-
     }
 
     private void Awake()
