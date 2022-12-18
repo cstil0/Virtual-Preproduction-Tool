@@ -119,18 +119,22 @@ public class UDPSender : MonoBehaviour
     {
         sendCameraType();
         yield return new WaitForSeconds(5);
-        SendPosRot();
+        //SendPosRot();
     }
+
 
     // Start is called before the first frame update
     void Start()
     {
         gameObject.SetActive(true);
-        positionChanged = false;
+        positionChanged = true;
+        resetStart = true;
         lastPos = screenCamera.transform.position;
         sceneRotation = 10;
         buttonDown = 0;
-        StartCoroutine(sendInitialParameters());
+        sendCameraType();
+
+        //StartCoroutine(sendInitialParameters());
     }
 
     // Update is called once per frame
@@ -140,13 +144,13 @@ public class UDPSender : MonoBehaviour
         Vector3 currentPos = screenCamera.transform.position;
         if (lastPos != currentPos)
         {
-            SendPosRot();
 
             if (!positionChanged)
                 resetStart = true;
             else
                 resetStart = false;
 
+            SendPosRot();
             positionChanged = true;
             lastPos = currentPos;
         }

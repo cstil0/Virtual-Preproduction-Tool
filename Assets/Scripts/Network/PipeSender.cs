@@ -108,7 +108,8 @@ public class PipeSender : MonoBehaviour
     void Start()
     {
         gameObject.SetActive(true);
-        positionChanged = false;
+        positionChanged = true;
+        resetStart = true;
         lastPos = screenCamera.transform.position;
         sceneRotation = 10;
         buttonDown = 0;
