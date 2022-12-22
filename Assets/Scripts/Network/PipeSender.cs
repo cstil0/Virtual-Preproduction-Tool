@@ -6,6 +6,8 @@ using System;
 using System.IO;
 using System.Text;
 using System.Globalization;
+using UnityEngine.UI;
+using System.Linq.Expressions;
 
 public class PipeSender : MonoBehaviour
 {
@@ -24,156 +26,185 @@ public class PipeSender : MonoBehaviour
 
     public GameObject OVRPlayer;
 
-    // main thread that listens to UDP messages through a defined port
-    void SendPosRot()
+
+    public void sendDist(GameObject distSlider)
     {
-        NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
-
-        //client.Connect(IPAddress.Parse(ipAddress), serverPort);
-
-        //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
-
-        // sending data
-        server.WaitForConnection();
-
-        //Created stream for reading and writing
-        StreamString serverStream = new StreamString(server);
-
-        string message = resetStart.ToString();
-        serverStream.WriteString(message);
-
-        Vector3 cameraPos = screenCamera.transform.position;
-        string specifier = "G";
-        //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
-        message = cameraPos.ToString(specifier, CultureInfo.InvariantCulture);
-        serverStream.WriteString(message);
-
-        //Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
-        Quaternion cameraRot = screenCamera.transform.rotation;
-        //message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
-        message = cameraRot.ToString(specifier, CultureInfo.InvariantCulture);
-        serverStream.WriteString(message);
-
-        server.Close();
-    }
-
-    void sendSceneRotation()
-    {
-        NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
-
-        server.WaitForConnection();
-        StreamString serverStream = new StreamString(server);
-
-        Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
-        Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
-        string message = "SCENE_ROTATION:" + currentRotation.ToString();
-        serverStream.WriteString(message);
-        server.Close();
-    }
-
-    void sendCameraType()
-    {
-        NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
-
-        ModesManager modesManager = GameObject.Find("Modes Manager").GetComponent<ModesManager>();
-        if (modesManager.role == ModesManager.eRoleType.ASSISTANT)
+        using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("VPT", PipeDirection.Out))
         {
-            server.WaitForConnection();
-            StreamString serverStream = new StreamString(server);
-
-
-            if (modesManager.mode == ModesManager.eModeType.MIXEDREALITY)
+            pipeServer.WaitForConnection();
+            using (StreamWriter sw = new StreamWriter(pipeServer))
             {
-                string message = "SEND_DISPLAY";
-                serverStream.WriteString(message);
+                sw.AutoFlush = true;
+                sw.WriteLine("DIST:" + distSlider.GetComponent<Slider>().value.ToString());
+                pipeServer.Close();
             }
-            else if (modesManager.mode == ModesManager.eModeType.VIRTUALREALITY)
-            {
-                string message = "SEND_NDI";
-                serverStream.WriteString(message);
-            }
-
         }
-        server.Close();
     }
+    // main thread that listens to UDP messages through a defined port
+    //void SendPosRot()
+    //{
+    //    NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
 
-    IEnumerator sendInitialParameters()
-    {
-        sendCameraType();
-        yield return new WaitForSeconds(5);
-        SendPosRot();
-    }
+    //    //client.Connect(IPAddress.Parse(ipAddress), serverPort);
+
+    //    //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+
+    //    // sending data
+    //    server.WaitForConnection();
+
+    //    //Created stream for reading and writing
+    //    StreamString serverStream = new StreamString(server);
+
+    //    string message = resetStart.ToString();
+    //    serverStream.WriteString(message);
+
+    //    Vector3 cameraPos = screenCamera.transform.position;
+    //    string specifier = "G";
+    //    //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
+    //    message = cameraPos.ToString(specifier, CultureInfo.InvariantCulture);
+    //    serverStream.WriteString(message);
+
+    //    //Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
+    //    Quaternion cameraRot = screenCamera.transform.rotation;
+    //    //message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
+    //    message = cameraRot.ToString(specifier, CultureInfo.InvariantCulture);
+    //    serverStream.WriteString(message);
+
+    //    server.Close();
+    //}
+
+    //void sendSceneRotation()
+    //{
+    //    NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
+
+    //    server.WaitForConnection();
+    //    StreamString serverStream = new StreamString(server);
+
+    //    Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
+    //    Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
+    //    string message = "SCENE_ROTATION:" + currentRotation.ToString();
+    //    serverStream.WriteString(message);
+    //    server.Close();
+    //}
+
+    //void sendCameraType()
+    //{
+        //NamedPipeServerStream server = new NamedPipeServerStream("MyCOMApp", PipeDirection.InOut, 1);
+
+        //ModesManager modesManager = GameObject.Find("Modes Manager").GetComponent<ModesManager>();
+        //if (modesManager.role == ModesManager.eRoleType.ASSISTANT)
+        //{
+        //    server.WaitForConnection();
+        //    StreamString serverStream = new StreamString(server);
+
+
+        //    if (modesManager.mode == ModesManager.eModeType.MIXEDREALITY)
+        //    {
+        //        string message = "SEND_DISPLAY";
+        //        serverStream.WriteString(message);
+        //    }
+        //    else if (modesManager.mode == ModesManager.eModeType.VIRTUALREALITY)
+        //    {
+        //        string message = "SEND_NDI";
+        //        serverStream.WriteString(message);
+        //    }
+
+        //}
+        //server.Close();
+    //}
+
+    //IEnumerator sendInitialParameters()
+    //{
+        //sendCameraType();
+        //yield return new WaitForSeconds(5);
+        //SendPosRot();
+    //}
 
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.SetActive(true);
-        positionChanged = true;
-        resetStart = true;
-        lastPos = screenCamera.transform.position;
-        sceneRotation = 10;
-        buttonDown = 0;
-        StartCoroutine(sendInitialParameters());
+        //gameObject.SetActive(true);
+        //positionChanged = true;
+        //resetStart = true;
+        //lastPos = screenCamera.transform.position;
+        //sceneRotation = 10;
+        //buttonDown = 0;
+        //StartCoroutine(sendInitialParameters());
     }
 
     // Update is called once per frame
     void Update()
     {
-        int rotation = 0;
-        Vector3 currentPos = screenCamera.transform.position;
-        if (lastPos != currentPos)
+
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            SendPosRot();
-
-            if (!positionChanged)
-                resetStart = true;
-            else
-                resetStart = false;
-
-            positionChanged = true;
-            lastPos = currentPos;
+            using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("VPT", PipeDirection.Out))
+            {
+                pipeServer.WaitForConnection();
+                using (StreamWriter sw = new StreamWriter(pipeServer))
+                {
+                    sw.AutoFlush = true;
+                    float message = 10.0f;
+                    sw.WriteLine("DIST:" + message.ToString());
+                    pipeServer.Close();
+                }
+            }
         }
+        //int rotation = 0;
+        //Vector3 currentPos = screenCamera.transform.position;
+        //if (lastPos != currentPos)
+        //{
+        //    SendPosRot();
 
-        else if (positionChanged)
-        {
-            resetStart = false;
-            positionChanged = false;
-        }
+        //    if (!positionChanged)
+        //        resetStart = true;
+        //    else
+        //        resetStart = false;
 
-        if (OVRInput.Get(OVRInput.Button.Four))
-        {
-            //if (!buttonDown)
-            //{
-            sceneRotation = sceneRotation + 5;
-            if (sceneRotation >= 360)
-                sceneRotation = sceneRotation - 360;
+        //    positionChanged = true;
+        //    lastPos = currentPos;
+        //}
 
-            sendSceneRotation();
+        //else if (positionChanged)
+        //{
+        //    resetStart = false;
+        //    positionChanged = false;
+        //}
 
-            buttonDown = 1;
-            rotation = 5;
+        //if (OVRInput.Get(OVRInput.Button.Four))
+        //{
+        //    //if (!buttonDown)
+        //    //{
+        //    sceneRotation = sceneRotation + 5;
+        //    if (sceneRotation >= 360)
+        //        sceneRotation = sceneRotation - 360;
 
-            //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
+        //    sendSceneRotation();
 
-            //foreach (GameObject item in sceneItems)
-            //{
-            //    Vector3 itemPos = item.transform.position;
-            //    Vector3 itemRot = item.transform.rotation.eulerAngles;
+        //    buttonDown = 1;
+        //    rotation = 5;
 
-            //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
-            //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y , 0.0f));
-            //    item.transform.position = item.transform.forward * itemPos.z;
-            //    item.transform.position = item.transform.right * itemPos.x;
-            //    //item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, 5*Time.deltaTime);
-            //}
+        //    //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
 
-            //    buttonDown = true;
-            //}
-        }
-        else
-        {
-            buttonDown = 0;
-        }
+        //    //foreach (GameObject item in sceneItems)
+        //    //{
+        //    //    Vector3 itemPos = item.transform.position;
+        //    //    Vector3 itemRot = item.transform.rotation.eulerAngles;
+
+        //    //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
+        //    //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y , 0.0f));
+        //    //    item.transform.position = item.transform.forward * itemPos.z;
+        //    //    item.transform.position = item.transform.right * itemPos.x;
+        //    //    //item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, 5*Time.deltaTime);
+        //    //}
+
+        //    //    buttonDown = true;
+        //    //}
+        //}
+        //else
+        //{
+        //    buttonDown = 0;
+        //}
 
     }
 }

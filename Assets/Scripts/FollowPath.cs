@@ -21,6 +21,8 @@ public class FollowPath : MonoBehaviour
     bool buttonDown;
     public bool triggerOn;
     public bool isSelectedForPath;
+    
+    public DirectorPanelManager directorPanelManager;
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -61,6 +63,9 @@ public class FollowPath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        directorPanelManager.OnPlayPath += playLinePath;
+        directorPanelManager.OnStopPath += stopLinePath;
+
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
         pointsCount = 0;
@@ -75,6 +80,12 @@ public class FollowPath : MonoBehaviour
 
         if (gameObject.GetComponent<Animator>())
             animator = gameObject.GetComponent<Animator>();
+    }
+
+    private void OnDisable()
+    {
+        directorPanelManager.OnPlayPath -= playLinePath;
+        directorPanelManager.OnStopPath -= stopLinePath;
     }
 
     // Update is called once per frame
@@ -131,30 +142,11 @@ public class FollowPath : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
         {
-            GameObject[] lines;
-            lines = GameObject.FindGameObjectsWithTag("Line");
-
-            for (int i=0; i<lines.Length; i++)
-            {
-                lines[i].GetComponent<LineRenderer>().enabled = false;
-            }
-
-            isPlaying = !isPlaying;
+            playLinePath();
         }
         else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
         {
-            isPlaying = false;
-            gameObject.transform.position = startPosition;
-            gameObject.transform.rotation = startRotation;
-            pointsCount = 0;
-
-            GameObject[] lines;
-            lines = GameObject.FindGameObjectsWithTag("Line");
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i].GetComponent<LineRenderer>().enabled = true;
-            }
+            stopLinePath();
         }
         else if (Input.GetKeyDown(KeyCode.M) && isSelectedForPath)
         {
@@ -186,5 +178,35 @@ public class FollowPath : MonoBehaviour
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
         }
+    }
+
+    void playLinePath()
+    {
+        GameObject[] lines;
+        lines = GameObject.FindGameObjectsWithTag("Line");
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i].GetComponent<LineRenderer>().enabled = false;
+        }
+
+        isPlaying = !isPlaying;
+    }
+
+    void stopLinePath()
+    {
+        isPlaying = false;
+        gameObject.transform.position = startPosition;
+        gameObject.transform.rotation = startRotation;
+        pointsCount = 0;
+
+        GameObject[] lines;
+        lines = GameObject.FindGameObjectsWithTag("Line");
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i].GetComponent<LineRenderer>().enabled = true;
+        }
+
     }
 }
