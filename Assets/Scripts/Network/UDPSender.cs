@@ -22,6 +22,11 @@ public class UDPSender : MonoBehaviour
     int buttonDown;
     bool positionChanged;
 
+    Vector3 OVRPlayerStartPos;
+    Quaternion OVRPlayerStartRot;
+    Vector3 screenCameraStartPos;
+    Quaternion screenCameraStartRot;
+
     Vector3 lastPos;
     public float sceneRotation;
 
@@ -108,6 +113,9 @@ public class UDPSender : MonoBehaviour
 
     public void sendChangeCamera()
     {
+        screenCameraStartPos = screenCamera.transform.position;
+        screenCameraStartRot = screenCamera.transform.rotation;
+
         client = new UdpClient(serverPort);
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
         byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA");
@@ -126,6 +134,11 @@ public class UDPSender : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        OVRPlayerStartPos = OVRPlayer.transform.position;
+        OVRPlayerStartRot = OVRPlayer.transform.rotation;
+        screenCameraStartPos = screenCamera.transform.position;
+        screenCameraStartRot = screenCamera.transform.rotation;
+
         gameObject.SetActive(true);
         positionChanged = true;
         resetStart = true;
@@ -171,6 +184,12 @@ public class UDPSender : MonoBehaviour
 
             sendSceneRotation();
 
+            GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
+            foreach (GameObject item in sceneItems)
+            {
+                item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, sceneRotation);
+            }
+
             buttonDown = 1;
             rotation = 5;
 
@@ -194,6 +213,20 @@ public class UDPSender : MonoBehaviour
         else
         {
             buttonDown = 0;
+        }
+
+        if (OVRInput.Get(OVRInput.Button.One))
+        {
+            OVRPlayer.transform.position = OVRPlayerStartPos;
+            OVRPlayer.transform.rotation = OVRPlayerStartRot;
+            screenCamera.transform.position = screenCameraStartPos;
+            screenCamera.transform.rotation = screenCameraStartRot;
+
+            positionChanged = true;
+            resetStart = true;
+
+
+            SendPosRot();
         }
 
 

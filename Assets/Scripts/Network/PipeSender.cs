@@ -136,20 +136,20 @@ public class PipeSender : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("VPT", PipeDirection.Out))
-            {
-                pipeServer.WaitForConnection();
-                using (StreamWriter sw = new StreamWriter(pipeServer))
-                {
-                    sw.AutoFlush = true;
-                    float message = 10.0f;
-                    sw.WriteLine("DIST:" + message.ToString());
-                    pipeServer.Close();
-                }
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("VPT", PipeDirection.Out))
+        //    {
+        //        pipeServer.WaitForConnection();
+        //        using (StreamWriter sw = new StreamWriter(pipeServer))
+        //        {
+        //            sw.AutoFlush = true;
+        //            float message = 10.0f;
+        //            sw.WriteLine("DIST:" + message.ToString());
+        //            pipeServer.Close();
+        //        }
+        //    }
+        //}
         //int rotation = 0;
         //Vector3 currentPos = screenCamera.transform.position;
         //if (lastPos != currentPos)
