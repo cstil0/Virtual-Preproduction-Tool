@@ -21,9 +21,7 @@ public class FollowPath : MonoBehaviour
     bool buttonDown;
     public bool triggerOn;
     public bool isSelectedForPath;
-    
-    public DirectorPanelManager directorPanelManager;
-
+   
     //private void OnTriggerEnter(Collider other)
     //{
     //    if (other.gameObject.layer == 3)
@@ -63,8 +61,8 @@ public class FollowPath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        directorPanelManager.OnPlayPath += playLinePath;
-        directorPanelManager.OnStopPath += stopLinePath;
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
 
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
@@ -84,8 +82,8 @@ public class FollowPath : MonoBehaviour
 
     private void OnDisable()
     {
-        directorPanelManager.OnPlayPath -= playLinePath;
-        directorPanelManager.OnStopPath -= stopLinePath;
+        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
+        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
     // Update is called once per frame
@@ -144,7 +142,7 @@ public class FollowPath : MonoBehaviour
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S)) //|| OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
         }

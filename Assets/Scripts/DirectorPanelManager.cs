@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DirectorPanelManager : MonoBehaviour
 {
+    public static DirectorPanelManager instance;
     public GameObject multiviewPanel;
     public GameObject aerealviewPanel;
     public GameObject PGMView;
@@ -12,6 +13,14 @@ public class DirectorPanelManager : MonoBehaviour
     public delegate void StopPath();
     public event PlayPath OnPlayPath;
     public event StopPath OnStopPath;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+            Destroy(this);
+        else
+            instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
