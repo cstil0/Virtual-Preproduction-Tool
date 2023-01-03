@@ -21,9 +21,7 @@ public class FollowPath : MonoBehaviour
     bool buttonDown;
     public bool triggerOn;
     public bool isSelectedForPath;
-    
-    public DirectorPanelManager directorPanelManager;
-
+   
     //private void OnTriggerEnter(Collider other)
     //{
     //    if (other.gameObject.layer == 3)
@@ -44,8 +42,9 @@ public class FollowPath : MonoBehaviour
         float posStep = posSpeed * Time.deltaTime;
         float rotStep = rotSpeed * Time.deltaTime;
 
-        gameObject.transform.position = Vector3.MoveTowards(currentPos, targetPoint, posStep);
-
+        Vector3 newPos = Vector3.MoveTowards(currentPos, targetPoint, posStep);
+        Debug.Log("NEXT POSITION: " + newPos);
+        gameObject.transform.position = newPos;
         // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
         try
         {
@@ -57,14 +56,16 @@ public class FollowPath : MonoBehaviour
             // compute the new rotation using this forward
             gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
             //gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(originalRotation.x, newForward.y, originalRotation.z));
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Debug.LogError(e.Message);
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        directorPanelManager.OnPlayPath += playLinePath;
-        directorPanelManager.OnStopPath += stopLinePath;
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
 
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
@@ -84,8 +85,8 @@ public class FollowPath : MonoBehaviour
 
     private void OnDisable()
     {
-        directorPanelManager.OnPlayPath -= playLinePath;
-        directorPanelManager.OnStopPath -= stopLinePath;
+        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
+        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
     // Update is called once per frame
@@ -132,6 +133,9 @@ public class FollowPath : MonoBehaviour
                 Vector3 newPoint = new Vector3(controllerPos.x, startDiffPosition.y - controllerPos.y, controllerPos.z);
                 pathPositions.Add(newPoint);
 
+                // send new path point from assistant to director so that he can also play and visualize paths
+                DrawLine.instance.SendPointPath(gameObject, newPoint);
+
                 // ONLY FOR CONTINUOUS CASE
                 DrawLine.instance.startLine = isSelectedForPath;
             }
@@ -144,7 +148,7 @@ public class FollowPath : MonoBehaviour
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S)) //|| OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
         }
@@ -167,6 +171,8 @@ public class FollowPath : MonoBehaviour
                 animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
 
             move(currTarget);
+            Debug.Log("CURR TARGET: " + currTarget);
+            Debug.Log("CURR POSITION: " + gameObject.transform.position);
             if (gameObject.transform.position == currTarget)
             {
                 pointsCount++;
@@ -182,6 +188,7 @@ public class FollowPath : MonoBehaviour
 
     void playLinePath()
     {
+        Debug.Log("PLAYING");
         GameObject[] lines;
         lines = GameObject.FindGameObjectsWithTag("Line");
 
@@ -190,11 +197,13 @@ public class FollowPath : MonoBehaviour
             lines[i].GetComponent<LineRenderer>().enabled = false;
         }
 
-        isPlaying = !isPlaying;
+        //isPlaying = !isPlaying;
+        isPlaying = true;
     }
 
     void stopLinePath()
     {
+        Debug.Log("STOPPING");
         isPlaying = false;
         gameObject.transform.position = startPosition;
         gameObject.transform.rotation = startRotation;

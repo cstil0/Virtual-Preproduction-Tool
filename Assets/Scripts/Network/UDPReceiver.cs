@@ -14,9 +14,20 @@ public class UDPReceiver : MonoBehaviour
 {
     // udpclient object
     UdpClient client;
-    public int serverPort;
+    UdpClient clientPath;
+    public int serverPort = 8050;
+    public int pathPointsPort = 8051;
+
     Thread receiveThread;
+    Thread receivePathPointsThread;
+
+    bool pointParsed;
     String receivedMessage;
+    String receivedName;
+    int receivedCount;
+    double receivedPointX;
+    double receivedPointY;
+    double receivedPointZ;
 
     public Camera ScreenCamera;
     Vector3 startPos;
@@ -31,9 +42,8 @@ public class UDPReceiver : MonoBehaviour
     Quaternion currRot;
 
     // main thread that listens to UDP messages through a defined port
-    void UDPTest()
+    void UDP_ReceieveThread()
     {
-        // create client and set the port (HARCODEADO EN EL EDITOR!!-----)
         UdpClient client = new UdpClient(serverPort);
         // loop needed to keep listening
         while (true)
@@ -86,24 +96,89 @@ public class UDPReceiver : MonoBehaviour
             }
         }
     }
+
+    void UDP_PathPointsReceive() 
+    {
+        UdpClient clientPath = new UdpClient(pathPointsPort);
+        // loop needed to keep listening
+        while (true)
+        {
+            try
+            {
+                // recieve messages through the end point
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPointsPort);
+                byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedName = Encoding.ASCII.GetString(receiveBytes);
+
+                receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedCount = int.Parse(Encoding.ASCII.GetString(receiveBytes));
+
+                receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedPointX = BitConverter.ToDouble(receiveBytes);
+
+                receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedPointY = BitConverter.ToDouble(receiveBytes);
+
+                receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedPointZ = BitConverter.ToDouble(receiveBytes);
+
+                pointParsed = false;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Exception thrown " + e.Message);
+            }
+        }
+    }
+
+    void parsePoint()
+    {
+        pointParsed = true;
+        GameObject character = GameObject.Find(receivedName);
+
+        //string[] splittedMessage = receivedPoint.Split(" ");
+        //Vector3 newPoint = new Vector3(float.Parse(splittedMessage[0]), float.Parse(splittedMessage[1]), float.Parse(splittedMessage[2]));
+
+        Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
+
+        character.GetComponent<FollowPath>().pathPositions.Add(newPoint);
+
+        // reset count points to instantiate a new line
+        if (receivedCount == 1)
+            DrawLine.instance.countPoints = receivedCount - 1;
+
+        DrawLine.instance.drawLine(newPoint);
+    }
+
     void OnDisable()
     {
         // stop thread when object is disabled
         if (receiveThread != null)
             receiveThread.Abort();
+
+        if (receivePathPointsThread != null)
+            receivePathPointsThread.Abort();
+
         client.Close();
+        clientPath.Close();
     }
     // Start is called before the first frame update
     void Start()
     {
         // Start thread to listen UDP messages and set it as background
-        receiveThread = new Thread(UDPTest);
+        receiveThread = new Thread(UDP_ReceieveThread);
         receiveThread.IsBackground = true;
         receiveThread.Start();
+
+        receivePathPointsThread = new Thread(UDP_PathPointsReceive);
+        receivePathPointsThread.IsBackground = true;
+        receivePathPointsThread.Start();
 
         startPos = ScreenCamera.transform.position;
         //startRot = ScreenCamera.transform.rotation.eulerAngles;
         startRot = ScreenCamera.transform.rotation;
+
+        pointParsed = true;
     }
 
     // Update is called once per frame
@@ -114,11 +189,13 @@ public class UDPReceiver : MonoBehaviour
             Vector3 remotePosDiff = currPos - remoteStartPos;
             ScreenCamera.transform.position = remotePosDiff + startPos;
 
-            // S'HAURIA DE MIRAR COM FER OPERACIONS AMB QUATERNIONS
             //Vector3 remoteRotDiff = remoteStartRot - currRot;
             Quaternion remoteRotDiff = remoteStartRot * Quaternion.Inverse(currRot);
             //ScreenCamera.transform.rotation = Quaternion.Euler(remoteRotDiff + startRot);
             ScreenCamera.transform.rotation = remoteRotDiff * startRot;
         }
+
+        if (!pointParsed)
+            parsePoint();
     }
 }

@@ -3,9 +3,6 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Globalization;
-using UnityEngine.InputSystem.Controls;
-using Unity.VisualScripting;
-using Facebook.WitAi;
 using System.Collections;
 
 public class UDPSender : MonoBehaviour
@@ -15,7 +12,7 @@ public class UDPSender : MonoBehaviour
     // udpclient object
     public Camera screenCamera;
     UdpClient client;
-    public int serverPort;
+    public int serverPort = 8050;
     public string ipAddress;
 
     bool resetStart;
@@ -174,11 +171,13 @@ public class UDPSender : MonoBehaviour
             positionChanged = false;
         }
 
-        if (OVRInput.Get(OVRInput.Button.Four))
+        if (OVRInput.Get(OVRInput.RawButton.Y))
         {
             //if (!buttonDown)
             //{
-            sceneRotation = sceneRotation + 5;
+            float rotationConstant = 30.0f * Time.deltaTime;
+            // The way the secondary scene reads the angle is in total (not just the delta one)
+            sceneRotation += rotationConstant;
             if (sceneRotation >= 360)
                 sceneRotation = sceneRotation - 360;
 
@@ -187,35 +186,36 @@ public class UDPSender : MonoBehaviour
             GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
             foreach (GameObject item in sceneItems)
             {
-                item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, sceneRotation);
+                Vector3 point = new Vector3(0.0f, 0.0f, 0.0f);
+                item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, rotationConstant);
             }
 
             buttonDown = 1;
             rotation = 5;
 
-            //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
+            //    //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
 
-            //foreach (GameObject item in sceneItems)
-            //{
-            //    Vector3 itemPos = item.transform.position;
-            //    Vector3 itemRot = item.transform.rotation.eulerAngles;
+            //    //foreach (GameObject item in sceneItems)
+            //    //{
+            //    //    Vector3 itemPos = item.transform.position;
+            //    //    Vector3 itemRot = item.transform.rotation.eulerAngles;
 
-            //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
-            //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y , 0.0f));
-            //    item.transform.position = item.transform.forward * itemPos.z;
-            //    item.transform.position = item.transform.right * itemPos.x;
-            //    //item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, 5*Time.deltaTime);
-            //}
+            //    //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
+            //    //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y , 0.0f));
+            //    //    item.transform.position = item.transform.forward * itemPos.z;
+            //    //    item.transform.position = item.transform.right * itemPos.x;
+            //    //    //item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, 5*Time.deltaTime);
+            //    //}
 
-            //    buttonDown = true;
-            //}
+            //    //    buttonDown = true;
+            //    //}
         }
         else
-        {
-            buttonDown = 0;
-        }
+            {
+                buttonDown = 0;
+            }
 
-        if (OVRInput.Get(OVRInput.Button.One))
+            if (OVRInput.Get(OVRInput.RawButton.A))
         {
             OVRPlayer.transform.position = OVRPlayerStartPos;
             OVRPlayer.transform.rotation = OVRPlayerStartRot;

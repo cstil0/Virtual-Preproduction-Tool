@@ -16,6 +16,8 @@ using System.Net.Sockets;
 
 public class ModesManager : MonoBehaviour
 {
+    public static ModesManager instance = null;
+
     // It is necessary to separe this script from the initial menu one so that when loading the new scene we can still use it without needing to conserve all the canvas
 
     public eRoleType role = eRoleType.NOT_DEFINED;
@@ -43,6 +45,16 @@ public class ModesManager : MonoBehaviour
         MIXEDREALITY,
         VIRTUALREALITY,
         DEBUG
+    }
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
     }
 
     public void loadMainScene()
@@ -131,6 +143,7 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("UDP Sender").SetActive(false);
                 GameObject.Find("NDI Receiver").SetActive(true);
+                GameObject.Find("UDP Receiver").SetActive(true);
 
                 GameObject eventSytem = GameObject.Find("EventSystem");
                 eventSytem.GetComponent<EventSystem>().enabled = false;
@@ -143,6 +156,11 @@ public class ModesManager : MonoBehaviour
 
                 GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 1;
+                GameObject.Find("UDP Receiver").SetActive(false);
+
+                // ip address to send path points to director
+                DrawLine.instance.ipAddress = IPAddress.text;
+
                 GameObject UDPSender = GameObject.Find("UDP Sender");
                 UDPSender.SetActive(true);
                 // if we are in assistant mode, the ip of the screen camera corresponds to the one the user inputs
@@ -193,11 +211,6 @@ public class ModesManager : MonoBehaviour
                 playerController.EnableRotation = true;
             }
         }
-    }
-
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
