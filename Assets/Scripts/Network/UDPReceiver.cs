@@ -25,9 +25,10 @@ public class UDPReceiver : MonoBehaviour
     String receivedMessage;
     String receivedName;
     int receivedCount;
-    double receivedPointX;
-    double receivedPointY;
-    double receivedPointZ;
+    string receivedPoint;
+    //double receivedPointX;
+    //double receivedPointY;
+    //double receivedPointZ;
 
     public Camera ScreenCamera;
     Vector3 startPos;
@@ -40,6 +41,8 @@ public class UDPReceiver : MonoBehaviour
     Quaternion remoteStartRot;
     //Vector3 currRot;
     Quaternion currRot;
+    
+    int countBORR = 0;
 
     // main thread that listens to UDP messages through a defined port
     void UDP_ReceieveThread()
@@ -114,13 +117,15 @@ public class UDPReceiver : MonoBehaviour
                 receivedCount = int.Parse(Encoding.ASCII.GetString(receiveBytes));
 
                 receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedPointX = BitConverter.ToDouble(receiveBytes);
+                receivedPoint = Encoding.ASCII.GetString(receiveBytes);
+                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                //receivedPointX = BitConverter.ToDouble(receiveBytes);
 
-                receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedPointY = BitConverter.ToDouble(receiveBytes);
+                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                //receivedPointY = BitConverter.ToDouble(receiveBytes);
 
-                receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedPointZ = BitConverter.ToDouble(receiveBytes);
+                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                //receivedPointZ = BitConverter.ToDouble(receiveBytes);
 
                 pointParsed = false;
             }
@@ -136,10 +141,10 @@ public class UDPReceiver : MonoBehaviour
         pointParsed = true;
         GameObject character = GameObject.Find(receivedName);
 
-        //string[] splittedMessage = receivedPoint.Split(" ");
-        //Vector3 newPoint = new Vector3(float.Parse(splittedMessage[0]), float.Parse(splittedMessage[1]), float.Parse(splittedMessage[2]));
+        string[] splittedMessage = receivedPoint.Split(" ");
+        Vector3 newPoint = new Vector3(float.Parse(splittedMessage[0]), float.Parse(splittedMessage[1]), float.Parse(splittedMessage[2]));
 
-        Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
+        //Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
 
         character.GetComponent<FollowPath>().pathPositions.Add(newPoint);
 
@@ -197,5 +202,18 @@ public class UDPReceiver : MonoBehaviour
 
         if (!pointParsed)
             parsePoint();
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            receivedName = "Harry";
+            string m = 0.05f.ToString(CultureInfo.InvariantCulture);
+            byte[] n = Encoding.ASCII.GetBytes(m);
+            byte[] message = Encoding.ASCII.GetBytes(countBORR.ToString(CultureInfo.InvariantCulture) + " " + 0.0f.ToString(CultureInfo.InvariantCulture) + " " + (-7.0f).ToString(CultureInfo.InvariantCulture));
+
+            receivedPoint = Encoding.ASCII.GetString(message);
+            countBORR++;
+            receivedCount = countBORR;
+            parsePoint();
+        }
     }
 }

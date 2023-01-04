@@ -130,13 +130,7 @@ public class DrawLine : MonoBehaviour
             message = Encoding.ASCII.GetBytes(countPoints.ToString());
             client.Send(message, message.Length, target);
 
-            message = BitConverter.GetBytes(pathPoint.x);
-            client.Send(message, message.Length, target);
-
-            message = BitConverter.GetBytes(pathPoint.y);
-            client.Send(message, message.Length, target);
-
-            message = BitConverter.GetBytes(pathPoint.z);
+            message = Encoding.ASCII.GetBytes(pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture));
             client.Send(message, message.Length, target);
 
             client.Close();

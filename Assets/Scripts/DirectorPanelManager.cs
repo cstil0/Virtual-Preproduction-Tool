@@ -17,6 +17,11 @@ public class DirectorPanelManager : MonoBehaviour
     public event PlayPath OnPlayPath;
     public event StopPath OnStopPath;
 
+    public Sprite playIcon;
+    public Sprite pauseIcon;
+    public GameObject playPauseButton;
+    bool isPlaying = false;
+
     private void Awake()
     {
         if (instance != null && instance != this)
@@ -56,6 +61,12 @@ public class DirectorPanelManager : MonoBehaviour
 
     public void playPath()
     {
+        if (isPlaying)
+            playPauseButton.GetComponent<Image>().sprite = pauseIcon;
+        else
+            playPauseButton.GetComponent<Image>().sprite = playIcon;
+
+        isPlaying = !isPlaying;
         OnPlayPath();
     }
 

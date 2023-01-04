@@ -197,8 +197,8 @@ public class FollowPath : MonoBehaviour
             lines[i].GetComponent<LineRenderer>().enabled = false;
         }
 
-        //isPlaying = !isPlaying;
-        isPlaying = true;
+        isPlaying = !isPlaying;
+        //isPlaying = true;
     }
 
     void stopLinePath()
