@@ -27,7 +27,9 @@ public class HoverObjects : MonoBehaviour
 
                 foreach (Material material in materials)
                 {
-                    material.color = color;
+                    // we do not want to change the color of the number above the cameras
+                    if (!material.name.Contains("CameraNum"))
+                        material.color = color;
                 }
             }
             catch (System.Exception e){}

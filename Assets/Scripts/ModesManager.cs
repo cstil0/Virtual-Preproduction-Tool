@@ -156,10 +156,10 @@ public class ModesManager : MonoBehaviour
 
                 GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 1;
-                GameObject.Find("UDP Receiver").SetActive(false);
+                GameObject.Find("UDP Receiver").SetActive(true);
 
                 // ip address to send path points to director
-                DrawLine.instance.ipAddress = IPAddress.text;
+                //DrawLine.instance.ipAddress = IPAddress.text;
 
                 GameObject UDPSender = GameObject.Find("UDP Sender");
                 UDPSender.SetActive(true);

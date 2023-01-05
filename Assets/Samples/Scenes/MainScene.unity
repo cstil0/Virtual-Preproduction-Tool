@@ -3437,130 +3437,6 @@ MonoBehaviour:
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
   m_AllowActivationOnMobileDevice: 1
---- !u!1001 &402010631
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5143314945117173528, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 3546244203
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[0].x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[0].y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[0].z
-      value: -7.61
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[1].x
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[1].y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[1].z
-      value: -7.61
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[2].x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[2].y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233643611147940569, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: pathPositions.Array.data[2].z
-      value: -6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7336525734180203388, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
-        type: 3}
-      propertyPath: m_Name
-      value: Harry
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: fef33f2c76b51ec41a4bbc14c6e78ff2, type: 3}
 --- !u!1 &403726936
 GameObject:
   m_ObjectHideFlags: 0
@@ -4829,6 +4705,8 @@ MonoBehaviour:
   playIcon: {fileID: 21300000, guid: ebfc1250f77af1a4585b2c0c307ef10e, type: 3}
   pauseIcon: {fileID: 21300000, guid: 103e4383ecf6ea64ca0bec0fb3672303, type: 3}
   playPauseButton: {fileID: 2057603814}
+  stopButton: {fileID: 0}
+  pathPlayPort: 8052
 --- !u!114 &602565771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5970,7 +5848,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -10193,7 +10071,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverPort: 8050
   pathPointsPort: 8051
+  pathPlayPort: 8052
   ScreenCamera: {fileID: 1825172517}
+  hermione: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
+    type: 3}
+  harry: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2, type: 3}
 --- !u!1 &1178942739
 GameObject:
   m_ObjectHideFlags: 0
@@ -12194,7 +12076,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1374559421 stripped
 Transform:
@@ -15460,7 +15342,6 @@ MonoBehaviour:
   continueLine: 0
   startLine: 0
   serverPort: 8051
-  ipAddress: 
 --- !u!1 &1667746589
 GameObject:
   m_ObjectHideFlags: 0
@@ -19015,9 +18896,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0, g: 0.8018868, b: 0.24826865, a: 1}
-    m_PressedColor: {r: 0.31673193, g: 0.48108643, b: 0.7735849, a: 1}
-    m_SelectedColor: {r: 0.5943396, g: 0.4003382, b: 0.4003382, a: 1}
+    m_HighlightedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
+    m_PressedColor: {r: 0.3773585, g: 0.16518332, b: 0.16518332, a: 1}
+    m_SelectedColor: {r: 0.16018538, g: 0.6792453, b: 0.14994659, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
 
 public class DirectorPanelManager : MonoBehaviour
 {
@@ -20,7 +23,10 @@ public class DirectorPanelManager : MonoBehaviour
     public Sprite playIcon;
     public Sprite pauseIcon;
     public GameObject playPauseButton;
+    public GameObject stopButton;
+
     bool isPlaying = false;
+    [SerializeField] int pathPlayPort = 8052;
 
     private void Awake()
     {
@@ -61,17 +67,43 @@ public class DirectorPanelManager : MonoBehaviour
 
     public void playPath()
     {
+        isPlaying = !isPlaying;
         if (isPlaying)
             playPauseButton.GetComponent<Image>().sprite = pauseIcon;
         else
             playPauseButton.GetComponent<Image>().sprite = playIcon;
 
-        isPlaying = !isPlaying;
+        //playPauseButton.GetComponent<Button>().colors;
         OnPlayPath();
+        SendPlayStop("PLAY");
     }
 
     public void stopPath()
     {
         OnStopPath();
+        SendPlayStop("STOP");
     }
+
+    public void SendPlayStop(string playMessage)
+    {
+        try
+        {
+            UdpClient client = new UdpClient(pathPlayPort);
+
+            string ipAddress = ModesManager.instance.IPAddress.text;
+
+            // sending data
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), pathPlayPort);
+
+            byte[] message = Encoding.ASCII.GetBytes(playMessage);
+            client.Send(message, message.Length, target);
+
+            client.Close();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
+    }
+
 }

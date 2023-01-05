@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using UnityEngine;
-using UnityEngine.InputSystem.Processors;
 
 public class FollowPath : MonoBehaviour
 {
@@ -17,11 +18,11 @@ public class FollowPath : MonoBehaviour
 
     Animator animator;
 
-    bool isPlaying;
+    bool isPlaying = false;
     bool buttonDown;
     public bool triggerOn;
     public bool isSelectedForPath;
-   
+
     //private void OnTriggerEnter(Collider other)
     //{
     //    if (other.gameObject.layer == 3)
@@ -34,6 +35,21 @@ public class FollowPath : MonoBehaviour
     //        triggerOn = false;
     //}
 
+    public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
+    {
+        float num = target.x - current.x;
+        float num2 = target.y - current.y;
+        float num3 = target.z - current.z;
+        float num4 = num * num + num2 * num2 + num3 * num3;
+        if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
+        {
+            return target;
+        }
+
+        float num5 = (float)Math.Sqrt(num4);
+        return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
+    }
+
     void move(Vector3 targetPoint)
     {
         Vector3 currentPos = gameObject.transform.position;
@@ -42,7 +58,7 @@ public class FollowPath : MonoBehaviour
         float posStep = posSpeed * Time.deltaTime;
         float rotStep = rotSpeed * Time.deltaTime;
 
-        Vector3 newPos = Vector3.MoveTowards(currentPos, targetPoint, posStep);
+        Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
         Debug.Log("NEXT POSITION: " + newPos);
         gameObject.transform.position = newPos;
         // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
@@ -183,12 +199,12 @@ public class FollowPath : MonoBehaviour
             if (animator != null)
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
+            isPlaying = false;
         }
     }
 
     void playLinePath()
     {
-        Debug.Log("PLAYING");
         GameObject[] lines;
         lines = GameObject.FindGameObjectsWithTag("Line");
 
@@ -203,7 +219,6 @@ public class FollowPath : MonoBehaviour
 
     void stopLinePath()
     {
-        Debug.Log("STOPPING");
         isPlaying = false;
         gameObject.transform.position = startPosition;
         gameObject.transform.rotation = startRotation;
@@ -216,6 +231,6 @@ public class FollowPath : MonoBehaviour
         {
             lines[i].GetComponent<LineRenderer>().enabled = true;
         }
-
     }
+
 }

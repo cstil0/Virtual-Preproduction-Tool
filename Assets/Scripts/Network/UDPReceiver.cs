@@ -6,26 +6,31 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using UnityEngine.UI;
-using System.IO;
 using System.Globalization;
 
 public class UDPReceiver : MonoBehaviour
 {
     // udpclient object
-    UdpClient client;
+    //UdpClient client;
     UdpClient clientPath;
-    public int serverPort = 8050;
-    public int pathPointsPort = 8051;
+    UdpClient clientPlay;
+    [SerializeField] int serverPort = 8050;
+    [SerializeField] int pathPointsPort = 8051;
+    [SerializeField] int pathPlayPort = 8052;
 
-    Thread receiveThread;
+    //Thread receiveThread;
     Thread receivePathPointsThread;
+    Thread receivePlayPathThread;
 
     bool pointParsed;
+    bool playParsed;
+
+    bool receivedPlayBORR = false;
     String receivedMessage;
     String receivedName;
     int receivedCount;
     string receivedPoint;
+    string receivedPlay;
     //double receivedPointX;
     //double receivedPointY;
     //double receivedPointZ;
@@ -43,6 +48,9 @@ public class UDPReceiver : MonoBehaviour
     Quaternion currRot;
     
     int countBORR = 0;
+
+    public GameObject hermione;
+    public GameObject harry;
 
     // main thread that listens to UDP messages through a defined port
     void UDP_ReceieveThread()
@@ -102,7 +110,7 @@ public class UDPReceiver : MonoBehaviour
 
     void UDP_PathPointsReceive() 
     {
-        UdpClient clientPath = new UdpClient(pathPointsPort);
+        clientPath = new UdpClient(pathPointsPort);
         // loop needed to keep listening
         while (true)
         {
@@ -112,22 +120,37 @@ public class UDPReceiver : MonoBehaviour
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPointsPort);
                 byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
                 receivedName = Encoding.ASCII.GetString(receiveBytes);
+                Debug.Log(receivedName);
 
                 receiveBytes = clientPath.Receive(ref remoteEndPoint);
                 receivedCount = int.Parse(Encoding.ASCII.GetString(receiveBytes));
 
                 receiveBytes = clientPath.Receive(ref remoteEndPoint);
                 receivedPoint = Encoding.ASCII.GetString(receiveBytes);
-                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                //receivedPointX = BitConverter.ToDouble(receiveBytes);
-
-                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                //receivedPointY = BitConverter.ToDouble(receiveBytes);
-
-                //receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                //receivedPointZ = BitConverter.ToDouble(receiveBytes);
 
                 pointParsed = false;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Exception thrown " + e.Message);
+            }
+        }
+    }
+
+    void UDP_PlayPathReceive()
+    {
+        clientPlay = new UdpClient(pathPlayPort);
+        // loop needed to keep listening
+        while (true)
+        {
+            try
+            {
+                // recieve messages through the end point
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPlayPort);
+                byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                receivedPlay = Encoding.ASCII.GetString(receiveBytes);
+
+                playParsed = false;
             }
             catch (Exception e)
             {
@@ -142,7 +165,10 @@ public class UDPReceiver : MonoBehaviour
         GameObject character = GameObject.Find(receivedName);
 
         string[] splittedMessage = receivedPoint.Split(" ");
-        Vector3 newPoint = new Vector3(float.Parse(splittedMessage[0]), float.Parse(splittedMessage[1]), float.Parse(splittedMessage[2]));
+        float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
+        float posY = - float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+        float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+        Vector3 newPoint = new Vector3(posX, posY, posZ);
 
         //Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
 
@@ -155,35 +181,68 @@ public class UDPReceiver : MonoBehaviour
         DrawLine.instance.drawLine(newPoint);
     }
 
+    void parsePlayMessage()
+    {
+        receivedPlayBORR = true;
+
+        playParsed = true;
+
+        if (receivedPlay == "PLAY")
+            DirectorPanelManager.instance.playPath();
+        else if (receivedPlay == "STOP")
+            DirectorPanelManager.instance.stopPath();
+    }
+
     void OnDisable()
     {
         // stop thread when object is disabled
-        if (receiveThread != null)
-            receiveThread.Abort();
+        //if (receiveThread != null){
+        //    receiveThread.Abort();
+              //client.Close();
+        //}
 
         if (receivePathPointsThread != null)
+        {
             receivePathPointsThread.Abort();
+            clientPath.Close();
+        }
 
-        client.Close();
-        clientPath.Close();
+        if (receivePlayPathThread != null)
+        {
+            receivePlayPathThread.Abort();
+            clientPlay.Close();
+        }
     }
     // Start is called before the first frame update
     void Start()
     {
         // Start thread to listen UDP messages and set it as background
-        receiveThread = new Thread(UDP_ReceieveThread);
-        receiveThread.IsBackground = true;
-        receiveThread.Start();
+        //receiveThread = new Thread(UDP_ReceieveThread);
+        //receiveThread.IsBackground = true;
+        //receiveThread.Start();
 
-        receivePathPointsThread = new Thread(UDP_PathPointsReceive);
-        receivePathPointsThread.IsBackground = true;
-        receivePathPointsThread.Start();
+        // director wants to receive new point paths created by the assistant
+        if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
+        {
+            receivePathPointsThread = new Thread(UDP_PathPointsReceive);
+            receivePathPointsThread.IsBackground = true;
+            receivePathPointsThread.Start();
+        }
+
+        // assistant wants to receive when director plays or stops the path play, since it controlls the position with network manager
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        {
+            receivePlayPathThread = new Thread(UDP_PlayPathReceive);
+            receivePlayPathThread.IsBackground = true;
+            receivePlayPathThread.Start();
+        }
 
         startPos = ScreenCamera.transform.position;
         //startRot = ScreenCamera.transform.rotation.eulerAngles;
         startRot = ScreenCamera.transform.rotation;
 
         pointParsed = true;
+        playParsed = true;
     }
 
     // Update is called once per frame
@@ -203,6 +262,9 @@ public class UDPReceiver : MonoBehaviour
         if (!pointParsed)
             parsePoint();
 
+        if (!playParsed)
+            parsePlayMessage();
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             receivedName = "Harry";
@@ -215,5 +277,8 @@ public class UDPReceiver : MonoBehaviour
             receivedCount = countBORR;
             parsePoint();
         }
+
+        if (receivedPlayBORR)
+            GameObject.Find("MainCamera 1").SetActive(false);
     }
 }

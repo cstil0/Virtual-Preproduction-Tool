@@ -26,8 +26,8 @@ public class DrawLine : MonoBehaviour
 
     // Network
     UdpClient client;
-    public int serverPort = 8051;
-    public string ipAddress;
+    [SerializeField] int serverPort = 8051;
+    //public string ipAddress;
 
     private void Awake()
     {
@@ -121,6 +121,7 @@ public class DrawLine : MonoBehaviour
         {
             client = new UdpClient(serverPort);
 
+            string ipAddress = ModesManager.instance.IPAddress.text;
             // sending data
             IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
 
