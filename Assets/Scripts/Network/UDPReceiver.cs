@@ -147,7 +147,7 @@ public class UDPReceiver : MonoBehaviour
             {
                 // recieve messages through the end point
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPlayPort);
-                byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                byte[] receiveBytes = clientPlay.Receive(ref remoteEndPoint);
                 receivedPlay = Encoding.ASCII.GetString(receiveBytes);
 
                 playParsed = false;
