@@ -59,7 +59,6 @@ public class FollowPath : MonoBehaviour
         float rotStep = rotSpeed * Time.deltaTime;
 
         Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
-        Debug.Log("NEXT POSITION: " + newPos);
         gameObject.transform.position = newPos;
         // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
         try
@@ -186,13 +185,11 @@ public class FollowPath : MonoBehaviour
             if (animator != null)
                 animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
 
-            move(currTarget);
-            Debug.Log("CURR TARGET: " + currTarget);
-            Debug.Log("CURR POSITION: " + gameObject.transform.position);
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                move(currTarget);
+
             if (gameObject.transform.position == currTarget)
-            {
                 pointsCount++;
-            }
         }
         else
         {

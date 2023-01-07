@@ -265,19 +265,6 @@ public class UDPReceiver : MonoBehaviour
         if (!playParsed)
             parsePlayMessage();
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            receivedName = "Harry";
-            string m = 0.05f.ToString(CultureInfo.InvariantCulture);
-            byte[] n = Encoding.ASCII.GetBytes(m);
-            byte[] message = Encoding.ASCII.GetBytes(countBORR.ToString(CultureInfo.InvariantCulture) + " " + 0.0f.ToString(CultureInfo.InvariantCulture) + " " + (-7.0f).ToString(CultureInfo.InvariantCulture));
-
-            receivedPoint = Encoding.ASCII.GetString(message);
-            countBORR++;
-            receivedCount = countBORR;
-            parsePoint();
-        }
-
         if (receivedPlayBORR)
             GameObject.Find("MainCamera 1").SetActive(false);
     }

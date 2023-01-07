@@ -20,8 +20,6 @@ public class UDPSender : MonoBehaviour
     int buttonDown;
     bool positionChanged;
 
-    Vector3 OVRPlayerStartPos;
-    Quaternion OVRPlayerStartRot;
     Vector3 screenCameraStartPos;
     Quaternion screenCameraStartRot;
 
@@ -104,11 +102,11 @@ public class UDPSender : MonoBehaviour
                 byte[] message = Encoding.ASCII.GetBytes("SEND_NDI");
                 client.Send(message, message.Length, target);
             }
-
+            client.Close();
         }
-        client.Close();
     }
 
+    // ESTARIA BÉ FER UNA FUNCIÓ GENERAL QUE REBI EL MISSATGE I L'ENVII
     public void sendChangeCamera()
     {
         screenCameraStartPos = screenCamera.transform.position;
@@ -117,6 +115,15 @@ public class UDPSender : MonoBehaviour
         client = new UdpClient(serverPort);
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
         byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA");
+        client.Send(message, message.Length, target);
+        client.Close();
+    }
+
+    public void sendResetPosRot()
+    {
+        client = new UdpClient(serverPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+        byte[] message = Encoding.ASCII.GetBytes("RESET_POSROT");
         client.Send(message, message.Length, target);
         client.Close();
     }
@@ -132,8 +139,6 @@ public class UDPSender : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        OVRPlayerStartPos = OVRPlayer.transform.position;
-        OVRPlayerStartRot = OVRPlayer.transform.rotation;
         screenCameraStartPos = screenCamera.transform.position;
         screenCameraStartRot = screenCamera.transform.rotation;
 
@@ -212,22 +217,20 @@ public class UDPSender : MonoBehaviour
             //    //}
         }
         else
-            {
-                buttonDown = 0;
-            }
-
-            if (OVRInput.Get(OVRInput.RawButton.A))
         {
-            OVRPlayer.transform.position = OVRPlayerStartPos;
-            OVRPlayer.transform.rotation = OVRPlayerStartRot;
+                buttonDown = 0;
+        }
+
+        if (OVRInput.Get(OVRInput.RawButton.A))
+        {
             screenCamera.transform.position = screenCameraStartPos;
             screenCamera.transform.rotation = screenCameraStartRot;
 
             positionChanged = true;
             resetStart = true;
 
-
-            SendPosRot();
+            sendResetPosRot();
+            //SendPosRot();
         }
 
 
