@@ -35,7 +35,8 @@ public class PipeSender : MonoBehaviour
             using (StreamWriter sw = new StreamWriter(pipeServer))
             {
                 sw.AutoFlush = true;
-                sw.WriteLine("DIST:" + distSlider.GetComponent<Slider>().value.ToString());
+                int distanceValue = (int)Math.Ceiling(distSlider.GetComponent<Slider>().value);
+                sw.WriteLine("DIST:" + distanceValue.ToString());
                 pipeServer.Close();
             }
         }

@@ -121,6 +121,7 @@ public class UDPSender : MonoBehaviour
 
     public void sendResetPosRot()
     {
+        SendPosRot();
         client = new UdpClient(serverPort);
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
         byte[] message = Encoding.ASCII.GetBytes("RESET_POSROT");
