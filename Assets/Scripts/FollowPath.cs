@@ -66,6 +66,7 @@ public class FollowPath : MonoBehaviour
             Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
 
             // compute the new formard direction where we will rotate to
+            // set y coordinate to 0 so that the rotation only takes into account the floor plane, and then it does not try to rotate to higher altitudes, which are where it starts doing weird things
             Vector3 targetDirectionXZ = new Vector3(targetDirection.x, 0.0f, targetDirection.z);
             Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
             // compute the new rotation using this forward
@@ -145,7 +146,7 @@ public class FollowPath : MonoBehaviour
             else if (!buttonDown && isSelectedForPath)
             {
                 Vector3 controllerPos = handController.transform.position;
-                Vector3 newPoint = new Vector3(controllerPos.x, startDiffPosition.y - controllerPos.y, controllerPos.z);
+                Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
                 pathPositions.Add(newPoint);
 
                 // send new path point from assistant to director so that he can also play and visualize paths
