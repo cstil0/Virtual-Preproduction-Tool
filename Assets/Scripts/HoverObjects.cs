@@ -97,9 +97,9 @@ public class HoverObjects : MonoBehaviour
                     Color color = new Color();
                     // check if it is item or camera
                     if (other.gameObject.layer == 10)
-                        color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.blue;
+                        color = followPath.isSelectedForPath ? DrawLine.instance.lineColor : Color.blue;
                     else if (other.gameObject.layer == 9)
-                        color = followPath.isSelectedForPath ? new Color(0.5176471f, 0.7504352f, 0.8078431f) : Color.black;
+                        color = followPath.isSelectedForPath ? DrawLine.instance.lineColor : Color.black;
 
                     changeColorMaterials(currentCollider, color);
                     alreadySelected = followPath.isSelectedForPath;

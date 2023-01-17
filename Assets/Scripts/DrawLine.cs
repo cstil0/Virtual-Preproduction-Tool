@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using System.Globalization;
 using System;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class DrawLine : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class DrawLine : MonoBehaviour
     public bool continueLine;
     // pel cas continu
     public bool startLine;
+    public int lastPathID = 0;
+    public Color lineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
 
     // Network
     UdpClient client;
@@ -101,7 +104,9 @@ public class DrawLine : MonoBehaviour
     {
         if (countPoints == 0)
         {
+            lastPathID += 1;
             GameObject line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
+            line.transform.name = "Path " + lastPathID;
             lineRenderer = line.GetComponent<LineRenderer>();
             lineRenderer.SetPosition(countPoints, newPoint);
             lineRenderer.positionCount = 1;

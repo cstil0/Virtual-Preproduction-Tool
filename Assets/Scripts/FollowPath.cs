@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FollowPath : MonoBehaviour
 {
@@ -22,6 +25,7 @@ public class FollowPath : MonoBehaviour
     bool buttonDown;
     public bool triggerOn;
     public bool isSelectedForPath;
+    int lastCharacterPathID = 0;
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -228,6 +232,37 @@ public class FollowPath : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i].GetComponent<LineRenderer>().enabled = true;
+        }
+    }
+
+    void makePathButtonVisible()
+    {
+        int lastGeneralPathID = DrawLine.instance.lastPathID;
+        lastCharacterPathID += 1;
+        // by now, just handle exceptions if more than five paths are defined, but in this case they should not even be created
+        try
+        {
+            // activate image and text to show the button
+            GameObject pathButton = gameObject.transform.Find("Path " + lastCharacterPathID).gameObject;
+            pathButton.GetComponent<Image>().enabled = true;
+            GameObject text = pathButton.transform.GetChild(0).gameObject;
+            text.GetComponent<TextMeshPro>().enabled = true;
+            text.GetComponent<TextMeshPro>().text += lastGeneralPathID;
+
+            // change button color to match path color
+            Color defaultColor = DrawLine.instance.lineColor;
+            Color pathColor = new Color();
+            float colorFactor = lastGeneralPathID * 0.1f;
+            // this is just to create paths in a more dynamic way
+            if (lastGeneralPathID % 2 == 0)
+                pathColor = new Color(defaultColor.r * colorFactor, defaultColor.g * colorFactor, defaultColor.b);
+            else
+                pathColor = new Color(defaultColor.r, defaultColor.g * colorFactor, defaultColor.b * colorFactor);
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("More than 5 paths were created for this character");
         }
     }
 
