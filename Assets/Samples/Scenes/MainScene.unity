@@ -16519,6 +16519,8 @@ MonoBehaviour:
   countPoints: 0
   continueLine: 0
   startLine: 0
+  lastPathID: 0
+  lineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
   serverPort: 8051
 --- !u!1 &1667746589
 GameObject:

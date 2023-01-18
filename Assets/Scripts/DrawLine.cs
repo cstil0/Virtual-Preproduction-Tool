@@ -21,6 +21,7 @@ public class DrawLine : MonoBehaviour
     private LineRenderer lineRenderer;
     public int countPoints;
     bool buttonDown;
+    public bool lineAlreadyInstantiated = false;
     public bool continueLine;
     // pel cas continu
     public bool startLine;
@@ -106,6 +107,7 @@ public class DrawLine : MonoBehaviour
         {
             lastPathID += 1;
             GameObject line = Instantiate(linePrefab, Vector3.zero, Quaternion.identity);
+            lineAlreadyInstantiated = true;
             line.transform.name = "Path " + lastPathID;
             lineRenderer = line.GetComponent<LineRenderer>();
             lineRenderer.SetPosition(countPoints, newPoint);
@@ -144,6 +146,31 @@ public class DrawLine : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError(e.Message);
+        }
+    }
+
+    public Color getPathColor(int pathID)
+    {
+        float colorFactor = pathID * 0.1f;
+
+        // this is just to create paths in a more dynamic way
+        if (pathID % 2 == 0)
+            return new Color(lineColor.r * colorFactor, lineColor.g * colorFactor, lineColor.b);
+        else
+            return new Color(lineColor.r, lineColor.g * colorFactor, lineColor.b * colorFactor);
+    }
+
+    public void changePathColor(int pathID, Color pathColor)
+    {
+        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+
+        foreach (GameObject line in lines)
+        {
+            if (line.name.Contains("Path " + pathID))
+            {
+                Renderer renderer = line.GetComponent<Renderer>();
+                renderer.material.color = pathColor;
+            }
         }
     }
 }

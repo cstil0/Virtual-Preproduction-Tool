@@ -146,7 +146,7 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("UDP Receiver").SetActive(true);
 
                 GameObject eventSytem = GameObject.Find("EventSystem");
-                eventSytem.GetComponent<EventSystem>().enabled = false;
+                //eventSytem.GetComponent<EventSystem>().enabled = false;
                 GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
                 directorCanvas.GetComponent<EventSystem>().enabled = true;
             }
@@ -169,7 +169,7 @@ public class ModesManager : MonoBehaviour
                 GameObject.Find("NDI Receiver").SetActive(true);
 
                 GameObject eventSytem = GameObject.Find("EventSystem");
-                eventSytem.GetComponent<EventSystem>().enabled = true;
+                //eventSytem.GetComponent<EventSystem>().enabled = true;
                 GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
                 directorCanvas.GetComponent<EventSystem>().enabled = false;
 

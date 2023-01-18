@@ -23,6 +23,7 @@ public class FollowPath : MonoBehaviour
 
     bool isPlaying = false;
     bool buttonDown;
+    bool newPathInstantiated;
     public bool triggerOn;
     public bool isSelectedForPath;
     int lastCharacterPathID = 0;
@@ -94,6 +95,7 @@ public class FollowPath : MonoBehaviour
         isPlaying = false;
         buttonDown = false;
         triggerOn = false;
+        newPathInstantiated = false;
         isSelectedForPath = false;
 
         startPosition = gameObject.transform.position;
@@ -149,6 +151,10 @@ public class FollowPath : MonoBehaviour
 
             else if (!buttonDown && isSelectedForPath)
             {
+                if (!newPathInstantiated)
+                    StartCoroutine(makePathButtonVisible());
+
+                newPathInstantiated = true;
                 Vector3 controllerPos = handController.transform.position;
                 Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
                 pathPositions.Add(newPoint);
@@ -161,7 +167,10 @@ public class FollowPath : MonoBehaviour
             }
         }
         else
+        {
+            newPathInstantiated = false;
             buttonDown = false;
+        }
 
 
         if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
@@ -235,35 +244,45 @@ public class FollowPath : MonoBehaviour
         }
     }
 
-    void makePathButtonVisible()
+    IEnumerator makePathButtonVisible()
     {
+        while (!DrawLine.instance.lineAlreadyInstantiated)
+        {
+            yield return null;
+        }
+
+        DrawLine.instance.lineAlreadyInstantiated = false;
+
         int lastGeneralPathID = DrawLine.instance.lastPathID;
         lastCharacterPathID += 1;
         // by now, just handle exceptions if more than five paths are defined, but in this case they should not even be created
         try
         {
             // activate image and text to show the button
-            GameObject pathButton = gameObject.transform.Find("Path " + lastCharacterPathID).gameObject;
+            Transform pathButtons = gameObject.transform.Find("Paths buttons");
+            Transform panel = pathButtons.GetChild(0);
+            GameObject pathButton = panel.Find("Path " + lastCharacterPathID).gameObject;
             pathButton.GetComponent<Image>().enabled = true;
             GameObject text = pathButton.transform.GetChild(0).gameObject;
-            text.GetComponent<TextMeshPro>().enabled = true;
-            text.GetComponent<TextMeshPro>().text += lastGeneralPathID;
+            text.GetComponent<TextMeshProUGUI>().enabled = true;
+            text.GetComponent<TextMeshProUGUI>().text += " " + lastGeneralPathID;
 
             // change button color to match path color
-            Color defaultColor = DrawLine.instance.lineColor;
-            Color pathColor = new Color();
-            float colorFactor = lastGeneralPathID * 0.1f;
-            // this is just to create paths in a more dynamic way
-            if (lastGeneralPathID % 2 == 0)
-                pathColor = new Color(defaultColor.r * colorFactor, defaultColor.g * colorFactor, defaultColor.b);
-            else
-                pathColor = new Color(defaultColor.r, defaultColor.g * colorFactor, defaultColor.b * colorFactor);
-
+            Color pathColor = DrawLine.instance.getPathColor(DrawLine.instance.lastPathID);
+            ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
+            buttonColors.normalColor = pathColor;
+            pathButton.GetComponent<Button>().colors = buttonColors;
+            DrawLine.instance.changePathColor(DrawLine.instance.lastPathID, pathColor);
         }
         catch (Exception e)
         {
             Debug.LogError("More than 5 paths were created for this character");
         }
+    }
+
+    void hidePathButtons()
+    {
+
     }
 
 }
