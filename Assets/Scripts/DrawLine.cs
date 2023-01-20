@@ -26,7 +26,7 @@ public class DrawLine : MonoBehaviour
     // pel cas continu
     public bool startLine;
     public int lastPathID = 0;
-    public Color lineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
+    public Color defaultLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
 
     // Network
     UdpClient client;
@@ -155,9 +155,9 @@ public class DrawLine : MonoBehaviour
 
         // this is just to create paths in a more dynamic way
         if (pathID % 2 == 0)
-            return new Color(lineColor.r * colorFactor, lineColor.g * colorFactor, lineColor.b);
+            return new Color(defaultLineColor.r * colorFactor, defaultLineColor.g * colorFactor, defaultLineColor.b);
         else
-            return new Color(lineColor.r, lineColor.g * colorFactor, lineColor.b * colorFactor);
+            return new Color(defaultLineColor.r, defaultLineColor.g * colorFactor, defaultLineColor.b * colorFactor);
     }
 
     public void changePathColor(int pathID, Color pathColor)
