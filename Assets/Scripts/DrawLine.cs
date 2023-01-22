@@ -27,6 +27,7 @@ public class DrawLine : MonoBehaviour
     public bool startLine;
     public int lastPathID = 0;
     public Color defaultLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
+    public Color hoverLineColor = new Color(0.6554998f, 0.4750979f, 0.8773585f);
 
     // Network
     UdpClient client;
@@ -166,11 +167,11 @@ public class DrawLine : MonoBehaviour
 
         foreach (GameObject line in lines)
         {
-            if (line.name.Contains("Path " + pathID))
-            {
-                Renderer renderer = line.GetComponent<Renderer>();
-                renderer.material.color = pathColor;
-            }
+            if (!line.name.Contains("Path " + pathID))
+                continue;
+
+            Renderer renderer = line.GetComponent<Renderer>();
+            renderer.material.color = pathColor;
         }
     }
 }

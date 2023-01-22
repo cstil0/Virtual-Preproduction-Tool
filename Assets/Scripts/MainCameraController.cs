@@ -15,6 +15,8 @@ public class MainCameraController : MonoBehaviour
     bool buttonDown;
     bool currentlySending;
 
+    [SerializeField] HoverObjects hoverObjects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +30,7 @@ public class MainCameraController : MonoBehaviour
     {
         OVRInput.Update();
 
-        if (OVRInput.Get(OVRInput.Button.Two) && gameObject.name == "MainCamera 1")
+        if (OVRInput.Get(OVRInput.RawButton.B) && gameObject.name == "MainCamera 1" && !hoverObjects.alreadySelected)
         {
             if (!buttonDown)
                 currentlySending = !currentlySending;

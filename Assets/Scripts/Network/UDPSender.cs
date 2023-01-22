@@ -27,6 +27,7 @@ public class UDPSender : MonoBehaviour
     public float sceneRotation;
 
     public GameObject OVRPlayer;
+    [SerializeField] HoverObjects hoverObjects;
 
     private void Awake()
     {
@@ -222,7 +223,7 @@ public class UDPSender : MonoBehaviour
                 buttonDown = 0;
         }
 
-        if (OVRInput.Get(OVRInput.RawButton.A))
+        if (OVRInput.Get(OVRInput.RawButton.A) && !hoverObjects.alreadySelected)
         {
             screenCamera.transform.position = screenCameraStartPos;
             screenCamera.transform.rotation = screenCameraStartRot;

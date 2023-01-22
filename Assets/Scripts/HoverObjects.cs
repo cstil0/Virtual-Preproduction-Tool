@@ -6,8 +6,8 @@ using UnityEngine;
 public class HoverObjects : MonoBehaviour
 {
     bool alreadyTriggered;
-    bool alreadySelected;
-    bool alreadySelectedForPath;
+    public bool alreadySelected;
+    //bool alreadySelectedForPath;
     GameObject currentCollider;
     GameObject currentSelectedForPath;
 
@@ -97,7 +97,10 @@ public class HoverObjects : MonoBehaviour
                     Color color = new Color();
                     // check if it is item or camera
                     if (other.gameObject.layer == 10)
+                    {
                         color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.blue;
+
+                    }
                     else if (other.gameObject.layer == 9)
                         color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.black;
 

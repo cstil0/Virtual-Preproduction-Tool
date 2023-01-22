@@ -7831,6 +7831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16eb94117c56c14089121bf1ac96a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alreadySelected: 0
 --- !u!1 &871733118
 GameObject:
   m_ObjectHideFlags: 0
@@ -12083,6 +12084,7 @@ MonoBehaviour:
   ipAddress: 192.168.0.10
   sceneRotation: 0
   OVRPlayer: {fileID: 1972393813}
+  hoverObjects: {fileID: 861928166}
 --- !u!4 &1287183032
 Transform:
   m_ObjectHideFlags: 0
@@ -16517,10 +16519,12 @@ MonoBehaviour:
     type: 3}
   handController: {fileID: 861928155}
   countPoints: 0
+  lineAlreadyInstantiated: 0
   continueLine: 0
   startLine: 0
   lastPathID: 0
-  lineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
+  defaultLineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
+  hoverLineColor: {r: 0.65549976, g: 0.4750979, b: 0.8773585, a: 1}
   serverPort: 8051
 --- !u!1 &1667746589
 GameObject:
@@ -21473,6 +21477,11 @@ PrefabInstance:
       propertyPath: controller
       value: 
       objectReference: {fileID: 861928155}
+    - target: {fileID: 5781834974586894726, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: hoverObjects
+      value: 
+      objectReference: {fileID: 861928166}
     - target: {fileID: 5781834974586894782, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Name
