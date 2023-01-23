@@ -4492,7 +4492,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 479241773}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &479241784
+--- !u!114 &479241775
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4501,15 +4501,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 85111576}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   handController: {fileID: 861928155}
   pathPositions: []
+  pathRotations: []
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
   isSelectedForPath: 0
+  lastCharacterPathID: 0
+  currentSelectedPath: 0
 --- !u!1 &479501797
 GameObject:
   m_ObjectHideFlags: 0
@@ -17161,7 +17164,7 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1776131374}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1776131385
+--- !u!114 &1776131376
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17170,15 +17173,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1160430033}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   handController: {fileID: 861928155}
   pathPositions: []
+  pathRotations: []
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
   isSelectedForPath: 0
+  lastCharacterPathID: 0
+  currentSelectedPath: 0
 --- !u!1 &1785069569
 GameObject:
   m_ObjectHideFlags: 0
@@ -17678,6 +17684,8 @@ MonoBehaviour:
   rotSpeed: 7
   triggerOn: 0
   isSelectedForPath: 0
+  lastCharacterPathID: 0
+  currentSelectedPath: 0
 --- !u!1 &1814684605
 GameObject:
   m_ObjectHideFlags: 0
@@ -17903,7 +17911,7 @@ MonoBehaviour:
   m_snapOrientation: 0
   m_snapOffset: {fileID: 0}
   m_grabPoints: []
---- !u!114 &1825172531
+--- !u!114 &1825172524
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17912,15 +17920,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1825172511}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b324b927730452742837ba16d147bc77, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   handController: {fileID: 861928155}
   pathPositions: []
+  pathRotations: []
   posSpeed: 3
   rotSpeed: 7
   triggerOn: 0
   isSelectedForPath: 0
+  lastCharacterPathID: 0
+  currentSelectedPath: 0
 --- !u!4 &1828398787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 9f5a24a380916d14db9775daab4fe333,
