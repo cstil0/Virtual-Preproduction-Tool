@@ -28,6 +28,11 @@ public class DrawLine : MonoBehaviour
     public int lastPathID = 0;
     public Color defaultLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
     public Color hoverLineColor = new Color(0.6554998f, 0.4750979f, 0.8773585f);
+    public Color[] pathColors = { new Color(0.2745098f, 0.09019608f, 0.03137255f),
+                                  new Color(0.9372549f, 0.5176471f, 0.1568628f),
+                                  new Color(0.7372549f, 0.682353f, 0.5333334f),
+                                  new Color(0.5568628f, 0.08235294f, 0.2f),
+                                  new Color(0.07058824f, 0.2509804f, 0.2352941f) };
 
     // Network
     UdpClient client;
@@ -152,13 +157,16 @@ public class DrawLine : MonoBehaviour
 
     public Color getPathColor(int pathID)
     {
-        float colorFactor = pathID * 0.1f;
+
+        return pathColors[pathID - 1];
+
+        //float colorFactor = pathID * 0.1f;
 
         // this is just to create paths in a more dynamic way
-        if (pathID % 2 == 0)
-            return new Color(defaultLineColor.r * colorFactor, defaultLineColor.g * colorFactor, defaultLineColor.b);
-        else
-            return new Color(defaultLineColor.r, defaultLineColor.g * colorFactor, defaultLineColor.b * colorFactor);
+        //if (pathID % 2 == 0)
+        //    return new Color(defaultLineColor.r * colorFactor, defaultLineColor.g * colorFactor, defaultLineColor.b);
+        //else
+        //    return new Color(defaultLineColor.r, defaultLineColor.g * colorFactor, defaultLineColor.b * colorFactor);
     }
 
     public void changePathColor(int pathID, Color pathColor)

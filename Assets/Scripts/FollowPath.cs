@@ -18,6 +18,7 @@ public class FollowPath : MonoBehaviour
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
     int pointsCount;
+    int pointsSkip = 0;
     Vector3 startPosition;
     Vector3 startDiffPosition;
     Quaternion startRotation;
@@ -170,7 +171,13 @@ public class FollowPath : MonoBehaviour
                 newPathInstantiated = true;
                 Vector3 controllerPos = handController.transform.position;
                 Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
-                pathPositions.Add(newPoint);
+                
+                if (pointsSkip == 0) 
+                    pathPositions.Add(newPoint);
+
+                pointsSkip++;
+                if (pointsSkip >= 3)
+                    pointsSkip = 0;
 
                 // send new path point from assistant to director so that he can also play and visualize paths
                 DrawLine.instance.SendPointPath(gameObject, newPoint);
