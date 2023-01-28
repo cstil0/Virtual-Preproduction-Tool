@@ -254,6 +254,8 @@ public class ModesManager : MonoBehaviour
 
             canvas.GetComponent<EventSystem>().enabled = false;
             UIHelpers.SetActive(true);
+            leftHand.SetActive(true);
+            rightHand.SetActive(true);
 
             IPAddress.text = "Set Screen Scene IP";
         }
