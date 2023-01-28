@@ -4508,7 +4508,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 7
+  rotSpeed: 8
   triggerOn: 0
   isSelectedForPath: 0
   lastCharacterPathID: 0
@@ -16528,6 +16528,12 @@ MonoBehaviour:
   lastPathID: 0
   defaultLineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
   hoverLineColor: {r: 0.65549976, g: 0.4750979, b: 0.8773585, a: 1}
+  pathColors:
+  - {r: 0.2745098, g: 0.09019608, b: 0.03137255, a: 1}
+  - {r: 0.9372549, g: 0.5176471, b: 0.1568628, a: 1}
+  - {r: 0.7372549, g: 0.682353, b: 0.5333334, a: 1}
+  - {r: 0.5568628, g: 0.08235294, b: 0.2, a: 1}
+  - {r: 0.07058824, g: 0.2509804, b: 0.2352941, a: 1}
   serverPort: 8051
 --- !u!1 &1667746589
 GameObject:
@@ -17180,7 +17186,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 7
+  rotSpeed: 8
   triggerOn: 0
   isSelectedForPath: 0
   lastCharacterPathID: 0
@@ -17927,7 +17933,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 7
+  rotSpeed: 8
   triggerOn: 0
   isSelectedForPath: 0
   lastCharacterPathID: 0

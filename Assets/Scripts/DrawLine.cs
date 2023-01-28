@@ -96,7 +96,7 @@ public class DrawLine : MonoBehaviour
         //}
 
         // VERSIÓN CONTINUA
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && startLine)
+        if ((OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger)) && startLine)
         {
             drawLine(handController.transform.position);
         }

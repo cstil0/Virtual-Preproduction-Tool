@@ -16,10 +16,11 @@ public class FollowPathCamera : MonoBehaviour
     public List<Quaternion> pathRotations;
     // relate each path ID with the start and end positions in the pathPositions list
     public Dictionary<int, int[]> pathStartEnd;
-    public float posSpeed = 20.0f;
-    public float rotSpeed = 7.0f;
+    public float posSpeed = 3.0f;
+    public float rotSpeed = 3.0f;
     int pointsPosCount;
     int pointsRotCount;
+    int pointsSkip = 0;
     Vector3 startPosition;
     Vector3 startDiffPosition;
     Quaternion startRotation;
@@ -37,17 +38,17 @@ public class FollowPathCamera : MonoBehaviour
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = true;
-    //}
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == 3)
+            triggerOn = true;
+    }
 
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = false;
-    //}
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == 3)
+            triggerOn = false;
+    }
 
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
     {
@@ -67,30 +68,15 @@ public class FollowPathCamera : MonoBehaviour
     void move(Vector3 targetPoint, Quaternion targetRot)
     {
         Vector3 currentPos = gameObject.transform.position;
+        Quaternion currentRot = gameObject.transform.rotation;
         Vector3 targetDirection = targetPoint - currentPos;
 
         float posStep = posSpeed * Time.deltaTime;
-        float rotStep = rotSpeed * Time.deltaTime;
 
         Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
         gameObject.transform.position = newPos;
-        // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
-        try
-        {
-            Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
-
-            // compute the new formard direction where we will rotate to
-            // set y coordinate to 0 so that the rotation only takes into account the floor plane, and then it does not try to rotate to higher altitudes, which are where it starts doing weird things
-            Vector3 targetDirectionXZ = new Vector3(targetDirection.x, 0.0f, targetDirection.z);
-            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
-            // compute the new rotation using this forward
-            gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
-            //gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(originalRotation.x, newForward.y, originalRotation.z));
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.Message);
-        }
+        Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, rotSpeed);
+        gameObject.transform.rotation = newRot;
     }
 
     // Start is called before the first frame update
@@ -144,8 +130,9 @@ public class FollowPathCamera : MonoBehaviour
         //    buttonDown = false;
 
         // CONTINUOUS CASE
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
+            // REVISAR EL TRIGGER ON AQUEST
             if (!triggerButtonDown && triggerOn)
             {
                 triggerButtonDown = true;
@@ -160,31 +147,44 @@ public class FollowPathCamera : MonoBehaviour
                 else
                     hidePathButtons();
             }
+        }
+        else
+        {
+            triggerButtonDown = false;
+        }
 
-            else if (!triggerButtonDown && isSelectedForPath)
+
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && isSelectedForPath && triggerOn)
+        {
+            // this is needed because we do not want to do this just after the character is selected but when line is instantiated
+            if (!newPathInstantiated)
             {
-                // this is needed because we do not want to do this just after the character is selected but when line is instantiated
-                if (!newPathInstantiated)
-                {
-                    lastCharacterPathID += 1;
-                    StartCoroutine(createNewPathButton());
-                    int[] startEnd = { pathPositions.Count, -1 };
-                    pathStartEnd.Add(lastCharacterPathID, startEnd);
-                }
+                lastCharacterPathID += 1;
+                StartCoroutine(createNewPathButton());
+                int[] startEnd = { pathPositions.Count, -1 };
+                pathStartEnd.Add(lastCharacterPathID, startEnd);
+            }
 
-                newPathInstantiated = true;
-                Vector3 controllerPos = handController.transform.position;
-                Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
-                Quaternion newRot = handController.transform.rotation;
+            newPathInstantiated = true;
+            Vector3 controllerPos = handController.transform.position;
+            Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
+            Quaternion newRot = handController.transform.rotation;
+
+            if (pointsSkip == 0)
+            {
                 pathPositions.Add(newPoint);
                 pathRotations.Add(newRot);
-
-                // send new path point from assistant to director so that he can also play and visualize paths
-                DrawLine.instance.SendPointPath(gameObject, newPoint);
-
-                // ONLY FOR CONTINUOUS CASE
-                DrawLine.instance.startLine = isSelectedForPath;
             }
+
+            pointsSkip++;
+            if (pointsSkip >= 3)
+                pointsSkip = 0;
+
+            // send new path point from assistant to director so that he can also play and visualize paths
+            DrawLine.instance.SendPointPath(gameObject, newPoint);
+
+            // ONLY FOR CONTINUOUS CASE
+            DrawLine.instance.startLine = isSelectedForPath;
         }
         else if (isSelectedForPath && newPathInstantiated)
         {
@@ -194,18 +194,14 @@ public class FollowPathCamera : MonoBehaviour
             pathStartEnd[lastCharacterPathID] = startEnd;
             newPathInstantiated = false;
         }
-        else
-        {
-            newPathInstantiated = false;
-            triggerButtonDown = false;
-        }
+
 
 
         if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S)) //|| OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
         }
@@ -222,8 +218,16 @@ public class FollowPathCamera : MonoBehaviour
 
         if (isPlaying && (pointsPosCount < pathPositions.Count || pointsRotCount < pathRotations.Count))
         {
-            Vector3 currTargetPos = pathPositions[pointsPosCount];
-            Quaternion currTargetRot = pathRotations[pointsRotCount];
+            Debug.Log("Position Count: " + pointsPosCount);
+            Debug.Log("Rotation Count: " + pointsRotCount);
+
+            // avoid errors if rotation and positions are not fully synchronized
+            Vector3 currTargetPos = pathPositions[pathPositions.Count - 1];
+            Quaternion currTargetRot = pathRotations[pathRotations.Count - 1];
+            if (pointsPosCount < pathPositions.Count)
+                currTargetPos = pathPositions[pointsPosCount];
+            if (pointsRotCount < pathRotations.Count)
+                currTargetRot = pathRotations[pointsRotCount];
 
             if (animator != null)
                 animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
@@ -286,6 +290,14 @@ public class FollowPathCamera : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i].GetComponent<LineRenderer>().enabled = false;
+        }
+
+        // cameras are moved while defining their position and rotation
+        // so we need them to go to the start location before playing their movement
+        if (!isPlaying)
+        {
+            gameObject.transform.position = startPosition;
+            gameObject.transform.rotation = startRotation;
         }
 
         isPlaying = !isPlaying;

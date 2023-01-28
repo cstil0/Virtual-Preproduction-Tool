@@ -80,29 +80,42 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // selecting the object to define a path can happen whenever the hand is triggering it that's why we check it here
-        if (other.gameObject.layer == 10 || other.gameObject.layer == 9)
+        // if character
+        if (other.gameObject.layer == 10)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
 
             // check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
             if (currentSelectedForPath == null)
-            {
                 currentSelectedForPath = other.gameObject;
-            }
+
             if (followPath != null && currentSelectedForPath == other.gameObject)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (alreadySelected != followPath.isSelectedForPath)
                 {
-                    Color color = new Color();
-                    // check if it is item or camera
-                    if (other.gameObject.layer == 10)
-                    {
-                        color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.blue;
+                    Color color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.blue;
 
-                    }
-                    else if (other.gameObject.layer == 9)
-                        color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.black;
+                    changeColorMaterials(currentCollider, color);
+                    alreadySelected = followPath.isSelectedForPath;
+                }
+            }
+        }
+
+        if (other.gameObject.layer == 9)
+        {
+            FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
+
+            // check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
+            if (currentSelectedForPath == null)
+                currentSelectedForPath = other.gameObject;
+
+            if (followPath != null && currentSelectedForPath == other.gameObject)
+            {
+                // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
+                if (alreadySelected != followPath.isSelectedForPath)
+                {
+                    Color color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.black;
 
                     changeColorMaterials(currentCollider, color);
                     alreadySelected = followPath.isSelectedForPath;
