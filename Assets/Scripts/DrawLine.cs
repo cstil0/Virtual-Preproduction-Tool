@@ -24,7 +24,7 @@ public class DrawLine : MonoBehaviour
     public bool lineAlreadyInstantiated = false;
     public bool continueLine;
     // pel cas continu
-    public bool startLine;
+    //public bool startLine;
     public int lastPathID = 0;
     public Color defaultLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
     public Color hoverLineColor = new Color(0.6554998f, 0.4750979f, 0.8773585f);
@@ -96,15 +96,16 @@ public class DrawLine : MonoBehaviour
         //}
 
         // VERSIÓN CONTINUA
-        if ((OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger)) && startLine)
-        {
-            drawLine(handController.transform.position);
-        }
-        // in director mode, countPoints is given by UDP receiver
-        else if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-        {
-            countPoints = 0;
-        }
+        //if ((OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger)) && startLine)
+        //{
+        //    Debug.Log("START LINE DRAW LINE:" + startLine);
+        //    drawLine(handController.transform.position);
+        //}
+        //// in director mode, countPoints is given by UDP receiver
+        //else if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        //{
+        //    countPoints = 0;
+        //}
     }
 
     public void drawLine(Vector3 newPoint)
@@ -149,10 +150,7 @@ public class DrawLine : MonoBehaviour
 
             client.Close();
         }
-        catch (System.Exception e)
-        {
-            Debug.LogError(e.Message);
-        }
+        catch (System.Exception e){}
     }
 
     public Color getPathColor(int pathID)

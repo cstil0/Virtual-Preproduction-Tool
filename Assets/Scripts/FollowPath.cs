@@ -18,7 +18,7 @@ public class FollowPath : MonoBehaviour
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
     int pointsCount;
-    Vector3 startPosition;
+    public Vector3 startPosition;
     Vector3 startDiffPosition;
     Quaternion startRotation;
 
@@ -46,6 +46,16 @@ public class FollowPath : MonoBehaviour
     //    if (other.gameObject.layer == 3)
     //        triggerOn = false;
     //}
+    private void OnEnable()
+    {
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
+    }
+    private void OnDisable()
+    {
+        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
+        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
+    }
 
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
     {
@@ -92,9 +102,6 @@ public class FollowPath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DirectorPanelManager.instance.OnPlayPath += playLinePath;
-        DirectorPanelManager.instance.OnStopPath += stopLinePath;
-
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
         pathStartEnd = new Dictionary<int, int[]>();
@@ -105,12 +112,6 @@ public class FollowPath : MonoBehaviour
 
         if (gameObject.GetComponent<Animator>())
             animator = gameObject.GetComponent<Animator>();
-    }
-
-    private void OnDisable()
-    {
-        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
-        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
     // Update is called once per frame
@@ -144,10 +145,10 @@ public class FollowPath : MonoBehaviour
             // REVISAR AQUEST TRIGGERON, CREC QUE NO ESTÀ FENT RES I DE FET NO ENTENC PQ ENTRA
             if (!triggerButtonDown && triggerOn)
             {
+                //DrawLine.instance.startLine = false;
                 triggerButtonDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
-                DrawLine.instance.startLine = false;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
 
@@ -173,12 +174,13 @@ public class FollowPath : MonoBehaviour
                 Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
                 
                 pathPositions.Add(newPoint);
+                DrawLine.instance.drawLine(controllerPos);
 
                 // send new path point from assistant to director so that he can also play and visualize paths
                 DrawLine.instance.SendPointPath(gameObject, newPoint);
 
                 // ONLY FOR CONTINUOUS CASE
-                DrawLine.instance.startLine = isSelectedForPath;
+                //DrawLine.instance.startLine = isSelectedForPath;
             }
         }
         else if (isSelectedForPath && newPathInstantiated)
@@ -188,6 +190,7 @@ public class FollowPath : MonoBehaviour
             startEnd[1] = pathPositions.Count - 1;
             pathStartEnd[lastCharacterPathID] = startEnd;
             newPathInstantiated = false;
+            DrawLine.instance.countPoints = 0;
         }
         else
         {
@@ -200,7 +203,7 @@ public class FollowPath : MonoBehaviour
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S)) //|| OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
         }
@@ -347,7 +350,7 @@ public class FollowPath : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError("More than 5 paths were created for this character");
+            Debug.LogError("Error creating path: " + e.Message);
         }
     }
     
@@ -452,8 +455,8 @@ public class FollowPath : MonoBehaviour
                 break;
             }
 
-            int globalSelectedID = getGlobalPathID(currentSelectedPath);
-            int[] startEnd = pathStartEnd[globalSelectedID];
+            //int globalSelectedID = getGlobalPathID(currentSelectedPath);
+            int[] startEnd = pathStartEnd[currentSelectedPath];
             int startPos = startEnd[0];
             int endPos = startEnd[1];
             // delete path points in the character

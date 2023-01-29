@@ -45,15 +45,27 @@ public class HoverObjects : MonoBehaviour
         // change the color only to the first object that collided with the controller, only if it is an item
         if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 9))
         {
-            currentCollider = other.gameObject;
-
-            FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
             bool isSelected = false;
-            if (followPath != null)
+            currentCollider = other.gameObject;
+            if (other.gameObject.layer == 10)
             {
-                followPath.triggerOn = true;
-                isSelected = followPath.isSelectedForPath;
+                FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+                if (followPath != null)
+                {
+                    followPath.triggerOn = true;
+                    isSelected = followPath.isSelectedForPath;
+                }
             }
+            else if (other.gameObject.layer == 9)
+            {
+                FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
+                if (followPath != null)
+                {
+                    followPath.triggerOn = true;
+                    isSelected = followPath.isSelectedForPath;
+                }
+            }
+
 
             if (!isSelected)
             {

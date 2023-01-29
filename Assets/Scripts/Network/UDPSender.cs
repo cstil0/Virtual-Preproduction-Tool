@@ -5,6 +5,12 @@ using System.Net.Sockets;
 using System.Globalization;
 using System.Collections;
 using UnityEngine.UIElements;
+using UnityEngine.Animations;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+using Facebook.WitAi.CallbackHandlers;
+using Microsoft.MixedReality.Toolkit.Input;
 
 public class UDPSender : MonoBehaviour
 {
@@ -14,6 +20,7 @@ public class UDPSender : MonoBehaviour
     public Camera screenCamera;
     UdpClient client;
     public int serverPort = 8050;
+    int rotateScenePort = 8053;
     public string ipAddress;
 
     bool resetStart;
@@ -72,17 +79,31 @@ public class UDPSender : MonoBehaviour
         client.Close();
     }
 
-    void sendSceneRotation()
+    void sendSceneRotation(float rotationAngle)
     {
-        client = new UdpClient(serverPort);
+        try
+        {
+            // first send rotation to screen project
+            UdpClient clientScreen = new UdpClient(serverPort);
 
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+            IPEndPoint targetScreen = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
 
-        Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
-        Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
-        byte[] message = Encoding.ASCII.GetBytes("SCENE_ROTATION:" + currentRotation.ToString());
-        client.Send(message, message.Length, target);
-        client.Close();
+            Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
+            Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
+            byte[] message = Encoding.ASCII.GetBytes("SCENE_ROTATION:" + currentRotation.ToString());
+            clientScreen.Send(message, message.Length, targetScreen);
+            clientScreen.Close();
+
+            // then, send rotation to director project (the constant value)
+            UdpClient clientDir = new UdpClient(rotateScenePort);
+
+            IPEndPoint targetDir = new IPEndPoint(IPAddress.Parse(ipAddress), rotateScenePort);
+
+            message = Encoding.ASCII.GetBytes(Convert.ToString(rotationAngle));
+            clientDir.Send(message, message.Length, targetDir);
+            clientDir.Close();
+        }
+        catch (Exception e) { }
     }
 
     void sendCameraType()
@@ -137,6 +158,62 @@ public class UDPSender : MonoBehaviour
         //SendPosRot();
     }
 
+    public void rotateItemsInScene(float rotationAngle)
+    {
+        Vector3 pivotPoint = OVRPlayer.transform.position;
+        Quaternion rotationQuat = Quaternion.Euler(0.0f, rotationAngle, 0.0f);
+
+        // get all items and characters in the scene
+        GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
+        foreach (GameObject item in sceneItems)
+        {
+            // rotate item
+            item.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+            // rotate path points in the item
+            FollowPath followPath = item.GetComponent<FollowPath>();
+            if (followPath == null)
+                continue;
+
+            List<Vector3> pathPositions = followPath.pathPositions;
+            for (int i = 0; i < pathPositions.Count; i++)
+            {
+                Vector3 point = pathPositions[i];
+                pathPositions[i] = rotatePointAround(point, pivotPoint, rotationQuat);
+            }
+                
+            item.GetComponent<FollowPath>().pathPositions = pathPositions;
+
+            // rotate also the start point for the character
+            Vector3 startPos = followPath.startPosition;
+            followPath.startPosition = rotatePointAround(startPos, pivotPoint, rotationQuat);
+        }
+
+        GameObject[] sceneLines = GameObject.FindGameObjectsWithTag("Line");
+        // get all lines in the scene and rotate all of their points
+        foreach (GameObject line in sceneLines)
+        {
+            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+            Vector3[] pathPoints = new Vector3[lineRenderer.positionCount];
+            lineRenderer.GetPositions(pathPoints);
+            for (int i = 0; i < pathPoints.Length; i++)
+            {
+                Vector3 point = pathPoints[i];
+                pathPoints[i] = rotatePointAround(point, pivotPoint, rotationQuat);
+            }
+
+            lineRenderer.SetPositions(pathPoints);
+        }
+    }
+
+    Vector3 rotatePointAround(Vector3 point, Vector3 pivotPoint, Quaternion rotationQuat)
+    {
+        // move to the world center
+        Vector3 dir = point - pivotPoint;
+        // rotate
+        dir = rotationQuat * dir;
+        // go back to world coordinates
+        return dir + pivotPoint;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -179,7 +256,7 @@ public class UDPSender : MonoBehaviour
             positionChanged = false;
         }
 
-        if (OVRInput.Get(OVRInput.RawButton.Y))
+        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
         {
             //if (!buttonDown)
             //{
@@ -189,14 +266,8 @@ public class UDPSender : MonoBehaviour
             if (sceneRotation >= 360)
                 sceneRotation = sceneRotation - 360;
 
-            sendSceneRotation();
-
-            GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
-            foreach (GameObject item in sceneItems)
-            {
-                Vector3 point = new Vector3(0.0f, 0.0f, 0.0f);
-                item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, rotationConstant);
-            }
+            sendSceneRotation(rotationConstant);
+            rotateItemsInScene(rotationConstant);
 
             buttonDown = 1;
             rotation = 5;

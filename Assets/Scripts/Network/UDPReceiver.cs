@@ -14,23 +14,29 @@ public class UDPReceiver : MonoBehaviour
     //UdpClient client;
     UdpClient clientPath;
     UdpClient clientPlay;
+    UdpClient clientRotation;
+    // separate it in different ports since this is used both for assistant and director,
+    // so that it is less messy for me
     [SerializeField] int serverPort = 8050;
     [SerializeField] int pathPointsPort = 8051;
     [SerializeField] int pathPlayPort = 8052;
+    [SerializeField] int rotateScenePort = 8053;
 
     //Thread receiveThread;
     Thread receivePathPointsThread;
     Thread receivePlayPathThread;
+    Thread receiveSceneRotationThread;
 
     bool pointParsed;
     bool playParsed;
+    bool rotationParsed;
 
-    bool receivedPlayBORR = false;
     String receivedMessage;
     String receivedName;
     int receivedCount;
     string receivedPoint;
     string receivedPlay;
+    string receivedRotation;
     //double receivedPointX;
     //double receivedPointY;
     //double receivedPointZ;
@@ -47,7 +53,6 @@ public class UDPReceiver : MonoBehaviour
     //Vector3 currRot;
     Quaternion currRot;
     
-    int countBORR = 0;
 
     public GameObject hermione;
     public GameObject harry;
@@ -159,6 +164,28 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    void UDP_RotateSceneReceive()
+    {
+        clientRotation = new UdpClient(rotateScenePort);
+        // loop needed to keep listening
+        while (true)
+        {
+            try
+            {
+                // recieve messages through the end point
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, rotateScenePort);
+                byte[] receiveBytes = clientRotation.Receive(ref remoteEndPoint);
+                receivedRotation = Encoding.ASCII.GetString(receiveBytes);
+
+                rotationParsed = false;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Exception thrown " + e.Message);
+            }
+        }
+    }
+
     void parsePoint()
     {
         pointParsed = true;
@@ -183,14 +210,20 @@ public class UDPReceiver : MonoBehaviour
 
     void parsePlayMessage()
     {
-        receivedPlayBORR = true;
-
         playParsed = true;
 
         if (receivedPlay == "PLAY")
             DirectorPanelManager.instance.playPath();
         else if (receivedPlay == "STOP")
             DirectorPanelManager.instance.stopPath();
+    }
+
+    void parseRotationMessage()
+    {
+        rotationParsed = true;
+
+        float rotationAngle = float.Parse(receivedRotation);
+        UDPSender.instance.rotateItemsInScene(rotationAngle);
     }
 
     void OnDisable()
@@ -212,6 +245,12 @@ public class UDPReceiver : MonoBehaviour
             receivePlayPathThread.Abort();
             clientPlay.Close();
         }
+
+        if (receiveSceneRotationThread != null)
+        {
+            receiveSceneRotationThread.Abort();
+            clientRotation.Close();
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -227,6 +266,10 @@ public class UDPReceiver : MonoBehaviour
             receivePathPointsThread = new Thread(UDP_PathPointsReceive);
             receivePathPointsThread.IsBackground = true;
             receivePathPointsThread.Start();
+
+            receiveSceneRotationThread = new Thread(UDP_RotateSceneReceive);
+            receiveSceneRotationThread.IsBackground = true;
+            receiveSceneRotationThread.Start();
         }
 
         // assistant wants to receive when director plays or stops the path play, since it controlls the position with network manager
@@ -243,6 +286,7 @@ public class UDPReceiver : MonoBehaviour
 
         pointParsed = true;
         playParsed = true;
+        rotationParsed = true;
     }
 
     // Update is called once per frame
@@ -264,8 +308,7 @@ public class UDPReceiver : MonoBehaviour
 
         if (!playParsed)
             parsePlayMessage();
-
-        if (receivedPlayBORR)
-            GameObject.Find("MainCamera 1").SetActive(false);
+        if (!rotationParsed)
+            parseRotationMessage();
     }
 }

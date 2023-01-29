@@ -38,16 +38,26 @@ public class FollowPathCamera : MonoBehaviour
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == 3)
-            triggerOn = true;
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.layer == 3)
+    //        triggerOn = true;
+    //}
 
-    private void OnTriggerExit(Collider other)
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.gameObject.layer == 3)
+    //        triggerOn = false;
+    //}
+    private void OnEnable()
     {
-        if (other.gameObject.layer == 3)
-            triggerOn = false;
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
+    }
+    private void OnDisable()
+    {
+        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
+        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
@@ -82,9 +92,6 @@ public class FollowPathCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DirectorPanelManager.instance.OnPlayPath += playLinePath;
-        DirectorPanelManager.instance.OnStopPath += stopLinePath;
-
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
         pathStartEnd = new Dictionary<int, int[]>();
@@ -96,12 +103,6 @@ public class FollowPathCamera : MonoBehaviour
 
         if (gameObject.GetComponent<Animator>())
             animator = gameObject.GetComponent<Animator>();
-    }
-
-    private void OnDisable()
-    {
-        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
-        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
     // Update is called once per frame
@@ -138,7 +139,7 @@ public class FollowPathCamera : MonoBehaviour
                 triggerButtonDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
-                DrawLine.instance.startLine = false;
+                //DrawLine.instance.startLine = false;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
 
@@ -170,6 +171,8 @@ public class FollowPathCamera : MonoBehaviour
             Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
             Quaternion newRot = handController.transform.rotation;
 
+            DrawLine.instance.drawLine(controllerPos);
+
             if (pointsSkip == 0)
             {
                 pathPositions.Add(newPoint);
@@ -184,7 +187,7 @@ public class FollowPathCamera : MonoBehaviour
             DrawLine.instance.SendPointPath(gameObject, newPoint);
 
             // ONLY FOR CONTINUOUS CASE
-            DrawLine.instance.startLine = isSelectedForPath;
+            //DrawLine.instance.startLine = isSelectedForPath;
         }
         else if (isSelectedForPath && newPathInstantiated)
         {
@@ -193,6 +196,7 @@ public class FollowPathCamera : MonoBehaviour
             startEnd[1] = pathPositions.Count - 1;
             pathStartEnd[lastCharacterPathID] = startEnd;
             newPathInstantiated = false;
+            DrawLine.instance.countPoints = 0;
         }
 
 
@@ -473,8 +477,8 @@ public class FollowPathCamera : MonoBehaviour
                 break;
             }
 
-            int globalSelectedID = getGlobalPathID(currentSelectedPath);
-            int[] startEnd = pathStartEnd[globalSelectedID];
+            //int globalSelectedID = getGlobalPathID(currentSelectedPath);
+            int[] startEnd = pathStartEnd[currentSelectedPath];
             int startPos = startEnd[0];
             int endPos = startEnd[1];
             // delete path points in the character
