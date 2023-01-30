@@ -222,8 +222,10 @@ public class FollowPath : MonoBehaviour
         {
             Vector3 currTarget = pathPositions[pointsCount];
 
+            // QUE HI FA AQUÍ EL POSSPEED? NO HAURIA DE SER 0.1? AH POTSER ERA PER QUE VAGI UNA MICA MÉS RÀPID SI EL PERSONATGE TB?
             if (animator != null)
-                animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
+                animator.SetFloat("Speed", 0.1f, 0.05f, Time.deltaTime);
+                //animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
 
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                 move(currTarget);
@@ -235,7 +237,7 @@ public class FollowPath : MonoBehaviour
         {
             if (animator != null)
                 // do smooth transition from walk to idle taking the delta time
-                animator.SetFloat("Speed", 0, 0.05f, Time.deltaTime);
+                animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
             isPlaying = false;
         }
         

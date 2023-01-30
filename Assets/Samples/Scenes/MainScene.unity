@@ -10869,6 +10869,7 @@ MonoBehaviour:
   serverPort: 8050
   pathPointsPort: 8051
   pathPlayPort: 8052
+  rotateScenePort: 8053
   ScreenCamera: {fileID: 1825172517}
   hermione: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
     type: 3}
@@ -17702,6 +17703,7 @@ MonoBehaviour:
   pathPositions: []
   posSpeed: 20
   rotSpeed: 7
+  startPosition: {x: 0, y: 0, z: 0}
   triggerOn: 0
   isSelectedForPath: 0
   lastCharacterPathID: 0
