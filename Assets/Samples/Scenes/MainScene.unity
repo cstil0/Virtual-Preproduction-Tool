@@ -10586,12 +10586,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1142537652}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1142537657 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 462066, guid: ce816f2e6abb0504092c23ed9b970dfd,
-    type: 3}
-  m_PrefabInstance: {fileID: 1142537652}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1148619319
 GameObject:
   m_ObjectHideFlags: 0
@@ -14546,7 +14540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1579931016
 Transform:
   m_ObjectHideFlags: 0
@@ -14560,8 +14554,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1434305006}
-  m_Father: {fileID: 1142537657}
-  m_RootOrder: 6
+  m_Father: {fileID: 144798005}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1579931017
 Camera:
