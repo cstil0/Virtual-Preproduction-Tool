@@ -1947,6 +1947,7 @@ MonoBehaviour:
   canvas: {fileID: 1437724729}
   leftHand: {fileID: 488803713}
   rightHand: {fileID: 1648952534}
+  OVRCameraTexture: {fileID: 8600000, guid: 70f52c0dc198a0e4480c50c0f5a7b973, type: 2}
 --- !u!1 &1403832406
 GameObject:
   m_ObjectHideFlags: 0

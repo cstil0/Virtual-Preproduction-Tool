@@ -93,6 +93,7 @@ public class HoverObjects : MonoBehaviour
     {
         // selecting the object to define a path can happen whenever the hand is triggering it that's why we check it here
         // if character
+        // AIXÒ D'HAVER-HO DE REPETIR TOT PER EL FOLLOWCAMERA NO M'ACABA D'AGRADAR, A VEURE SI TROBO UNA MANERA MÉS MACA
         if (other.gameObject.layer == 10)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
@@ -150,34 +151,69 @@ public class HoverObjects : MonoBehaviour
                 //Debug.Log(e.Message);
             }
 
-            FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-            // if the object has a limit rotation script mark it as selected
-            bool isSelected = false;
-            if (followPath != null)
+            if (other.gameObject.layer == 10)
             {
-                followPath.triggerOn = false;
-                alreadyTriggered = false;
-                // we just want to define a path for a single object
-                if (other.gameObject != currentSelectedForPath)
-                    followPath.isSelectedForPath = false;
-                isSelected = followPath.isSelectedForPath;
+                FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+                // if the object has a limit rotation script mark it as selected
+                bool isSelected = false;
+                if (followPath != null)
+                {
+                    followPath.triggerOn = false;
+                    alreadyTriggered = false;
+                    // we just want to define a path for a single object
+                    if (other.gameObject != currentSelectedForPath)
+                        followPath.isSelectedForPath = false;
+                    isSelected = followPath.isSelectedForPath;
 
+                }
+                if (!isSelected)
+                {
+                    alreadyTriggered = false;
+                    //currentCollider = other.gameObject;
+
+                    // check if it is item or camera
+                    Color color = new Color();
+                    if (other.gameObject.layer == 10)
+                        color = Color.white;
+                    else if (other.gameObject.layer == 9)
+                        color = Color.black;
+                    changeColorMaterials(currentCollider, color);
+
+                    if (other.gameObject == currentSelectedForPath)
+                        currentSelectedForPath = null;
+                }
             }
-            if (!isSelected)
+            if (other.gameObject.layer == 9)
             {
-                alreadyTriggered = false;
-                //currentCollider = other.gameObject;
+                FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
+                // if the object has a limit rotation script mark it as selected
+                bool isSelected = false;
+                if (followPath != null)
+                {
+                    followPath.triggerOn = false;
+                    alreadyTriggered = false;
+                    // we just want to define a path for a single object
+                    if (other.gameObject != currentSelectedForPath)
+                        followPath.isSelectedForPath = false;
+                    isSelected = followPath.isSelectedForPath;
 
-                // check if it is item or camera
-                Color color = new Color();
-                if (other.gameObject.layer == 10)
-                    color = Color.white;
-                else if (other.gameObject.layer == 9)
-                    color = Color.black;
-                changeColorMaterials(currentCollider, color);
+                }
+                if (!isSelected)
+                {
+                    alreadyTriggered = false;
+                    //currentCollider = other.gameObject;
 
-                if (other.gameObject == currentSelectedForPath)
-                    currentSelectedForPath = null;
+                    // check if it is item or camera
+                    Color color = new Color();
+                    if (other.gameObject.layer == 10)
+                        color = Color.white;
+                    else if (other.gameObject.layer == 9)
+                        color = Color.black;
+                    changeColorMaterials(currentCollider, color);
+
+                    if (other.gameObject == currentSelectedForPath)
+                        currentSelectedForPath = null;
+                }
             }
         }
     }

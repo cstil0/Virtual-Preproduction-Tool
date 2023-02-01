@@ -32,6 +32,8 @@ public class ModesManager : MonoBehaviour
     public GameObject leftHand;
     public GameObject rightHand;
 
+    [SerializeField] RenderTexture OVRCameraTexture;
+
     public enum eRoleType
     {
         NOT_DEFINED,
@@ -94,6 +96,8 @@ public class ModesManager : MonoBehaviour
             if (role == eRoleType.DIRECTOR)
             {
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
+                //Camera OVRCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+                //OVRCamera.targetTexture = OVRCameraTexture;
             }
             else if (role == eRoleType.ASSISTANT)
             {
@@ -139,7 +143,9 @@ public class ModesManager : MonoBehaviour
                 //Display.displays[1].Activate();
                 // TOT AIXÒ SERIA MÉS MACO GESTIONAR-HO AMB EVENTS!! ARA QUE SÉ COM FUNCIONEN:)
                 // O BUENO NO SÉ SI SERÀ POSSIBLE JA QUE NO SÓN SCRIPTS MEUS I PER TANT HO HAURIA DE POSAR EN ALGUN ALTRE DINS EL MATEIX OBJECTE UNA MICA AMB COLA POTSER
-                GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 1;
+                Camera OVRCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+                OVRCamera.targetDisplay = 1;
+                //OVRCamera.targetTexture = OVRCameraTexture;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("UDP Sender").SetActive(false);
                 GameObject.Find("NDI Receiver").SetActive(true);

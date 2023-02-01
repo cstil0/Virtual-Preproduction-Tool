@@ -50,7 +50,7 @@ public class UDPSender : MonoBehaviour
     }
 
     // main thread that listens to UDP messages through a defined port
-    void SendPosRot()
+    public void SendPosRot()
     {
         client = new UdpClient(serverPort);
 

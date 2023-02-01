@@ -167,11 +167,11 @@ public class FollowPathCamera : MonoBehaviour
             }
 
             newPathInstantiated = true;
-            Vector3 controllerPos = handController.transform.position;
-            Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
-            Quaternion newRot = handController.transform.rotation;
+            // in this case directly get the camera position and rotation
+            Vector3 newPoint = gameObject.transform.position;
+            Quaternion newRot = gameObject.transform.rotation;
 
-            DrawLine.instance.drawLine(controllerPos);
+            DrawLine.instance.drawLine(newPoint);
 
             if (pointsSkip == 0)
             {
@@ -304,6 +304,13 @@ public class FollowPathCamera : MonoBehaviour
             gameObject.transform.rotation = startRotation;
         }
 
+        Camera udpSenderCamera = UDPSender.instance.screenCamera;
+        if (udpSenderCamera.transform.name == gameObject.transform.name)
+        {
+            UDPSender.instance.sendChangeCamera();
+            UDPSender.instance.SendPosRot();
+        }
+
         isPlaying = !isPlaying;
         //isPlaying = true;
     }
@@ -322,6 +329,13 @@ public class FollowPathCamera : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i].GetComponent<LineRenderer>().enabled = true;
+        }
+
+        Camera udpSenderCamera = UDPSender.instance.screenCamera;
+        if (udpSenderCamera.transform.name == gameObject.transform.name)
+        {
+            UDPSender.instance.sendChangeCamera();
+            UDPSender.instance.SendPosRot();
         }
     }
 
