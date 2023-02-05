@@ -107,7 +107,7 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (alreadySelected != followPath.isSelectedForPath)
                 {
-                    Color color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.blue;
+                    Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.blue;
 
                     changeColorMaterials(currentCollider, color);
                     alreadySelected = followPath.isSelectedForPath;
@@ -128,7 +128,7 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (alreadySelected != followPath.isSelectedForPath)
                 {
-                    Color color = followPath.isSelectedForPath ? DrawLine.instance.defaultLineColor : Color.black;
+                    Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
 
                     changeColorMaterials(currentCollider, color);
                     alreadySelected = followPath.isSelectedForPath;

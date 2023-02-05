@@ -14,10 +14,10 @@ public class FollowPath : MonoBehaviour
     public GameObject handController;
     public List<Vector3> pathPositions;
     // relate each path ID with the start and end positions in the pathPositions list
-    public Dictionary<int, int[]> pathStartEnd;
+    //public Dictionary<int, int[]> pathStartEnd;
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
-    int pointsCount;
+    public int pointsCount;
     public Vector3 startPosition;
     Vector3 startDiffPosition;
     Quaternion startRotation;
@@ -25,7 +25,7 @@ public class FollowPath : MonoBehaviour
     Animator animator;
 
     bool isPlaying = false;
-    bool triggerButtonDown = false;
+    bool secondaryIndexTriggerDown = false;
     bool AButtonDown = false;
     bool BButtonDown = false;
     bool newPathInstantiated = false;
@@ -104,7 +104,7 @@ public class FollowPath : MonoBehaviour
     {
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
-        pathStartEnd = new Dictionary<int, int[]>();
+        //pathStartEnd = new Dictionary<int, int[]>();
         pointsCount = 0;
 
         startPosition = gameObject.transform.position;
@@ -125,7 +125,7 @@ public class FollowPath : MonoBehaviour
         //        // first touch will select the character, and the second one will unselect it
         //        isSelected = !isSelected;
         //        // NO FARÀ FALTA EN EL CAS CONTINU
-        //        DrawLine.instance.continueLine = isSelected;
+        //        DefinePath.instance.continueLine = isSelected;
         //    }
 
         //    else if (!buttonDown && isSelected)
@@ -143,59 +143,61 @@ public class FollowPath : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
             // REVISAR AQUEST TRIGGERON, CREC QUE NO ESTÀ FENT RES I DE FET NO ENTENC PQ ENTRA
-            if (!triggerButtonDown && triggerOn)
+            if (!secondaryIndexTriggerDown && triggerOn)
             {
-                //DrawLine.instance.startLine = false;
-                triggerButtonDown = true;
+                //DefinePath.instance.startLine = false;
+                secondaryIndexTriggerDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
 
-                if (isSelectedForPath)
-                    showPathButtons();
-                else  
-                    hidePathButtons();
+                //if (isSelectedForPath)
+                //    showPathButtons();
+                //else  
+                //    hidePathButtons();
             }
 
-            else if (!triggerButtonDown && isSelectedForPath)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath)
             {
                 // this is needed because we do not want to do this just after the character is selected but when line is instantiated
                 if (!newPathInstantiated)
                 {
                     lastCharacterPathID += 1;
-                    StartCoroutine(createNewPathButton());
-                    int[] startEnd = {pathPositions.Count, -1};
-                    pathStartEnd.Add(lastCharacterPathID, startEnd);
+                    //StartCoroutine(createNewPathButton());
+                    //int[] startEnd = {pathPositions.Count, -1};
+                    //pathStartEnd.Add(lastCharacterPathID, startEnd);
                 }
 
+                secondaryIndexTriggerDown = true;
                 newPathInstantiated = true;
                 Vector3 controllerPos = handController.transform.position;
                 Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
-                
+
                 pathPositions.Add(newPoint);
-                DrawLine.instance.drawLine(controllerPos);
+                DefinePath.instance.addPathPositon(controllerPos, pointsCount);
 
                 // send new path point from assistant to director so that he can also play and visualize paths
-                DrawLine.instance.SendPointPath(gameObject, newPoint);
+                DefinePath.instance.sendPointPath(gameObject, newPoint);
 
+                pointsCount++;
                 // ONLY FOR CONTINUOUS CASE
-                //DrawLine.instance.startLine = isSelectedForPath;
+                //DefinePath.instance.startLine = isSelectedForPath;
             }
         }
-        else if (isSelectedForPath && newPathInstantiated)
-        {
-            // establish end position of last path once the button is released
-            int[] startEnd = pathStartEnd[lastCharacterPathID];
-            startEnd[1] = pathPositions.Count - 1;
-            pathStartEnd[lastCharacterPathID] = startEnd;
-            newPathInstantiated = false;
-            DrawLine.instance.countPoints = 0;
-        }
+        //else if (isSelectedForPath && newPathInstantiated)
+        //{
+        //    // establish end position of last path once the button is released
+        //    //int[] startEnd = pathStartEnd[lastCharacterPathID];
+        //    //startEnd[1] = pathPositions.Count - 1;
+        //    //pathStartEnd[lastCharacterPathID] = startEnd;
+        //    newPathInstantiated = false;
+        //    //DefinePath.instance.countPoints = 0;
+        //}
         else
         {
             newPathInstantiated = false;
-            triggerButtonDown = false;
+            secondaryIndexTriggerDown = false;
         }
 
 
@@ -262,8 +264,8 @@ public class FollowPath : MonoBehaviour
             if (!BButtonDown)
             {
                 BButtonDown = true;
-                deleteCurrentPath();
-                relocatePathButtons();
+                //deleteCurrentPath();
+                //relocatePathButtons();
                 currentSelectedPath = 0;
             }
         }
@@ -321,82 +323,82 @@ public class FollowPath : MonoBehaviour
     }
 
     // make the last button visible, change its name and change color for all paths for the current character
-    IEnumerator createNewPathButton()
-    {
-        while (!DrawLine.instance.lineAlreadyInstantiated)
-        {
-            yield return null;
-        }
+    //IEnumerator createNewPathButton()
+    //{
+    //    while (!DefinePath.instance.lineAlreadyInstantiated)
+    //    {
+    //        yield return null;
+    //    }
 
-        DrawLine.instance.lineAlreadyInstantiated = false;
+    //    DefinePath.instance.lineAlreadyInstantiated = false;
 
-        int lastGeneralPathID = DrawLine.instance.lastPathID;
-        // by now, just handle exceptions if more than five paths are defined, but in this case they should not even be created
-        try
-        {
-            // activate image and text to show the button
-            Transform pathButtons = gameObject.transform.Find("Paths buttons");
-            Transform panel = pathButtons.GetChild(0);
-            GameObject pathButton = panel.GetChild(lastCharacterPathID - 1).gameObject;
-            pathButton.GetComponent<Image>().enabled = true;
-            GameObject text = pathButton.transform.GetChild(0).gameObject;
-            text.GetComponent<TextMeshProUGUI>().enabled = true;
-            text.GetComponent<TextMeshProUGUI>().text = "Path " + lastGeneralPathID;
+    //    int lastGeneralPathID = DefinePath.instance.lastPathID;
+    //    // by now, just handle exceptions if more than five paths are defined, but in this case they should not even be created
+    //    try
+    //    {
+    //        // activate image and text to show the button
+    //        Transform pathButtons = gameObject.transform.Find("Paths buttons");
+    //        Transform panel = pathButtons.GetChild(0);
+    //        GameObject pathButton = panel.GetChild(lastCharacterPathID - 1).gameObject;
+    //        pathButton.GetComponent<Image>().enabled = true;
+    //        GameObject text = pathButton.transform.GetChild(0).gameObject;
+    //        text.GetComponent<TextMeshProUGUI>().enabled = true;
+    //        text.GetComponent<TextMeshProUGUI>().text = "Path " + lastGeneralPathID;
 
-            // change button color to match path color
-            Color pathColor = DrawLine.instance.getPathColor(DrawLine.instance.lastPathID);
-            ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = pathColor;
-            pathButton.GetComponent<Button>().colors = buttonColors;
-            DrawLine.instance.changePathColor(DrawLine.instance.lastPathID, pathColor);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Error creating path: " + e.Message);
-        }
-    }
-    
-    void showPathButtons()
-    {
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        pathButtons.GetComponent<Canvas>().enabled = true;
-        Transform panel = pathButtons.GetChild(0);
+    //        // change button color to match path color
+    //        Color pathColor = DefinePath.instance.getPathColor(DefinePath.instance.lastPathID);
+    //        ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
+    //        buttonColors.normalColor = pathColor;
+    //        pathButton.GetComponent<Button>().colors = buttonColors;
+    //        DefinePath.instance.changePathColor(DefinePath.instance.lastPathID, pathColor);
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        Debug.LogError("Error creating path: " + e.Message);
+    //    }
+    //}
 
-        // change color for all paths of this character
-        for (int i = 0; i < panel.childCount; i++)
-        {
-            GameObject currentPathButton = panel.GetChild(i).gameObject;
-            if (!currentPathButton.GetComponent<Image>().enabled)
-                continue;
+    //void showPathButtons()
+    //{
+    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
+    //    pathButtons.GetComponent<Canvas>().enabled = true;
+    //    Transform panel = pathButtons.GetChild(0);
 
-            // get path ID
-            GameObject currentText = currentPathButton.transform.GetChild(0).gameObject;
-            string currentPathName = currentText.GetComponent<TextMeshProUGUI>().text;
-            int currentPathID = int.Parse(currentPathName.Split(" ")[1]);
-            Color currentPathColor = DrawLine.instance.getPathColor(currentPathID);
-            DrawLine.instance.changePathColor(currentPathID, currentPathColor);
-        }
-    } 
+    //    // change color for all paths of this character
+    //    for (int i = 0; i < panel.childCount; i++)
+    //    {
+    //        GameObject currentPathButton = panel.GetChild(i).gameObject;
+    //        if (!currentPathButton.GetComponent<Image>().enabled)
+    //            continue;
 
-    void hidePathButtons()
-    {
-        // iterate through all path buttons
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        pathButtons.GetComponent<Canvas>().enabled = false;
-        Transform panel = pathButtons.GetChild(0);
-        for (int i = 0; i < panel.childCount; i++)
-        {
-            GameObject pathButton = panel.GetChild(i).gameObject;
-            if (!pathButton.GetComponent<Image>().enabled)
-                continue;
+    //        // get path ID
+    //        GameObject currentText = currentPathButton.transform.GetChild(0).gameObject;
+    //        string currentPathName = currentText.GetComponent<TextMeshProUGUI>().text;
+    //        int currentPathID = int.Parse(currentPathName.Split(" ")[1]);
+    //        Color currentPathColor = DefinePath.instance.getPathColor(currentPathID);
+    //        DefinePath.instance.changePathColor(currentPathID, currentPathColor);
+    //    }
+    //} 
 
-            // get path ID
-            GameObject text = pathButton.transform.GetChild(0).gameObject;
-            string pathName = text.GetComponent<TextMeshProUGUI>().text;
-            int pathID = int.Parse(pathName.Split(" ")[1]);
-            DrawLine.instance.changePathColor(pathID, DrawLine.instance.defaultLineColor);
-        }
-    }
+    //void hidePathButtons()
+    //{
+    //    // iterate through all path buttons
+    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
+    //    pathButtons.GetComponent<Canvas>().enabled = false;
+    //    Transform panel = pathButtons.GetChild(0);
+    //    for (int i = 0; i < panel.childCount; i++)
+    //    {
+    //        GameObject pathButton = panel.GetChild(i).gameObject;
+    //        if (!pathButton.GetComponent<Image>().enabled)
+    //            continue;
+
+    //        // get path ID
+    //        GameObject text = pathButton.transform.GetChild(0).gameObject;
+    //        string pathName = text.GetComponent<TextMeshProUGUI>().text;
+    //        int pathID = int.Parse(pathName.Split(" ")[1]);
+    //        DefinePath.instance.changePathColor(pathID, DefinePath.instance.defaultLineColor);
+    //    }
+    //}
 
     void hoverCurrentPath()
     {
@@ -415,128 +417,128 @@ public class FollowPath : MonoBehaviour
             int pathID = int.Parse(pathName.Split(" ")[1]);
             Color pathColor = new Color();
             if (i == currentSelectedPath - 1)
-                pathColor = DrawLine.instance.hoverLineColor;
+                pathColor = DefinePath.instance.hoverLineColor;
             else
-                pathColor = DrawLine.instance.getPathColor(pathID);
+                pathColor = DefinePath.instance.selectedLineColor;
 
             ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
             buttonColors.normalColor = pathColor;
             pathButton.GetComponent<Button>().colors = buttonColors;
-            DrawLine.instance.changePathColor(pathID, pathColor);
+            DefinePath.instance.changePathColor(pathID, pathColor);
         }
     }
 
-    void deleteCurrentPath()
-    {
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        Transform panel = pathButtons.GetChild(0);
+    //void deleteCurrentPath()
+    //{
+    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
+    //    Transform panel = pathButtons.GetChild(0);
 
-        for (int i = 0; i < panel.childCount; i++)
-        {
-            GameObject pathButton = panel.GetChild(i).gameObject;
-            if (!pathButton.GetComponent<Image>().enabled)
-                continue;
+    //    for (int i = 0; i < panel.childCount; i++)
+    //    {
+    //        GameObject pathButton = panel.GetChild(i).gameObject;
+    //        if (!pathButton.GetComponent<Image>().enabled)
+    //            continue;
 
-            // get path ID
-            GameObject text = pathButton.transform.GetChild(0).gameObject;
-            string pathName = text.GetComponent<TextMeshProUGUI>().text;
-            int pathID = int.Parse(pathName.Split(" ")[1]);
-            if (i != currentSelectedPath - 1)
-                continue;
+    //        // get path ID
+    //        GameObject text = pathButton.transform.GetChild(0).gameObject;
+    //        string pathName = text.GetComponent<TextMeshProUGUI>().text;
+    //        int pathID = int.Parse(pathName.Split(" ")[1]);
+    //        if (i != currentSelectedPath - 1)
+    //            continue;
 
-            text.GetComponent<TextMeshProUGUI>().enabled = false;
-            pathButton.GetComponent<Image>().enabled = false;
-            GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+    //        text.GetComponent<TextMeshProUGUI>().enabled = false;
+    //        pathButton.GetComponent<Image>().enabled = false;
+    //        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
 
-            foreach (GameObject line in lines)
-            {
-                if (!line.name.Contains("Path " + pathID))
-                    continue; 
+    //        foreach (GameObject line in lines)
+    //        {
+    //            if (!line.name.Contains("Path " + pathID))
+    //                continue; 
 
-                Destroy(line.gameObject);
-                break;
-            }
+    //            Destroy(line.gameObject);
+    //            break;
+    //        }
 
-            //int globalSelectedID = getGlobalPathID(currentSelectedPath);
-            int[] startEnd = pathStartEnd[currentSelectedPath];
-            int startPos = startEnd[0];
-            int endPos = startEnd[1];
-            // delete path points in the character
-            List<int> removePositions = new List<int>();
-            for (int j = 0; j < pathPositions.Count; j++)
-            {
-                if (j >= startPos && j <= endPos)
-                    removePositions.Add(j);
-            }
+    //        //int globalSelectedID = getGlobalPathID(currentSelectedPath);
+    //        int[] startEnd = pathStartEnd[currentSelectedPath];
+    //        int startPos = startEnd[0];
+    //        int endPos = startEnd[1];
+    //        // delete path points in the character
+    //        List<int> removePositions = new List<int>();
+    //        for (int j = 0; j < pathPositions.Count; j++)
+    //        {
+    //            if (j >= startPos && j <= endPos)
+    //                removePositions.Add(j);
+    //        }
 
-            // this is needed since it is not possible to remove items while iterating the same array
-            // ESTARIA BÉ TORNAR-HO A PROVAR AMB LO DE BAIX
-            for (int j = removePositions.Count - 1; j >= 0 ; j--)
-                pathPositions.RemoveAt(j);
+    //        // this is needed since it is not possible to remove items while iterating the same array
+    //        // ESTARIA BÉ TORNAR-HO A PROVAR AMB LO DE BAIX
+    //        for (int j = removePositions.Count - 1; j >= 0 ; j--)
+    //            pathPositions.RemoveAt(j);
 
-            // update start and end positions of each following path
-            pathStartEnd.Remove(currentSelectedPath);
-            int removedPathSize = endPos - startPos + 1;
-            int removeStartEnd = -1;
-            foreach (KeyValuePair<int, int[]> startEndPos in pathStartEnd)
-            {
-                if (startEndPos.Key <= currentSelectedPath)
-                    continue;
+    //        // update start and end positions of each following path
+    //        pathStartEnd.Remove(currentSelectedPath);
+    //        int removedPathSize = endPos - startPos + 1;
+    //        int removeStartEnd = -1;
+    //        foreach (KeyValuePair<int, int[]> startEndPos in pathStartEnd)
+    //        {
+    //            if (startEndPos.Key <= currentSelectedPath)
+    //                continue;
 
-                removeStartEnd = startEndPos.Key;
-            }
+    //            removeStartEnd = startEndPos.Key;
+    //        }
 
-            if (removedPathSize != -1)
-                pathStartEnd.Remove(removeStartEnd);
+    //        if (removedPathSize != -1)
+    //            pathStartEnd.Remove(removeStartEnd);
 
-            break;
-        }
-    }
+    //        break;
+    //    }
+    //}
 
-    void relocatePathButtons()
-    {
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        Transform panel = pathButtons.GetChild(0);
+    //void relocatePathButtons()
+    //{
+    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
+    //    Transform panel = pathButtons.GetChild(0);
 
-        for (int i = 0; i < panel.childCount; i++)
-        {
-            if (i <= currentSelectedPath - 1)
-                continue;
+    //    for (int i = 0; i < panel.childCount; i++)
+    //    {
+    //        if (i <= currentSelectedPath - 1)
+    //            continue;
 
-            GameObject currentPathButton = panel.GetChild(i).gameObject;
-            if (!currentPathButton.GetComponent<Image>().enabled)
-                continue;
+    //        GameObject currentPathButton = panel.GetChild(i).gameObject;
+    //        if (!currentPathButton.GetComponent<Image>().enabled)
+    //            continue;
 
-            try
-            {
-                // first, get current ID and colors
-                GameObject currentText = currentPathButton.transform.GetChild(0).gameObject;
-                string currentPathName = currentText.GetComponent<TextMeshProUGUI>().text;
-                int currentPathID = int.Parse(currentPathName.Split(" ")[1]);
-                ColorBlock currentButtonColors = currentPathButton.GetComponent<Button>().colors;
-                if (i == currentSelectedPath - 1)
-                    currentButtonColors.normalColor = DrawLine.instance.hoverLineColor;
+    //        try
+    //        {
+    //            // first, get current ID and colors
+    //            GameObject currentText = currentPathButton.transform.GetChild(0).gameObject;
+    //            string currentPathName = currentText.GetComponent<TextMeshProUGUI>().text;
+    //            int currentPathID = int.Parse(currentPathName.Split(" ")[1]);
+    //            ColorBlock currentButtonColors = currentPathButton.GetComponent<Button>().colors;
+    //            if (i == currentSelectedPath - 1)
+    //                currentButtonColors.normalColor = DefinePath.instance.hoverLineColor;
 
-                // then, assign them to the previous one
-                GameObject previousPathButton = panel.GetChild(i - 1).gameObject;
-                GameObject previousText = previousPathButton.transform.GetChild(0).gameObject;
-                string previousPathName = "Path " + currentPathID;
-                previousText.GetComponent<TextMeshProUGUI>().text = previousPathName;
-                previousPathButton.GetComponent<Button>().colors = currentButtonColors;
+    //            // then, assign them to the previous one
+    //            GameObject previousPathButton = panel.GetChild(i - 1).gameObject;
+    //            GameObject previousText = previousPathButton.transform.GetChild(0).gameObject;
+    //            string previousPathName = "Path " + currentPathID;
+    //            previousText.GetComponent<TextMeshProUGUI>().text = previousPathName;
+    //            previousPathButton.GetComponent<Button>().colors = currentButtonColors;
 
-                previousText.GetComponent<TextMeshProUGUI>().enabled = true;
-                previousPathButton.GetComponent<Image>().enabled = true;
+    //            previousText.GetComponent<TextMeshProUGUI>().enabled = true;
+    //            previousPathButton.GetComponent<Image>().enabled = true;
 
-                if (i == lastCharacterPathID - 1)
-                {
-                    currentText.GetComponent<TextMeshProUGUI>().enabled = false;
-                    currentPathButton.GetComponent<Image>().enabled = false;
-                }
+    //            if (i == lastCharacterPathID - 1)
+    //            {
+    //                currentText.GetComponent<TextMeshProUGUI>().enabled = false;
+    //                currentPathButton.GetComponent<Image>().enabled = false;
+    //            }
 
-            }
-            catch (Exception e) {}
+    //        }
+    //        catch (Exception e) {}
 
-        }
-        lastCharacterPathID -= 1;
-    }
+    //    }
+    //    lastCharacterPathID -= 1;
+    //}
 }

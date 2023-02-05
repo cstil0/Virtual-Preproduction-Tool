@@ -128,9 +128,6 @@ public class UDPReceiver : MonoBehaviour
                 Debug.Log(receivedName);
 
                 receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedCount = int.Parse(Encoding.ASCII.GetString(receiveBytes));
-
-                receiveBytes = clientPath.Receive(ref remoteEndPoint);
                 receivedPoint = Encoding.ASCII.GetString(receiveBytes);
 
                 pointParsed = false;
@@ -201,11 +198,7 @@ public class UDPReceiver : MonoBehaviour
 
         character.GetComponent<FollowPath>().pathPositions.Add(newPoint);
 
-        // reset count points to instantiate a new line
-        if (receivedCount == 1)
-            DrawLine.instance.countPoints = receivedCount - 1;
-
-        DrawLine.instance.drawLine(newPoint);
+        DefinePath.instance.addPathPositon(newPoint, receivedCount);
     }
 
     void parsePlayMessage()
