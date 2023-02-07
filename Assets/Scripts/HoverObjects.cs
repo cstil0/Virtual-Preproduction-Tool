@@ -43,7 +43,7 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // change the color only to the first object that collided with the controller, only if it is an item
-        if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 9))
+        if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 7))
         {
             bool isSelected = false;
             currentCollider = other.gameObject;
@@ -56,7 +56,7 @@ public class HoverObjects : MonoBehaviour
                     isSelected = followPath.isSelectedForPath;
                 }
             }
-            else if (other.gameObject.layer == 9)
+            else if (other.gameObject.layer == 7)
             {
                 FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
                 if (followPath != null)
@@ -80,7 +80,7 @@ public class HoverObjects : MonoBehaviour
                 catch (System.Exception e) { }
 
                 // if it is camera, change the one that will send UDP
-                if (other.gameObject.layer == 9)
+                if (other.gameObject.layer == 7)
                 {
                     UDPSender.instance.screenCamera = other.gameObject.GetComponent<Camera>();
                     UDPSender.instance.sendChangeCamera();
@@ -115,7 +115,7 @@ public class HoverObjects : MonoBehaviour
             }
         }
 
-        if (other.gameObject.layer == 9)
+        if (other.gameObject.layer == 7)
         {
             FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
 
@@ -175,7 +175,7 @@ public class HoverObjects : MonoBehaviour
                     Color color = new Color();
                     if (other.gameObject.layer == 10)
                         color = Color.white;
-                    else if (other.gameObject.layer == 9)
+                    else if (other.gameObject.layer == 7)
                         color = Color.black;
                     changeColorMaterials(currentCollider, color);
 
@@ -183,7 +183,7 @@ public class HoverObjects : MonoBehaviour
                         currentSelectedForPath = null;
                 }
             }
-            if (other.gameObject.layer == 9)
+            if (other.gameObject.layer == 7)
             {
                 FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
                 // if the object has a limit rotation script mark it as selected
@@ -207,7 +207,7 @@ public class HoverObjects : MonoBehaviour
                     Color color = new Color();
                     if (other.gameObject.layer == 10)
                         color = Color.white;
-                    else if (other.gameObject.layer == 9)
+                    else if (other.gameObject.layer == 7)
                         color = Color.black;
                     changeColorMaterials(currentCollider, color);
 

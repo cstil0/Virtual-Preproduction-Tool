@@ -17,11 +17,11 @@ TagManager:
   - Screen Scene
   - MainCamera
   - UIVisualization
-  - CameraSet
-  - Items
   - OVRPlayer
-  - 
-  - 
+  - Items
+  - SetCamera1
+  - SetCamera2
+  - SetCamera3
   - 
   - 
   - 

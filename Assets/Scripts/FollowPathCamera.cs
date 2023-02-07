@@ -30,7 +30,7 @@ public class FollowPathCamera : MonoBehaviour
     Animator animator;
 
     bool isPlaying = false;
-    bool triggerButtonDown = false;
+    bool secondaryIndexTriggerDown = false;
     bool AButtonDown = false;
     bool BButtonDown = false;
     bool newPathInstantiated = false;
@@ -112,96 +112,25 @@ public class FollowPathCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
-        //{
-        //    if (!buttonDown && triggerOn)
-        //    {
-        //        buttonDown = true;
-        //        // first touch will select the character, and the second one will unselect it
-        //        isSelected = !isSelected;
-        //        // NO FARÀ FALTA EN EL CAS CONTINU
-        //        DrawLine.instance.continueLine = isSelected;
-        //    }
-
-        //    else if (!buttonDown && isSelected)
-        //    {
-        //        buttonDown = true;
-        //        Vector3 controllerPos = handController.transform.position;
-        //        Vector3 newPoint = new Vector3(controllerPos.x, gameObject.transform.position.y, controllerPos.z);
-        //        pathPositions.Add(newPoint);
-        //    }
-        //}
-        //else
-        //    buttonDown = false;
-
-        // CONTINUOUS CASE
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
-            // REVISAR EL TRIGGER ON AQUEST
-            if (!triggerButtonDown && triggerOn)
+            if (!secondaryIndexTriggerDown && triggerOn)
             {
-                triggerButtonDown = true;
-                // first touch will select the character, and the second one will unselect it
+                secondaryIndexTriggerDown = true;
                 isSelectedForPath = !isSelectedForPath;
-                //DrawLine.instance.startLine = false;
                 startPosition = gameObject.transform.position;
-                //startDiffPosition = handController.transform.position - startPosition;
-
-                //if (isSelectedForPath)
-                //    showPathButtons();
-                //else
-                //    hidePathButtons();
+                defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
+            }
+            else if (!secondaryIndexTriggerDown && isSelectedForPath)
+            {
+                secondaryIndexTriggerDown = true;
+                defineNewPathPoint(handController.transform.position, handController.transform.rotation);
             }
         }
         else
         {
-            triggerButtonDown = false;
+            secondaryIndexTriggerDown = false;
         }
-
-
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && isSelectedForPath && triggerOn)
-        {
-            // this is needed because we do not want to do this just after the character is selected but when line is instantiated
-            if (!newPathInstantiated)
-            {
-                lastCharacterPathID += 1;
-                //StartCoroutine(createNewPathButton());
-                //int[] startEnd = { pathPositions.Count, -1 };
-                //pathStartEnd.Add(lastCharacterPathID, startEnd);
-            }
-
-            newPathInstantiated = true;
-            // in this case directly get the camera position and rotation
-            Vector3 newPoint = gameObject.transform.position;
-            Quaternion newRot = gameObject.transform.rotation;
-
-            DefinePath.instance.addPathPositon(newPoint, (int)pathLength);
-
-            //if (pointsSkip == 0)
-            //{
-            //    pathPositions.Add(newPoint);
-            //    pathRotations.Add(newRot);
-            //}
-
-            //pointsSkip++;
-            //if (pointsSkip >= 3)
-            //    pointsSkip = 0;
-
-            // send new path point from assistant to director so that he can also play and visualize paths
-            DefinePath.instance.sendPointPath(gameObject, newPoint);
-
-            // ONLY FOR CONTINUOUS CASE
-            //DrawLine.instance.startLine = isSelectedForPath;
-        }
-        else if (isSelectedForPath && newPathInstantiated)
-        {
-            // establish end position of last path once the button is released
-            //int[] startEnd = pathStartEnd[lastCharacterPathID];
-            //startEnd[1] = pathPositions.Count - 1;
-            //pathStartEnd[lastCharacterPathID] = startEnd;
-            newPathInstantiated = false;
-        }
-
 
 
         if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
@@ -288,6 +217,23 @@ public class FollowPathCamera : MonoBehaviour
         //// restablish current selected Path if character is not selected
         //if (currentSelectedPath != 0 && !isSelectedForPath)
         //    currentSelectedPath = 0;
+    }
+
+    void defineNewPathPoint(Vector3 newPoint, Quaternion newRot)
+    {
+        CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
+        pathLength = wayPoints.Length;
+        List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>(wayPoints);
+        Vector3 newPointCinemachine = newPoint - startPosition;
+        CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
+        newWayPoint.position = newPointCinemachine;
+        newWayPoint.roll = 0.0f;
+        wayPointsList.Add(newWayPoint);
+        wayPoints = wayPointsList.ToArray();
+        cinemachineSmoothPath.m_Waypoints = wayPoints;
+
+        DefinePath.instance.addPathPositon(newPoint, (int) pathLength);
+        DefinePath.instance.sendPointPath(gameObject, newPoint);
     }
 
     void playLinePath()

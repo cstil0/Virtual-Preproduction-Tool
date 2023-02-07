@@ -142,7 +142,6 @@ public class FollowPath : MonoBehaviour
         // CONTINUOUS CASE
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
-            // REVISAR AQUEST TRIGGERON, CREC QUE NO ESTÀ FENT RES I DE FET NO ENTENC PQ ENTRA
             if (!secondaryIndexTriggerDown && triggerOn)
             {
                 //DefinePath.instance.startLine = false;
@@ -151,6 +150,7 @@ public class FollowPath : MonoBehaviour
                 isSelectedForPath = !isSelectedForPath;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
+                defineNewPathPoint(gameObject.transform.position);
 
                 //if (isSelectedForPath)
                 //    showPathButtons();
@@ -160,40 +160,10 @@ public class FollowPath : MonoBehaviour
 
             else if (!secondaryIndexTriggerDown && isSelectedForPath)
             {
-                // this is needed because we do not want to do this just after the character is selected but when line is instantiated
-                if (!newPathInstantiated)
-                {
-                    lastCharacterPathID += 1;
-                    //StartCoroutine(createNewPathButton());
-                    //int[] startEnd = {pathPositions.Count, -1};
-                    //pathStartEnd.Add(lastCharacterPathID, startEnd);
-                }
-
                 secondaryIndexTriggerDown = true;
-                newPathInstantiated = true;
-                Vector3 controllerPos = handController.transform.position;
-                Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
-
-                pathPositions.Add(newPoint);
-                DefinePath.instance.addPathPositon(controllerPos, pointsCount);
-
-                // send new path point from assistant to director so that he can also play and visualize paths
-                DefinePath.instance.sendPointPath(gameObject, newPoint);
-
-                pointsCount++;
-                // ONLY FOR CONTINUOUS CASE
-                //DefinePath.instance.startLine = isSelectedForPath;
+                defineNewPathPoint(handController.transform.position);
             }
         }
-        //else if (isSelectedForPath && newPathInstantiated)
-        //{
-        //    // establish end position of last path once the button is released
-        //    //int[] startEnd = pathStartEnd[lastCharacterPathID];
-        //    //startEnd[1] = pathPositions.Count - 1;
-        //    //pathStartEnd[lastCharacterPathID] = startEnd;
-        //    newPathInstantiated = false;
-        //    //DefinePath.instance.countPoints = 0;
-        //}
         else
         {
             newPathInstantiated = false;
@@ -275,6 +245,19 @@ public class FollowPath : MonoBehaviour
         // restablish current selected Path if character is not selected
         if (currentSelectedPath != 0 && !isSelectedForPath)
             currentSelectedPath = 0;
+    }
+
+    void defineNewPathPoint(Vector3 controllerPos)
+    {
+        Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
+
+        pathPositions.Add(newPoint);
+        DefinePath.instance.addPathPositon(controllerPos, pointsCount);
+
+        // send new path point from assistant to director so that he can also play and visualize paths
+        DefinePath.instance.sendPointPath(gameObject, newPoint);
+
+        pointsCount++;
     }
 
     void playLinePath()
