@@ -24,6 +24,9 @@ public class FollowPath : MonoBehaviour
 
     Animator animator;
 
+    GameObject pathContainer;
+    int pathNum = -1;
+
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
     bool AButtonDown = false;
@@ -31,6 +34,7 @@ public class FollowPath : MonoBehaviour
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
+    public bool isPointOnTrigger = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -150,7 +154,17 @@ public class FollowPath : MonoBehaviour
                 isSelectedForPath = !isSelectedForPath;
                 startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
-                defineNewPathPoint(gameObject.transform.position);
+
+                if(pointsCount == 0)
+                {
+                    defineNewPathPoint(handController.transform.position);
+                    pathNum = DefinePath.instance.pathsCount;
+                }
+
+                if (!isSelectedForPath)
+                    DefinePath.instance.changePathColor(pathNum, DefinePath.instance.defaultLineColor);
+                else
+                    DefinePath.instance.changePathColor(pathNum, DefinePath.instance.defaultLineColor);
 
                 //if (isSelectedForPath)
                 //    showPathButtons();
@@ -158,7 +172,7 @@ public class FollowPath : MonoBehaviour
                 //    hidePathButtons();
             }
 
-            else if (!secondaryIndexTriggerDown && isSelectedForPath)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
                 defineNewPathPoint(handController.transform.position);
@@ -247,12 +261,16 @@ public class FollowPath : MonoBehaviour
             currentSelectedPath = 0;
     }
 
-    void defineNewPathPoint(Vector3 controllerPos)
+    public void defineNewPathPoint(Vector3 controllerPos)
     {
         Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
 
         pathPositions.Add(newPoint);
-        DefinePath.instance.addPathPositon(controllerPos, pointsCount);
+        if (pointsCount == 0)
+            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, pointsCount, gameObject);
+        else 
+            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, pointsCount, gameObject);
+
 
         // send new path point from assistant to director so that he can also play and visualize paths
         DefinePath.instance.sendPointPath(gameObject, newPoint);
@@ -268,6 +286,14 @@ public class FollowPath : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i].GetComponent<LineRenderer>().enabled = false;
+        }
+
+        GameObject[] points;
+        points = GameObject.FindGameObjectsWithTag("PathPoint");
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            points[i].GetComponent<MeshRenderer>().enabled = false;
         }
 
         isPlaying = !isPlaying;
@@ -287,6 +313,14 @@ public class FollowPath : MonoBehaviour
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i].GetComponent<LineRenderer>().enabled = true;
+        }
+
+        GameObject[] points;
+        points = GameObject.FindGameObjectsWithTag("PathPoint");
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            points[i].GetComponent<MeshRenderer>().enabled = true;
         }
     }
 
@@ -409,6 +443,12 @@ public class FollowPath : MonoBehaviour
             pathButton.GetComponent<Button>().colors = buttonColors;
             DefinePath.instance.changePathColor(pathID, pathColor);
         }
+    }
+
+    public void deletePathPoint(int pointNum)
+    {
+        pathPositions.RemoveAt(pointNum);
+        DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
     }
 
     //void deleteCurrentPath()

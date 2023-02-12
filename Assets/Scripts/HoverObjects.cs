@@ -1,3 +1,4 @@
+using Oculus.Voice.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,11 +6,28 @@ using UnityEngine;
 
 public class HoverObjects : MonoBehaviour
 {
+    public static HoverObjects instance = null;
+
     bool alreadyTriggered;
-    public bool alreadySelected;
+    public bool itemAlreadySelected = false;
+    public bool pointAlreadySelected = false;
+    private bool triggerButtonDown = false;
+
     //bool alreadySelectedForPath;
-    GameObject currentCollider;
+    GameObject currentItemCollider;
+    GameObject currentPointCollider;
     GameObject currentSelectedForPath;
+
+    private void Awake()
+    {
+        if (instance)
+        {
+            if (instance != this)
+                Destroy(gameObject);
+        }
+        else
+            instance = this;
+    }
 
     // recursive function that iterates through all materials of the tree and changes their color
     private void changeColorMaterials(GameObject currentParent, Color color)
@@ -46,7 +64,7 @@ public class HoverObjects : MonoBehaviour
         if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 7))
         {
             bool isSelected = false;
-            currentCollider = other.gameObject;
+            currentItemCollider = other.gameObject;
             if (other.gameObject.layer == 10)
             {
                 FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
@@ -70,12 +88,12 @@ public class HoverObjects : MonoBehaviour
             if (!isSelected)
             {
                 alreadyTriggered = true;
-                changeColorMaterials(currentCollider, UnityEngine.Color.blue);
+                changeColorMaterials(currentItemCollider, UnityEngine.Color.blue);
 
                 // if the object has a limit rotation script mark it as selected
                 try
                 {
-                    currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, true);
+                    currentItemCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, true);
                 }
                 catch (System.Exception e) { }
 
@@ -86,6 +104,15 @@ public class HoverObjects : MonoBehaviour
                     UDPSender.instance.sendChangeCamera();
                 }
             }
+        }
+
+        // if sphere path point
+        if (!pointAlreadySelected && (other.gameObject.layer == 14))
+        {
+            pointAlreadySelected = true;
+            currentPointCollider = other.gameObject;
+            changeColorMaterials(currentPointCollider, Color.blue);
+            currentPointCollider.GetComponent<PathSpheresController>().changeTriggerState(true);
         }
     }
 
@@ -105,12 +132,12 @@ public class HoverObjects : MonoBehaviour
             if (followPath != null && currentSelectedForPath == other.gameObject)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-                if (alreadySelected != followPath.isSelectedForPath)
+                if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
                     Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.blue;
 
-                    changeColorMaterials(currentCollider, color);
-                    alreadySelected = followPath.isSelectedForPath;
+                    changeColorMaterials(currentItemCollider, color);
+                    itemAlreadySelected = followPath.isSelectedForPath;
                 }
             }
         }
@@ -126,12 +153,12 @@ public class HoverObjects : MonoBehaviour
             if (followPath != null && currentSelectedForPath == other.gameObject)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-                if (alreadySelected != followPath.isSelectedForPath)
+                if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
                     Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
 
-                    changeColorMaterials(currentCollider, color);
-                    alreadySelected = followPath.isSelectedForPath;
+                    changeColorMaterials(currentItemCollider, color);
+                    itemAlreadySelected = followPath.isSelectedForPath;
                 }
             }
         }
@@ -140,11 +167,11 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         // change the color to white to the first collider
-        if (other.gameObject == currentCollider)
+        if (other.gameObject == currentItemCollider)
         {
             try
             {
-                currentCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
+                currentItemCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
             }
             catch (System.Exception e)
             {
@@ -177,7 +204,7 @@ public class HoverObjects : MonoBehaviour
                         color = Color.white;
                     else if (other.gameObject.layer == 7)
                         color = Color.black;
-                    changeColorMaterials(currentCollider, color);
+                    changeColorMaterials(currentItemCollider, color);
 
                     if (other.gameObject == currentSelectedForPath)
                         currentSelectedForPath = null;
@@ -209,12 +236,46 @@ public class HoverObjects : MonoBehaviour
                         color = Color.white;
                     else if (other.gameObject.layer == 7)
                         color = Color.black;
-                    changeColorMaterials(currentCollider, color);
+                    changeColorMaterials(currentItemCollider, color);
 
                     if (other.gameObject == currentSelectedForPath)
                         currentSelectedForPath = null;
                 }
             }
+        }
+
+
+        // if sphere path point
+        else if (other.gameObject == currentPointCollider)
+        {
+            pointAlreadySelected = false;
+            currentPointCollider.GetComponent<PathSpheresController>().changeTriggerState(false);
+            // once the hand has exit the trigger at least once, then the point is able to be deleted
+            currentPointCollider.GetComponent<PathSpheresController>().isBeingCreated = false;
+            changeColorMaterials(currentPointCollider, DefinePath.instance.selectedLineColor);
+            currentPointCollider = null;
+        }
+    }
+
+    public IEnumerator deletePathPoint()
+    {
+        pointAlreadySelected = false;
+        currentPointCollider = null;
+
+        //while (triggerButtonDown) yield return null;
+        yield return new WaitForSeconds(1f);
+
+
+        Debug.Log("TRIGGER UP");
+        if (currentSelectedForPath.layer == 10)
+        {
+            FollowPath followPath = currentSelectedForPath.GetComponent<FollowPath>();
+            followPath.isPointOnTrigger = false;
+        }
+        else if (currentSelectedForPath.layer == 7)
+        {
+            FollowPathCamera followPathCamera = currentSelectedForPath.GetComponent<FollowPathCamera>();
+            followPathCamera.isPointOnTrigger = false;
         }
     }
 
@@ -222,14 +283,21 @@ public class HoverObjects : MonoBehaviour
     void Start()
     {
         alreadyTriggered = false;
-        alreadySelected = false;
+        itemAlreadySelected = false;
+        pointAlreadySelected = false;
         currentSelectedForPath = null;
-        currentCollider = null;
+        currentItemCollider = null;
+        currentPointCollider = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+            triggerButtonDown = true;
+        else
+        {
+            triggerButtonDown = false;
+        }
     }
 }

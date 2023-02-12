@@ -7,6 +7,7 @@ TagManager:
   - Line
   - Items
   - DirectorPanel
+  - PathPoint
   layers:
   - Default
   - TransparentFX
@@ -22,7 +23,7 @@ TagManager:
   - SetCamera1
   - SetCamera2
   - SetCamera3
-  - 
+  - PathSphere
   - 
   - 
   - 

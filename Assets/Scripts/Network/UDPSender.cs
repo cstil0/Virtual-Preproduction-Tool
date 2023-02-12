@@ -294,7 +294,7 @@ public class UDPSender : MonoBehaviour
                 buttonDown = 0;
         }
 
-        if (OVRInput.Get(OVRInput.RawButton.A) && !hoverObjects.alreadySelected)
+        if (OVRInput.Get(OVRInput.RawButton.A) && !hoverObjects.itemAlreadySelected)
         {
             screenCamera.transform.position = screenCameraStartPos;
             screenCamera.transform.rotation = screenCameraStartRot;

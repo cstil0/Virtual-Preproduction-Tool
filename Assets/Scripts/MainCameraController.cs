@@ -30,7 +30,7 @@ public class MainCameraController : MonoBehaviour
     {
         OVRInput.Update();
 
-        if (OVRInput.Get(OVRInput.RawButton.B) && gameObject.name == "MainCamera 1" && !hoverObjects.alreadySelected)
+        if (OVRInput.Get(OVRInput.RawButton.B) && gameObject.name == "MainCamera 1" && !hoverObjects.itemAlreadySelected)
         {
             if (!buttonDown)
                 currentlySending = !currentlySending;

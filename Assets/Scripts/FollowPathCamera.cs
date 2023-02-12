@@ -29,6 +29,8 @@ public class FollowPathCamera : MonoBehaviour
 
     Animator animator;
 
+    GameObject pathContainer;
+
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
     bool AButtonDown = false;
@@ -36,6 +38,7 @@ public class FollowPathCamera : MonoBehaviour
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
+    public bool isPointOnTrigger = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -121,7 +124,7 @@ public class FollowPathCamera : MonoBehaviour
                 startPosition = gameObject.transform.position;
                 defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
             }
-            else if (!secondaryIndexTriggerDown && isSelectedForPath)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
                 defineNewPathPoint(handController.transform.position, handController.transform.rotation);
@@ -232,7 +235,12 @@ public class FollowPathCamera : MonoBehaviour
         wayPoints = wayPointsList.ToArray();
         cinemachineSmoothPath.m_Waypoints = wayPoints;
 
-        DefinePath.instance.addPathPositon(newPoint, (int) pathLength);
+        pathPositions.Add(newPoint);
+        if (pathLength == 0)
+            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, (int)pathLength, gameObject);
+        else
+            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, (int)pathLength, gameObject); 
+        
         DefinePath.instance.sendPointPath(gameObject, newPoint);
     }
 
@@ -407,6 +415,12 @@ public class FollowPathCamera : MonoBehaviour
             pathButton.GetComponent<Button>().colors = buttonColors;
             DefinePath.instance.changePathColor(pathID, pathColor);
         }
+    }
+
+    public void deletePathPoint(int pointNum)
+    {
+        pathPositions.RemoveAt(pointNum);
+        DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
     }
 
     //void deleteCurrentPath()

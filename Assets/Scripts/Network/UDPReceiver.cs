@@ -196,9 +196,7 @@ public class UDPReceiver : MonoBehaviour
 
         //Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
 
-        character.GetComponent<FollowPath>().pathPositions.Add(newPoint);
-
-        DefinePath.instance.addPathPositon(newPoint, receivedCount);
+        character.GetComponent<FollowPath>().defineNewPathPoint(newPoint);
     }
 
     void parsePlayMessage()
