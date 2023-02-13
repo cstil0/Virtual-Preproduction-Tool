@@ -319,7 +319,7 @@ public class FollowPathCamera : MonoBehaviour
     //        yield return null;
     //    }
 
-    //    DefinePath.instance.lineAlreadyInstantiated = false;
+    //    DefinePath.instance.lineAlreadyInstantiate    1d = false;
 
     //    int lastGeneralPathID = DefinePath.instance.lastPathID;
     //    // by now, just handle exceptions if more than five paths are defined, but in this case they should not even be created

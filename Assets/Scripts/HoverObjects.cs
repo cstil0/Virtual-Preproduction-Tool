@@ -11,12 +11,11 @@ public class HoverObjects : MonoBehaviour
     bool alreadyTriggered;
     public bool itemAlreadySelected = false;
     public bool pointAlreadySelected = false;
-    private bool triggerButtonDown = false;
 
     //bool alreadySelectedForPath;
-    GameObject currentItemCollider;
-    GameObject currentPointCollider;
-    GameObject currentSelectedForPath;
+    public GameObject currentItemCollider;
+    public GameObject currentPointCollider;
+    public GameObject currentSelectedForPath;
 
     private void Awake()
     {
@@ -32,6 +31,13 @@ public class HoverObjects : MonoBehaviour
     // recursive function that iterates through all materials of the tree and changes their color
     private void changeColorMaterials(GameObject currentParent, Color color)
     {
+        Renderer renderer = currentParent.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            Material parentMaterial = renderer.material;
+            parentMaterial.color = color;
+        }
+
         for (int i = 0; i < currentParent.transform.childCount; i++)
         {
             GameObject currChild = currentParent.transform.GetChild(i).gameObject;
@@ -40,7 +46,7 @@ public class HoverObjects : MonoBehaviour
             try
             {
                 // get all materials and change their color
-                Renderer renderer = currChild.GetComponent<Renderer>();
+                renderer = currChild.GetComponent<Renderer>();
                 Material[] materials = renderer.materials;
 
                 foreach (Material material in materials)
@@ -257,28 +263,6 @@ public class HoverObjects : MonoBehaviour
         }
     }
 
-    public IEnumerator deletePathPoint()
-    {
-        pointAlreadySelected = false;
-        currentPointCollider = null;
-
-        //while (triggerButtonDown) yield return null;
-        yield return new WaitForSeconds(1f);
-
-
-        Debug.Log("TRIGGER UP");
-        if (currentSelectedForPath.layer == 10)
-        {
-            FollowPath followPath = currentSelectedForPath.GetComponent<FollowPath>();
-            followPath.isPointOnTrigger = false;
-        }
-        else if (currentSelectedForPath.layer == 7)
-        {
-            FollowPathCamera followPathCamera = currentSelectedForPath.GetComponent<FollowPathCamera>();
-            followPathCamera.isPointOnTrigger = false;
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -293,11 +277,5 @@ public class HoverObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
-            triggerButtonDown = true;
-        else
-        {
-            triggerButtonDown = false;
-        }
     }
 }

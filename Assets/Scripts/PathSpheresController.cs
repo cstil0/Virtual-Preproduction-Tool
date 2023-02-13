@@ -32,12 +32,37 @@ public class PathSpheresController : MonoBehaviour
                 else if (followPathCamera != null)
                     followPathCamera.deletePathPoint(pointNum);
 
-                StartCoroutine(HoverObjects.instance.deletePathPoint());
-                Destroy(gameObject);
+                //StartCoroutine(HoverObjects.instance.deletePathPoint());
+                StartCoroutine(deletePathPoint());
             }
         }
         else
             secondaryTriggerButtonDown = false;
+    }
+
+    public IEnumerator deletePathPoint()
+    {
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
+        HoverObjects.instance.pointAlreadySelected = false;
+        HoverObjects.instance.currentPointCollider = null;
+
+        while (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger)) yield return null;
+        //yield return new WaitForSeconds(1f);
+
+
+        Debug.Log("TRIGGER UP");
+        if (HoverObjects.instance.currentSelectedForPath.layer == 10)
+        {
+            FollowPath followPath = HoverObjects.instance.currentSelectedForPath.GetComponent<FollowPath>();
+            followPath.isPointOnTrigger = false;
+        }
+        else if (HoverObjects.instance.currentSelectedForPath.layer == 7)
+        {
+            FollowPathCamera followPathCamera = HoverObjects.instance.currentSelectedForPath.GetComponent<FollowPathCamera>();
+            followPathCamera.isPointOnTrigger = false;
+        }
+
+        Destroy(gameObject);
     }
 
     public void changeTriggerState(bool newTriggerState)
