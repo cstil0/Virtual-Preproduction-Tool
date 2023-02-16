@@ -9,7 +9,7 @@ public class PathSpheresController : MonoBehaviour
     public bool triggerOn = false;
     private bool secondaryTriggerButtonDown = false;
 
-    public GameObject item;
+    public GameObject item = null;
     FollowPath followPath;
     FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;

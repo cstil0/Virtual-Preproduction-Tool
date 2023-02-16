@@ -11,10 +11,12 @@ public class HoverObjects : MonoBehaviour
     bool alreadyTriggered;
     public bool itemAlreadySelected = false;
     public bool pointAlreadySelected = false;
+    public bool miniCameraAlreadySelected = false;
 
     //bool alreadySelectedForPath;
     public GameObject currentItemCollider;
     public GameObject currentPointCollider;
+    public GameObject currentMiniCameraCollider;
     public GameObject currentSelectedForPath;
 
     private void Awake()
@@ -69,6 +71,7 @@ public class HoverObjects : MonoBehaviour
         // change the color only to the first object that collided with the controller, only if it is an item
         if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 7))
         {
+            // check if it was selected to set the correct color
             bool isSelected = false;
             currentItemCollider = other.gameObject;
             if (other.gameObject.layer == 10)
@@ -119,6 +122,15 @@ public class HoverObjects : MonoBehaviour
             currentPointCollider = other.gameObject;
             changeColorMaterials(currentPointCollider, Color.blue);
             currentPointCollider.GetComponent<PathSpheresController>().changeTriggerState(true);
+        }
+
+        // if mini camera
+        if (!miniCameraAlreadySelected && (other.gameObject.layer == 15))
+        {
+            miniCameraAlreadySelected = true;
+            currentMiniCameraCollider = other.gameObject;
+            changeColorMaterials(currentMiniCameraCollider, Color.blue);
+            currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = true;
         }
     }
 
@@ -260,6 +272,14 @@ public class HoverObjects : MonoBehaviour
             currentPointCollider.GetComponent<PathSpheresController>().isBeingCreated = false;
             changeColorMaterials(currentPointCollider, DefinePath.instance.selectedLineColor);
             currentPointCollider = null;
+        }
+
+        else if (other.gameObject == currentMiniCameraCollider)
+        {
+            miniCameraAlreadySelected = false;
+            currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = false;
+            changeColorMaterials(currentMiniCameraCollider, DefinePath.instance.selectedLineColor);
+            currentMiniCameraCollider = null;
         }
     }
 

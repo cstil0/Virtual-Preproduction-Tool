@@ -214,7 +214,7 @@ public class ModesManager : MonoBehaviour
                 // Activate thumbstick movement
                 OVRPlayerController playerController = GameObject.Find("OVRPlayerController").GetComponent<OVRPlayerController>();
                 playerController.EnableLinearMovement = true;
-                playerController.EnableRotation = true;
+                playerController.EnableRotation = false;
             }
         }
     }

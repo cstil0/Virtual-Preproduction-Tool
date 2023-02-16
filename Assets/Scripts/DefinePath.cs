@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -12,14 +13,15 @@ public class DefinePath : MonoBehaviour
 {
     public static DefinePath instance = null;
 
-    [SerializeField] GameObject spherePrefab;
+    public GameObject spherePrefab;
+    public GameObject sphereCameraPrefab;
     [SerializeField] GameObject linePrefab;
     [SerializeField] GameObject emptyPrefab;
     [SerializeField] GameObject handController;
     [SerializeField] int pathPointsPort = 8051;
 
-    public Color defaultLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
-    public Color hoverLineColor = new Color(0.5176471f, 0.7504352f, 0.8078431f);
+    public Color defaultLineColor = new Color(0.6554998f, 0.4750979f, 0.8773585f);
+    public Color hoverLineColor = new Color(0.7264151f, 0.7264151f, 0.7264151f);
     public Color selectedLineColor = new Color(0.6554998f, 0.4750979f, 0.8773585f);
 
     public int pathsCount = 0;
@@ -55,24 +57,42 @@ public class DefinePath : MonoBehaviour
         //    secondaryIndexTriggerDown = false;
         //    currPointsCount = 0;
         //}
+
+
+
     }
 
-    public GameObject addPointToNewPath(Vector3 newPosition, int pointsCount, GameObject item)
+    public GameObject addPointToNewPath(Vector3 newPosition, int pointsCount, GameObject item, GameObject spherePrefab)
     {
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
         GameObject pathContainer = Instantiate(emptyPrefab);
         GameObject line = Instantiate(linePrefab);
+
+        // can be with or without camera depending on who called this function
         GameObject spherePoint = Instantiate(spherePrefab);
+
+        //pathContainer.GetComponent<NetworkObject>().Spawn();
+        //spherePoint.GetComponent<NetworkObject>().Spawn();
 
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
-        spherePoint.transform.SetParent(pathContainer.transform);
+        //spherePoint.transform.SetParent(pathContainer.transform);
         // set the new point to the line renderer in the 0 index
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         currLineRenderer.SetPosition(pointsCount, newPosition);
 
-        spherePoint.GetComponent<PathSpheresController>().item = item;
-        spherePoint.GetComponent<PathSpheresController>().getFollowPath();
+        if (spherePoint.transform.childCount > 0)
+        {
+            GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
+            sphere.GetComponent<PathSpheresController>().item = item;
+            sphere.GetComponent<PathSpheresController>().getFollowPath();
+        }
+        else
+        {
+            spherePoint.GetComponent<PathSpheresController>().item = item;
+            spherePoint.GetComponent<PathSpheresController>().getFollowPath();
+        }
+
 
         // define position and rotation to the sphere
         spherePoint.transform.position = newPosition;
@@ -88,18 +108,35 @@ public class DefinePath : MonoBehaviour
         return pathContainer;
     }
 
-    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, int pointsCount, GameObject item)
+    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, int pointsCount, GameObject item, GameObject spherePointPrefab)
     {
         // add a new position
-        GameObject spherePoint = Instantiate(spherePrefab);
-        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        GameObject spherePoint = null;
+
+        spherePoint = Instantiate(spherePointPrefab);
+        GameObject miniCamera = null;
+        if (spherePoint.transform.childCount > 0)
+            miniCamera  = spherePoint.transform.GetChild(0).gameObject;
+
+        GameObject line = pathContainer.transform.GetChild(0).gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
+
+        //spherePoint.GetComponent<NetworkObject>().Spawn();
 
         currLineRenderer.positionCount += 1;
         currLineRenderer.SetPosition(pointsCount, newPosition);
 
-        spherePoint.GetComponent<PathSpheresController>().item = item;
-        spherePoint.GetComponent<PathSpheresController>().getFollowPath();
+        if (spherePoint.transform.childCount > 0)
+        {
+            GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
+            sphere.GetComponent<PathSpheresController>().item = item;
+            sphere.GetComponent<PathSpheresController>().getFollowPath();
+        }
+        else
+        {
+            spherePoint.GetComponent<PathSpheresController>().item = item;
+            spherePoint.GetComponent<PathSpheresController>().getFollowPath();
+        }
 
         spherePoint.transform.name = "Point " + pointsCount;
         spherePoint.transform.position = newPosition;
@@ -120,6 +157,7 @@ public class DefinePath : MonoBehaviour
         pathPositionsArray = pathPositionsList.ToArray();
         currLineRenderer.SetPositions(pathPositionsArray);
         currLineRenderer.positionCount = pointsCount - 1;
+
 
         // change following points name
         // start in second child since first one corresponds to the line renderer
@@ -153,25 +191,22 @@ public class DefinePath : MonoBehaviour
     }
 
     // NEEDS DEVELOPEMENT
-    public void changePathColor(int pathID, Color pathColor)
+    public void changePathColor(GameObject pathContainer, Color pathColor)
     {
-        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
-
-        foreach (GameObject line in lines)
+        for (int i = 0; i < pathContainer.transform.childCount; i++)
         {
-            if (!line.name.Contains("Path " + pathID))
-                continue;
-
-            Renderer renderer = line.GetComponent<Renderer>();
-            renderer.material.color = pathColor;
-        }
-
-        GameObject[] points = GameObject.FindGameObjectsWithTag("PathPoint");
-        foreach (GameObject point in points)
-        {
-            Renderer renderer = point.GetComponent<Renderer>();
-            Material material = renderer.material;
-            material.color = pathColor;
+            GameObject currChild = pathContainer.transform.GetChild(i).gameObject;
+            if (currChild.name.Contains("Line"))
+            {
+                Renderer renderer = currChild.GetComponent<Renderer>();
+                renderer.material.color = pathColor;
+            }
+            else if (currChild.name.Contains("Point"))
+            {
+                Renderer renderer = currChild.GetComponent<Renderer>();
+                Material material = renderer.material;
+                material.color = pathColor;
+            }
         }
     }
 }

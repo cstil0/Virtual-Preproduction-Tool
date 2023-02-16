@@ -162,9 +162,9 @@ public class FollowPath : MonoBehaviour
                 }
 
                 if (!isSelectedForPath)
-                    DefinePath.instance.changePathColor(pathNum, DefinePath.instance.defaultLineColor);
+                    DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor);
                 else
-                    DefinePath.instance.changePathColor(pathNum, DefinePath.instance.defaultLineColor);
+                    DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor);
 
                 //if (isSelectedForPath)
                 //    showPathButtons();
@@ -267,9 +267,9 @@ public class FollowPath : MonoBehaviour
 
         pathPositions.Add(newPoint);
         if (pointsCount == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, pointsCount, gameObject);
+            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, pointsCount, gameObject, DefinePath.instance.spherePrefab);
         else 
-            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, pointsCount, gameObject);
+            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, pointsCount, gameObject, DefinePath.instance.spherePrefab);
 
 
         // send new path point from assistant to director so that he can also play and visualize paths
@@ -441,7 +441,7 @@ public class FollowPath : MonoBehaviour
             ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
             buttonColors.normalColor = pathColor;
             pathButton.GetComponent<Button>().colors = buttonColors;
-            DefinePath.instance.changePathColor(pathID, pathColor);
+            DefinePath.instance.changePathColor(pathContainer, pathColor);
         }
     }
 
@@ -449,6 +449,7 @@ public class FollowPath : MonoBehaviour
     {
         pathPositions.RemoveAt(pointNum);
         DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+        pointsCount--;
     }
 
     //void deleteCurrentPath()

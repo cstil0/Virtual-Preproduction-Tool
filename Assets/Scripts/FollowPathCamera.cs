@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,11 @@ public class FollowPathCamera : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera cinemachineVirtualCamera;
     private CinemachineTrackedDolly cinemachineTrackedDolly;
     [SerializeField] CinemachineSmoothPath cinemachineSmoothPath;
+    private GameObject rotationController;
     float speed = 0.005f;
 
     public GameObject handController;
+    //[SerializeField] GameObject miniCamera;
     public List<Vector3> pathPositions;
     //public List<Quaternion> pathRotations;
     // relate each path ID with the start and end positions in the pathPositions list
@@ -21,6 +24,7 @@ public class FollowPathCamera : MonoBehaviour
     public float rotSpeed = 3.0f;
     float pathLength;
     float currPathPosition;
+    List<Vector3> pathRotations;
 
     int pointsSkip = 0;
     Vector3 startPosition;
@@ -65,34 +69,34 @@ public class FollowPathCamera : MonoBehaviour
         DirectorPanelManager.instance.OnStopPath -= stopLinePath;
     }
 
-    public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
-    {
-        float num = target.x - current.x;
-        float num2 = target.y - current.y;
-        float num3 = target.z - current.z;
-        float num4 = num * num + num2 * num2 + num3 * num3;
-        if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
-        {
-            return target;
-        }
+    //public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
+    //{
+    //    float num = target.x - current.x;
+    //    float num2 = target.y - current.y;
+    //    float num3 = target.z - current.z;
+    //    float num4 = num * num + num2 * num2 + num3 * num3;
+    //    if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
+    //    {
+    //        return target;
+    //    }
 
-        float num5 = (float)Math.Sqrt(num4);
-        return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
-    }
+    //    float num5 = (float)Math.Sqrt(num4);
+    //    return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
+    //}
 
-    void move(Vector3 targetPoint, Quaternion targetRot)
-    {
-        Vector3 currentPos = gameObject.transform.position;
-        Quaternion currentRot = gameObject.transform.rotation;
-        Vector3 targetDirection = targetPoint - currentPos;
+    //void move(Vector3 targetPoint, Quaternion targetRot)
+    //{
+    //    Vector3 currentPos = gameObject.transform.position;
+    //    Quaternion currentRot = gameObject.transform.rotation;
+    //    Vector3 targetDirection = targetPoint - currentPos;
 
-        float posStep = posSpeed * Time.deltaTime;
+    //    float posStep = posSpeed * Time.deltaTime;
 
-        Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
-        gameObject.transform.position = newPos;
-        Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, rotSpeed);
-        gameObject.transform.rotation = newRot;
-    }
+    //    Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
+    //    gameObject.transform.position = newPos;
+    //    Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, rotSpeed);
+    //    gameObject.transform.rotation = newRot;
+    //}
 
     // Start is called before the first frame update
     void Start()
@@ -107,6 +111,9 @@ public class FollowPathCamera : MonoBehaviour
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
+
+        rotationController = transform.Find("RotationController").gameObject;
+        pathRotations = new List<Vector3>();
 
         if (gameObject.GetComponent<Animator>())
             animator = gameObject.GetComponent<Animator>();
@@ -186,6 +193,21 @@ public class FollowPathCamera : MonoBehaviour
         {
             currPathPosition += speed;
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
+
+            /// rotate the empty object that is inside the camera so that the dolly tracker follows it
+            // compute the interpolation factor according to the current position defined by the dolly tracker
+            float floorPathPos = Mathf.Floor(currPathPosition);
+            float factor = currPathPosition - floorPathPos;
+
+            Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
+            //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
+            Vector3 lastTargetRot = pathRotations[(int)floorPathPos];
+            //Quaternion lastTargetRot = pathRotations[(int)floorPathPos];
+
+            // interpolate
+            //Vector3 targetRot = lastTargetRot * (currTargetRot * Quaternion.Inverse(lastTargetRot)) * factor;
+            Vector3 targetRot = lastTargetRot + (currTargetRot - lastTargetRot) * factor;
+            rotationController.transform.rotation = Quaternion.Euler(targetRot);
         }
 
 
@@ -237,11 +259,13 @@ public class FollowPathCamera : MonoBehaviour
 
         pathPositions.Add(newPoint);
         if (pathLength == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, (int)pathLength, gameObject);
+            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
         else
-            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, (int)pathLength, gameObject); 
+            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab); 
         
         DefinePath.instance.sendPointPath(gameObject, newPoint);
+
+        //GameObject newMiniCamera = Instantiate(miniCamera);
     }
 
     void playLinePath()
@@ -413,7 +437,7 @@ public class FollowPathCamera : MonoBehaviour
             ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
             buttonColors.normalColor = pathColor;
             pathButton.GetComponent<Button>().colors = buttonColors;
-            DefinePath.instance.changePathColor(pathID, pathColor);
+            DefinePath.instance.changePathColor(pathContainer, pathColor);
         }
     }
 
