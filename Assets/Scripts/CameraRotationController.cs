@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class CameraRotationController : MonoBehaviour
 {
-    public GameObject currentSelectedMiniCamera;
-    public GameObject currentSelectedCamera;
+    public Transform currentSelectedMiniCamera;
+    //public GameObject currentSelectedCamera;
     public bool triggerOn = false;
     private bool triggerButtonDown = false;
-    private bool isSelected = false;
-    private Vector3 rotationPan = new Vector3(0.0f, 5.0f, 0.0f);
-    private Vector3 rotationTilt = new Vector3(5.0f, 0.0f, 0.0f);
+    public bool isSelected = false;
+    private Vector3 rotationPan = new Vector3(0.0f, 10.0f, 0.0f);
+    private Vector3 rotationTilt = new Vector3(10.0f, 0.0f, 0.0f);
+
+    public FollowPathCamera followPathCamera;
 
     // Start is called before the first frame update
     void Start()
@@ -21,42 +23,56 @@ public class CameraRotationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        // first check the trigger to inform follow path camera that mini camera to avoid instantiating new path points
+        if (triggerOn)
         {
-            if (!triggerButtonDown && triggerOn)
+            followPathCamera.isMiniCameraOnTrigger = true;
+            if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
             {
-                isSelected = !isSelected;
-                triggerButtonDown = true;
+                if (!triggerButtonDown)
+                {
+                    isSelected = !isSelected;
+                    triggerButtonDown = true;
+                    if (isSelected)
+                        currentSelectedMiniCamera = transform;
+                    else
+                        currentSelectedMiniCamera = null;
+
+                }
             }
+            else
+                triggerButtonDown = false;
         }
         else
+            followPathCamera.isMiniCameraOnTrigger = false;
+
+
+        if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight) && isSelected)
         {
-            triggerButtonDown = false;
-        }
-        if (OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight) && isSelected)
-        {
-            currentSelectedMiniCamera.transform.Rotate(rotationPan * Time.deltaTime);
+            currentSelectedMiniCamera.Rotate(rotationPan * Time.deltaTime);
             changePointRotation();
         }
-        if (OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft) && isSelected)
+        if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft) && isSelected)
         {
-            currentSelectedMiniCamera.transform.Rotate(-rotationPan * Time.deltaTime);
+            currentSelectedMiniCamera.Rotate(-rotationPan * Time.deltaTime);
             changePointRotation();
         }
-        if (OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp) && isSelected)
+        if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && isSelected)
         {
-            currentSelectedMiniCamera.transform.Rotate(rotationTilt * Time.deltaTime);
+            currentSelectedMiniCamera.Rotate(rotationTilt * Time.deltaTime);
             changePointRotation();
         }
-        if (OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown) && isSelected)
+        if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && isSelected)
         {
-            currentSelectedMiniCamera.transform.Rotate(rotationTilt * Time.deltaTime);
+            currentSelectedMiniCamera.Rotate (-rotationTilt * Time.deltaTime);
             changePointRotation();
         }
     }
 
     void changePointRotation()
     {
-
+        string[] pathName = transform.parent.name.Split(" ");
+        int pathNum = int.Parse(pathName[1]);
+        followPathCamera.pathRotations[pathNum] = currentSelectedMiniCamera.rotation.eulerAngles;
     }
 }

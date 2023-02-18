@@ -129,7 +129,6 @@ public class HoverObjects : MonoBehaviour
         {
             miniCameraAlreadySelected = true;
             currentMiniCameraCollider = other.gameObject;
-            changeColorMaterials(currentMiniCameraCollider, Color.blue);
             currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = true;
         }
     }
@@ -179,6 +178,13 @@ public class HoverObjects : MonoBehaviour
                     itemAlreadySelected = followPath.isSelectedForPath;
                 }
             }
+        }
+
+        if (other.gameObject.layer == 15 && currentMiniCameraCollider == other)
+        {
+            bool isSelected = currentMiniCameraCollider.GetComponent<CameraRotationController>().isSelected;
+            Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
+            changeColorMaterials(currentMiniCameraCollider, Color.blue);
         }
     }
 

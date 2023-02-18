@@ -8,10 +8,11 @@ public class PathSpheresController : MonoBehaviour
 {
     public bool triggerOn = false;
     private bool secondaryTriggerButtonDown = false;
+    private bool secondaryHandButtonDown = false;
 
     public GameObject item = null;
     FollowPath followPath;
-    FollowPathCamera followPathCamera;
+    public FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;
 
 
@@ -38,6 +39,26 @@ public class PathSpheresController : MonoBehaviour
         }
         else
             secondaryTriggerButtonDown = false;
+
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        {
+            if (!secondaryHandButtonDown && !isBeingCreated && triggerOn)
+            {
+                secondaryHandButtonDown = true;
+
+                // change both the position in the follow camera component and the line renderer
+                // FALTA TESTING-------
+                string[] pathName = transform.parent.name.Split(" ");
+                int pathNum = int.Parse(pathName[1]);
+                Vector3 newPosition = gameObject.transform.position;
+                followPathCamera.pathRotations[pathNum] = newPosition;
+                GameObject line = transform.parent.Find("Line").gameObject;
+                LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
+                lineineRenderer.SetPosition(pathNum, newPosition);
+            }
+        }
+        else
+            secondaryHandButtonDown = false;
     }
 
     public IEnumerator deletePathPoint()

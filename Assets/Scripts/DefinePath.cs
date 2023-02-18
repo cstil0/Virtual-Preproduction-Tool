@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -62,7 +63,7 @@ public class DefinePath : MonoBehaviour
 
     }
 
-    public GameObject addPointToNewPath(Vector3 newPosition, int pointsCount, GameObject item, GameObject spherePrefab)
+    public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, GameObject spherePrefab)
     {
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
         GameObject pathContainer = Instantiate(emptyPrefab);
@@ -76,7 +77,7 @@ public class DefinePath : MonoBehaviour
 
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
-        //spherePoint.transform.SetParent(pathContainer.transform);
+        spherePoint.transform.SetParent(pathContainer.transform);
         // set the new point to the line renderer in the 0 index
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         currLineRenderer.SetPosition(pointsCount, newPosition);
@@ -86,6 +87,13 @@ public class DefinePath : MonoBehaviour
             GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
             sphere.GetComponent<PathSpheresController>().item = item;
             sphere.GetComponent<PathSpheresController>().getFollowPath();
+
+            // assign follow path camera to the camera rotation controller as it needs to access it
+            FollowPathCamera followPathCamera = sphere.GetComponent<PathSpheresController>().followPathCamera;
+            // get mini camera and assign the follow path camera component
+            GameObject miniCamera = spherePoint.transform.Find("MiniCamera").gameObject;
+            miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
+            miniCamera.transform.rotation = newRotation;
         }
         else
         {
@@ -93,10 +101,8 @@ public class DefinePath : MonoBehaviour
             spherePoint.GetComponent<PathSpheresController>().getFollowPath();
         }
 
-
         // define position and rotation to the sphere
         spherePoint.transform.position = newPosition;
-        spherePoint.transform.rotation = Quaternion.identity;
 
         // change names according to the counts so that it is easy to identify and search for each point and path
         pathContainer.transform.name = "Path " + pathsCount;
@@ -108,15 +114,12 @@ public class DefinePath : MonoBehaviour
         return pathContainer;
     }
 
-    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, int pointsCount, GameObject item, GameObject spherePointPrefab)
+    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, GameObject spherePointPrefab)
     {
         // add a new position
         GameObject spherePoint = null;
 
         spherePoint = Instantiate(spherePointPrefab);
-        GameObject miniCamera = null;
-        if (spherePoint.transform.childCount > 0)
-            miniCamera  = spherePoint.transform.GetChild(0).gameObject;
 
         GameObject line = pathContainer.transform.GetChild(0).gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
@@ -131,6 +134,13 @@ public class DefinePath : MonoBehaviour
             GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
             sphere.GetComponent<PathSpheresController>().item = item;
             sphere.GetComponent<PathSpheresController>().getFollowPath();
+
+            // assign follow path camera to the camera rotation controller as it needs to access it. Try is needed if it is null
+            FollowPathCamera followPathCamera = sphere.GetComponent<PathSpheresController>().followPathCamera;
+            // get mini camera and assign the follow path camera component
+            GameObject miniCamera = spherePoint.transform.Find("MiniCamera").gameObject;
+            miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
+            miniCamera.transform.rotation = newRotation;
         }
         else
         {

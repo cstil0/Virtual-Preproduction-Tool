@@ -267,9 +267,9 @@ public class FollowPath : MonoBehaviour
 
         pathPositions.Add(newPoint);
         if (pointsCount == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
         else 
-            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
 
 
         // send new path point from assistant to director so that he can also play and visualize paths

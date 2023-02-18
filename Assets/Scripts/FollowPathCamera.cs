@@ -17,6 +17,7 @@ public class FollowPathCamera : MonoBehaviour
     public GameObject handController;
     //[SerializeField] GameObject miniCamera;
     public List<Vector3> pathPositions;
+    public List<Vector3> pathRotations;
     //public List<Quaternion> pathRotations;
     // relate each path ID with the start and end positions in the pathPositions list
     //public Dictionary<int, int[]> pathStartEnd;
@@ -24,25 +25,25 @@ public class FollowPathCamera : MonoBehaviour
     public float rotSpeed = 3.0f;
     float pathLength;
     float currPathPosition;
-    List<Vector3> pathRotations;
 
     int pointsSkip = 0;
     Vector3 startPosition;
     //Vector3 startDiffPosition;
     Quaternion startRotation;
 
-    Animator animator;
+    //Animator animator;
 
     GameObject pathContainer;
 
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
-    bool AButtonDown = false;
-    bool BButtonDown = false;
-    bool newPathInstantiated = false;
+    //bool AButtonDown = false;
+    //bool BButtonDown = false;
+    //bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
     public bool isPointOnTrigger = false;
+    public bool isMiniCameraOnTrigger = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -113,10 +114,11 @@ public class FollowPathCamera : MonoBehaviour
         startRotation = gameObject.transform.rotation;
 
         rotationController = transform.Find("RotationController").gameObject;
+        pathPositions = new List<Vector3>();
         pathRotations = new List<Vector3>();
 
-        if (gameObject.GetComponent<Animator>())
-            animator = gameObject.GetComponent<Animator>();
+        //if (gameObject.GetComponent<Animator>())
+        //    animator = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -131,7 +133,7 @@ public class FollowPathCamera : MonoBehaviour
                 startPosition = gameObject.transform.position;
                 defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
             }
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
                 defineNewPathPoint(handController.transform.position, handController.transform.rotation);
@@ -258,10 +260,12 @@ public class FollowPathCamera : MonoBehaviour
         cinemachineSmoothPath.m_Waypoints = wayPoints;
 
         pathPositions.Add(newPoint);
+        pathRotations.Add(newRot.eulerAngles);
+
         if (pathLength == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
+            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
         else
-            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab); 
+            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
         
         DefinePath.instance.sendPointPath(gameObject, newPoint);
 
