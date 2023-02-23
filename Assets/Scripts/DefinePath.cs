@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class DefinePath : MonoBehaviour
 {

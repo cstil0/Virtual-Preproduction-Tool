@@ -9,8 +9,8 @@ public class CameraRotationController : MonoBehaviour
     public bool triggerOn = false;
     private bool triggerButtonDown = false;
     public bool isSelected = false;
-    private Vector3 rotationPan = new Vector3(0.0f, 10.0f, 0.0f);
-    private Vector3 rotationTilt = new Vector3(10.0f, 0.0f, 0.0f);
+    private Vector3 rotationPan = new Vector3(0.0f, 20.0f, 0.0f);
+    private Vector3 rotationTilt = new Vector3(20.0f, 0.0f, 0.0f);
 
     public FollowPathCamera followPathCamera;
 

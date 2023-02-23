@@ -1,6 +1,7 @@
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using System.Transactions;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -21,12 +22,11 @@ public class FollowPathCamera : MonoBehaviour
     //public List<Quaternion> pathRotations;
     // relate each path ID with the start and end positions in the pathPositions list
     //public Dictionary<int, int[]> pathStartEnd;
-    public float posSpeed = 3.0f;
-    public float rotSpeed = 3.0f;
+    public float posSpeed = 10.0f;
+    public float rotSpeed = 10.0f;
     float pathLength;
     float currPathPosition;
 
-    int pointsSkip = 0;
     Vector3 startPosition;
     //Vector3 startDiffPosition;
     Quaternion startRotation;
@@ -37,6 +37,7 @@ public class FollowPathCamera : MonoBehaviour
 
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
+    bool XButtonDown = false;
     //bool AButtonDown = false;
     //bool BButtonDown = false;
     //bool newPathInstantiated = false;
@@ -144,11 +145,22 @@ public class FollowPathCamera : MonoBehaviour
             secondaryIndexTriggerDown = false;
         }
 
+        if (OVRInput.Get(OVRInput.RawButton.X))
+        {
+            if (!XButtonDown)
+            {
+                XButtonDown = true;
+                playLinePath();
+            }
+        }
+        else
+            XButtonDown = false;
 
-        if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             playLinePath();
         }
+        
         else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
@@ -204,10 +216,16 @@ public class FollowPathCamera : MonoBehaviour
             Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
             //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
             Vector3 lastTargetRot = pathRotations[(int)floorPathPos];
-            //Quaternion lastTargetRot = pathRotations[(int)floorPathPos];
+
+            Debug.Log("CURRPATH: " + currPathPosition);
+            // find the minimum angle for each axis
+            //Vector3 angDiff = currTargetRot - lastTargetRot;
+            //Vector3 angDiffInv = lastTargetRot - currTargetRot;
+            //Vector3 minAnglesDiff = new Vector3(Mathf.Min(angDiff.x, angDiffInv.x), Mathf.Min(angDiff.y, angDiffInv.y), Mathf.Min(angDiff.z, angDiffInv.z));
 
             // interpolate
             //Vector3 targetRot = lastTargetRot * (currTargetRot * Quaternion.Inverse(lastTargetRot)) * factor;
+            //Vector3 targetRot = lastTargetRot + minAnglesDiff * factor;
             Vector3 targetRot = lastTargetRot + (currTargetRot - lastTargetRot) * factor;
             rotationController.transform.rotation = Quaternion.Euler(targetRot);
         }
@@ -274,12 +292,22 @@ public class FollowPathCamera : MonoBehaviour
 
     void playLinePath()
     {
-        GameObject[] lines;
-        lines = GameObject.FindGameObjectsWithTag("Line");
+        GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
 
-        for (int i = 0; i < lines.Length; i++)
+        for (int i = 0; i < paths.Length; i++)
         {
-            lines[i].GetComponent<LineRenderer>().enabled = false;
+            Transform currPath = paths[i].transform;
+
+            for (int j = 0; j < currPath.childCount; j++)
+            {
+                GameObject pathObject = currPath.GetChild(j).gameObject;
+
+                if (pathObject.name.Contains("Line"))
+                    pathObject.GetComponent<LineRenderer>().enabled = false;
+
+                else if (pathObject.name.Contains("Point"))
+                    pathObject.SetActive(false);
+            }
         }
 
         // cameras are moved while defining their position and rotation
@@ -291,7 +319,7 @@ public class FollowPathCamera : MonoBehaviour
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        if (udpSenderCamera.transform.name == gameObject.transform.name)
+        if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
         {
             UDPSender.instance.sendChangeCamera();
             UDPSender.instance.SendPosRot();
@@ -308,12 +336,22 @@ public class FollowPathCamera : MonoBehaviour
         gameObject.transform.rotation = startRotation;
         currPathPosition = 0;
 
-        GameObject[] lines;
-        lines = GameObject.FindGameObjectsWithTag("Line");
+        GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
 
-        for (int i = 0; i < lines.Length; i++)
+        for (int i = 0; i < paths.Length; i++)
         {
-            lines[i].GetComponent<LineRenderer>().enabled = true;
+            Transform currPath = paths[i].transform;
+
+            for (int j = 0; j < currPath.childCount; j++)
+            {
+                GameObject pathObject = currPath.GetChild(j).gameObject;
+
+                if (pathObject.name.Contains("Line"))
+                    pathObject.GetComponent<LineRenderer>().enabled = false;
+
+                else if (pathObject.name.Contains("Point"))
+                    pathObject.SetActive(false);
+            }
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;

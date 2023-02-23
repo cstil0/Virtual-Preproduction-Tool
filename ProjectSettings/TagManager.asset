@@ -8,6 +8,7 @@ TagManager:
   - Items
   - DirectorPanel
   - PathPoint
+  - PathContainer
   layers:
   - Default
   - TransparentFX
@@ -24,8 +25,8 @@ TagManager:
   - SetCamera2
   - SetCamera3
   - PathSphere
-  - 
-  - 
+  - MiniCamera
+  - PathSphereCamera
   - 
   - 
   - 
