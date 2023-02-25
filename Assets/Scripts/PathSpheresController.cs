@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.XPath;
@@ -8,11 +9,14 @@ public class PathSpheresController : MonoBehaviour
 {
     public bool triggerOn = false;
     private bool secondaryTriggerButtonDown = false;
+    private bool isSelected = false;
 
     public GameObject item = null;
     FollowPath followPath;
     public FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;
+    [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.5f, 0.0f);
+    [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.5f, 0.0f);
 
 
     // Update is called once per frame
@@ -24,16 +28,27 @@ public class PathSpheresController : MonoBehaviour
             if (!secondaryTriggerButtonDown && !isBeingCreated)
             {
                 secondaryTriggerButtonDown = true;
-                string[] splittedName = gameObject.transform.name.Split(" ");
-                int pointNum = int.Parse(splittedName[1]);
-
+                string[] splittedName = { "" };
                 if (followPath != null)
-                    followPath.deletePathPoint(pointNum);
+                    splittedName = gameObject.transform.name.Split(" ");
                 else if (followPathCamera != null)
-                    followPathCamera.deletePathPoint(pointNum);
+                    splittedName = gameObject.transform.parent.name.Split(" ");
+
+                try
+                {
+                    int ointNum = int.Parse(splittedName[1]);
+                    isSelected = !isSelected;
+                }
+                catch (Exception e) { }
+
+                
+                //if (followPath != null)
+                //    followPath.deletePathPoint(pointNum);
+                //else if (followPathCamera != null)
+                //    followPathCamera.deletePathPoint(pointNum);
 
                 //StartCoroutine(HoverObjects.instance.deletePathPoint());
-                StartCoroutine(deletePathPoint());
+                //StartCoroutine(deletePathPoint());
             }
         }
         else
@@ -44,7 +59,6 @@ public class PathSpheresController : MonoBehaviour
             if (!isBeingCreated && triggerOn)
             {
                 // change both the position in the follow camera component and the line renderer
-                // FALTA TESTING-------
                 string[] pathName = transform.parent.name.Split(" ");
                 int pathNum = int.Parse(pathName[1]);
                 Vector3 newPosition = gameObject.transform.position;
@@ -54,6 +68,39 @@ public class PathSpheresController : MonoBehaviour
                 LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
                 lineineRenderer.SetPosition(pathNum, newPosition);
             }
+        }
+
+        if (isSelected && OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp))
+        {
+            secondaryTriggerButtonDown = true;
+            string[] splittedName = { "" };
+            if (followPath != null)
+                splittedName = gameObject.transform.name.Split(" ");
+            else if (followPathCamera != null)
+                splittedName = gameObject.transform.parent.name.Split(" ");
+            
+            int pointNum = int.Parse(splittedName[1]);
+
+            if (followPath != null)
+                followPath.relocatePoint(pointNum, upVector);
+            if (followPathCamera != null)
+                followPathCamera.relocatePoint(pointNum, upVector);
+        }
+
+        if (isSelected && OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown))
+        {
+            string[] splittedName = { "" };
+            if (followPath != null)
+                splittedName = gameObject.transform.name.Split(" ");
+            else if (followPathCamera != null)
+                splittedName = gameObject.transform.parent.name.Split(" ");
+            
+            int pointNum = int.Parse(splittedName[1]);
+
+            if (followPath != null)
+                followPath.relocatePoint(pointNum, downVector);
+            if (followPathCamera != null)
+                followPathCamera.relocatePoint(pointNum, downVector);
         }
     }
 
@@ -67,7 +114,6 @@ public class PathSpheresController : MonoBehaviour
         //yield return new WaitForSeconds(1f);
 
 
-        Debug.Log("TRIGGER UP");
         if (HoverObjects.instance.currentSelectedForPath.layer == 10)
         {
             FollowPath followPath = HoverObjects.instance.currentSelectedForPath.GetComponent<FollowPath>();

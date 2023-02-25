@@ -452,6 +452,12 @@ public class FollowPath : MonoBehaviour
         pointsCount--;
     }
 
+    public void relocatePoint(int pointNum, Vector3 direction)
+    {
+        pathPositions[pointNum] += direction;
+        DefinePath.instance.relocatePoint(pathContainer, pointNum, direction);
+    }
+
     //void deleteCurrentPath()
     //{
     //    Transform pathButtons = gameObject.transform.Find("Paths buttons");

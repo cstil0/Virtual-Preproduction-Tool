@@ -71,8 +71,8 @@ public class DefinePath : MonoBehaviour
         // can be with or without camera depending on who called this function
         GameObject spherePoint = Instantiate(spherePrefab);
 
-        //pathContainer.GetComponent<NetworkObject>().Spawn();
-        //spherePoint.GetComponent<NetworkObject>().Spawn();
+        pathContainer.GetComponent<NetworkObject>().Spawn();
+        spherePoint.GetComponent<NetworkObject>().Spawn();
 
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
@@ -123,7 +123,7 @@ public class DefinePath : MonoBehaviour
         GameObject line = pathContainer.transform.GetChild(0).gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
 
-        //spherePoint.GetComponent<NetworkObject>().Spawn();
+        spherePoint.GetComponent<NetworkObject>().Spawn();
 
         currLineRenderer.positionCount += 1;
         currLineRenderer.SetPosition(pointsCount, newPosition);
@@ -160,6 +160,7 @@ public class DefinePath : MonoBehaviour
         int pointsCount = currLineRenderer.positionCount;
         Vector3[] pathPositionsArray = new Vector3[pointsCount];
         currLineRenderer.GetPositions(pathPositionsArray);
+        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
         pathPositionsList.RemoveAt(pointNum);
 
@@ -176,6 +177,24 @@ public class DefinePath : MonoBehaviour
             if (i - 1 > pointNum)
                 pathContainer.transform.GetChild(i).name = "Point " + (i - 2);
         }
+    }
+
+    public void relocatePoint(GameObject pathContainer, int pointNum, Vector3 direction)
+    {
+        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
+        int pointsCount = currLineRenderer.positionCount;
+        
+        // relocate point
+        Vector3[] pathPositionsArray = new Vector3[pointsCount];
+        currLineRenderer.GetPositions(pathPositionsArray);
+        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
+        pathPositionsList[pointNum] += direction;
+
+        // reassign
+        pathPositionsArray = pathPositionsList.ToArray();
+        currLineRenderer.SetPositions(pathPositionsArray);
+        currLineRenderer.positionCount = pointsCount - 1;
     }
 
     public void sendPointPath(GameObject character, Vector3 pathPoint)

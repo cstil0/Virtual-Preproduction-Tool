@@ -12,8 +12,8 @@ public class FollowPathCamera : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera cinemachineVirtualCamera;
     private CinemachineTrackedDolly cinemachineTrackedDolly;
     [SerializeField] CinemachineSmoothPath cinemachineSmoothPath;
-    private GameObject rotationController;
-    float speed = 0.005f;
+    [SerializeField] GameObject rotationController;
+    float speed = 0.05f;
 
     public GameObject handController;
     //[SerializeField] GameObject miniCamera;
@@ -114,7 +114,6 @@ public class FollowPathCamera : MonoBehaviour
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
 
-        rotationController = transform.Find("RotationController").gameObject;
         pathPositions = new List<Vector3>();
         pathRotations = new List<Vector3>();
 
@@ -203,9 +202,9 @@ public class FollowPathCamera : MonoBehaviour
         //    isPlaying = false;
         //}
 
+        currPathPosition += speed;
         if (isPlaying && currPathPosition < pathLength)
         {
-            currPathPosition += speed;
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
 
             /// rotate the empty object that is inside the camera so that the dolly tracker follows it
@@ -216,8 +215,6 @@ public class FollowPathCamera : MonoBehaviour
             Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
             //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
             Vector3 lastTargetRot = pathRotations[(int)floorPathPos];
-
-            Debug.Log("CURRPATH: " + currPathPosition);
             // find the minimum angle for each axis
             //Vector3 angDiff = currTargetRot - lastTargetRot;
             //Vector3 angDiffInv = lastTargetRot - currTargetRot;
@@ -487,6 +484,12 @@ public class FollowPathCamera : MonoBehaviour
     {
         pathPositions.RemoveAt(pointNum);
         DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+    }
+
+    public void relocatePoint(int pointNum, Vector3 direction)
+    {
+        pathPositions[pointNum] += direction;
+        DefinePath.instance.relocatePoint(pathContainer, pointNum, direction);
     }
 
     //void deleteCurrentPath()
