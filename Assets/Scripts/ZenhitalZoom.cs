@@ -2,6 +2,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.RenderStreaming;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,28 +24,33 @@ public class ZenhitalZoom : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // get the local mouse position with respect to the rect transform of the aerial view to know if it is inside
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, panelCamera, out mouseLocalPoint);
 
-        Vector2 localMousePosition = rectTransform.InverseTransformPoint(Input.mousePosition);
+        // if mouse is scrolling and is inside the rect transform, check the kind of scroll it is doing
         if (Input.GetAxis("Mouse ScrollWheel") > 0f && rectTransform.rect.Contains(mouseLocalPoint))
         {
             Vector3 targetPosition = cameraTransform.position;
             targetPosition.y -= 1;
+            // interpolate between 
             cameraTransform.position = Vector3.Slerp(cameraTransform.position, targetPosition, Time.deltaTime * speed);
         }
         if (Input.GetAxis("Mouse ScrollWheel") < 0f && rectTransform.rect.Contains(mouseLocalPoint))
         {
             Vector3 targetPosition = cameraTransform.position;
             targetPosition.y += 1;
+            // interpolate between current position and target one
             cameraTransform.position = Vector3.Slerp(cameraTransform.position, targetPosition, Time.deltaTime * speed);
         }
 
+        // when mouse's middle button is pressed drag the aerial view
         if (Input.GetMouseButton(2)) {
             Vector2 currMousePos = Input.mousePosition;
             Vector3 targetPosition = cameraTransform.position;
             if (lastMousePos == null)
                 lastMousePos = currMousePos;
             
+            // check direction of the movement
             Vector2 dist = lastMousePos - currMousePos;
 
             if (dist.x < 0)
