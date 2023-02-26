@@ -88,38 +88,11 @@ public class ItemsDirectorPanelScroll : MonoBehaviour
     void updateMaxDisplacement()
     {
         totalItemsNum = gameObject.transform.childCount;
-        maxDisplacement = (totalItemsNum - shownItemsNum) * (buttonHeight + buttonSpacing);
+        if (totalItemsNum < shownItemsNum)
+            maxDisplacement = 1;
+        else
+            maxDisplacement = (totalItemsNum - shownItemsNum) * (buttonHeight + buttonSpacing);
         float barSize = (float)shownItemsNum / (float)totalItemsNum;
         scrollBar.size = barSize;
-    }
-
-    public void onPressUp()
-    {
-        isPressUp = true;
-    }
-
-    public void onReleaseUp()
-    {
-        isPressUp = false;
-    }
-
-    public void onPressDown()
-    {
-        isPressDown = true;
-    }
-
-    public void onReleaseDown()
-    {
-        isPressDown = false;
-    }
-
-    public void onPressConfirm()
-    {
-        isPressConfirm = true;
-    }
-
-    public void onReleaseConfirm()
-    {
-        isPressConfirm = false;
     }
 }

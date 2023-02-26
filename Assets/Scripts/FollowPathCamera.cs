@@ -1,6 +1,7 @@
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Transactions;
 using TMPro;
 using Unity.Netcode;
@@ -13,7 +14,7 @@ public class FollowPathCamera : MonoBehaviour
     private CinemachineTrackedDolly cinemachineTrackedDolly;
     [SerializeField] CinemachineSmoothPath cinemachineSmoothPath;
     [SerializeField] GameObject rotationController;
-    float speed = 0.05f;
+    float speed = 0.005f;
 
     public GameObject handController;
     //[SerializeField] GameObject miniCamera;
@@ -223,7 +224,8 @@ public class FollowPathCamera : MonoBehaviour
             // interpolate
             //Vector3 targetRot = lastTargetRot * (currTargetRot * Quaternion.Inverse(lastTargetRot)) * factor;
             //Vector3 targetRot = lastTargetRot + minAnglesDiff * factor;
-            Vector3 targetRot = lastTargetRot + (currTargetRot - lastTargetRot) * factor;
+            Vector3 targetRot = Vector3.Slerp(lastTargetRot, currTargetRot, factor);
+            //Vector3 targetRot = lastTargetRot + (currTargetRot - lastTargetRot) * factor;
             rotationController.transform.rotation = Quaternion.Euler(targetRot);
         }
 
@@ -282,7 +284,7 @@ public class FollowPathCamera : MonoBehaviour
         else
             DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
         
-        DefinePath.instance.sendPointPath(gameObject, newPoint);
+        UDPSender.instance.sendPointPath(gameObject, newPoint);
 
         //GameObject newMiniCamera = Instantiate(miniCamera);
     }
@@ -489,7 +491,34 @@ public class FollowPathCamera : MonoBehaviour
     public void relocatePoint(int pointNum, Vector3 direction)
     {
         pathPositions[pointNum] += direction;
-        DefinePath.instance.relocatePoint(pathContainer, pointNum, direction);
+
+        Vector3 newPoint = pathPositions[pointNum];
+
+        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
+        int pointsCount = currLineRenderer.positionCount;
+
+        // relocate point
+        Vector3[] pathPositionsArray = new Vector3[pathPositions.Count];
+        currLineRenderer.GetPositions(pathPositionsArray);
+        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
+        pathPositionsList[pointNum] = newPoint;
+
+        // reassign
+        pathPositionsArray = pathPositionsList.ToArray();
+        currLineRenderer.SetPositions(pathPositionsArray);
+
+        // relocate cinemachine point
+        CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
+        CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
+        newWayPoint.position = newPoint;
+
+        cinemachinePoints[pointNum] = newWayPoint;
+        cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+
+        // relocate sphere
+        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
+        sphere.position = newPoint;
     }
 
     //void deleteCurrentPath()

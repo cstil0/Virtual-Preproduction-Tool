@@ -863,7 +863,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.4
 --- !u!222 &224070601
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -951,7 +951,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1210,8 +1210,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287072135
-  m_fontColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+    rgba: 4280883738
+  m_fontColor: {r: 0.101960786, g: 0.101960786, b: 0.16078432, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2027,10 +2027,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_PressedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_SelectedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
+    m_NormalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_PressedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_SelectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2075,7 +2075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7921569, g: 0.7921569, b: 0.7921569, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2091,7 +2091,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.4
 --- !u!222 &1403832410
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2280,6 +2280,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb6914ee3f0daf4b89c4f67f76f4d95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+  normalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
   modesManager: {fileID: 1184666873}
 --- !u!114 &1437724736
 MonoBehaviour:
@@ -2545,10 +2547,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.7921569, g: 0.7921569, b: 0.7921569, a: 1}
-    m_HighlightedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_PressedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_SelectedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
+    m_NormalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_PressedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_SelectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2609,7 +2611,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.4
 --- !u!222 &1729657784
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2926,8 +2928,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4280883738
+  m_fontColor: {r: 0.101960786, g: 0.101960786, b: 0.16078432, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3055,10 +3057,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
-    m_HighlightedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_PressedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
-    m_SelectedColor: {r: 0.65882355, g: 0.4117647, b: 0.74509805, a: 1}
+    m_NormalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
+    m_HighlightedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_PressedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+    m_SelectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3119,7 +3121,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.4
 --- !u!222 &2078524078
 CanvasRenderer:
   m_ObjectHideFlags: 0

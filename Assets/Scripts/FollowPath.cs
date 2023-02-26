@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using TMPro;
@@ -273,7 +274,7 @@ public class FollowPath : MonoBehaviour
 
 
         // send new path point from assistant to director so that he can also play and visualize paths
-        DefinePath.instance.sendPointPath(gameObject, newPoint);
+        UDPSender.instance.sendPointPath(gameObject, newPoint);
 
         pointsCount++;
     }
@@ -455,7 +456,26 @@ public class FollowPath : MonoBehaviour
     public void relocatePoint(int pointNum, Vector3 direction)
     {
         pathPositions[pointNum] += direction;
-        DefinePath.instance.relocatePoint(pathContainer, pointNum, direction);
+
+        Vector3 newPoint = pathPositions[pointNum];
+
+        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
+        int pointsCount = currLineRenderer.positionCount;
+
+        // relocate point
+        Vector3[] pathPositionsArray = new Vector3[pathPositions.Count];
+        currLineRenderer.GetPositions(pathPositionsArray);
+        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
+        pathPositionsList[pointNum] = newPoint;
+
+        // reassign
+        pathPositionsArray = pathPositionsList.ToArray();
+        currLineRenderer.SetPositions(pathPositionsArray);
+
+        // relocate sphere
+        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
+        sphere.position = newPoint;
     }
 
     //void deleteCurrentPath()

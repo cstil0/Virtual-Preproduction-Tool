@@ -10,6 +10,7 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject handController;
     public GameObject canvas;
     RotationScale rotationScale;
+    private int itemsCount = 0;
 
 
     // SERIA GUAI PODER MOSTRAR LES VARIABLES SEGONS EL ENUM SELECCIONAT PERÒ S'HA DE CREAR UN NOU EDITOR I ÉS UNA MICA LIADA DE MOMENT
@@ -202,12 +203,20 @@ public class ItemsMenuController : MonoBehaviour
     // to instantiate the object that is passed according to the pressed button in the menu
     public void SpawnObject()
     {
+        itemsCount += 1;
         Vector3 attachPoint = itemPrefab.transform.GetChild(0).localPosition;
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
         GameObject objectInstance = Instantiate(itemPrefab);
+        if (objectInstance.name.Contains("(Clone)"))
+        {
+            string[] splittedName = objectInstance.name.Split("(Clone)");
+            objectInstance.name = splittedName[0];
+        }
+
+        objectInstance.name += itemsCount.ToString();
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
         Vector3 handPosition = handController.transform.position;
         // només ens interessa la rotació de la y. +180 per què quedi com necessitem
@@ -225,11 +234,6 @@ public class ItemsMenuController : MonoBehaviour
 
         objectInstance.GetComponent<NetworkObject>().Spawn();
 
-        //GameObject objectInstance2 = Instantiate(itemPrefab);
-        ////objectInstance.transform.position = handController.transform.position;
-        //objectInstance.transform.localScale = scale;
-        //objectInstance.transform.Translate(handController.transform.position-attachPoint.position, handController.transform);
-
-
+        UDPSender.instance.sendItem(objectInstance.name);
     }
 }

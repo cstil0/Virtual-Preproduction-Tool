@@ -9,14 +9,14 @@ public class PathSpheresController : MonoBehaviour
 {
     public bool triggerOn = false;
     private bool secondaryTriggerButtonDown = false;
-    private bool isSelected = false;
+    public bool isSelected = false;
 
     public GameObject item = null;
     FollowPath followPath;
     public FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;
-    [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.5f, 0.0f);
-    [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.5f, 0.0f);
+    [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.05f, 0.0f);
+    [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.05f, 0.0f);
 
 
     // Update is called once per frame
@@ -36,7 +36,7 @@ public class PathSpheresController : MonoBehaviour
 
                 try
                 {
-                    int ointNum = int.Parse(splittedName[1]);
+                    int pointNum = int.Parse(splittedName[1]);
                     isSelected = !isSelected;
                 }
                 catch (Exception e) { }
@@ -70,7 +70,7 @@ public class PathSpheresController : MonoBehaviour
             }
         }
 
-        if (isSelected && OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp))
+        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp))
         {
             secondaryTriggerButtonDown = true;
             string[] splittedName = { "" };
@@ -87,7 +87,7 @@ public class PathSpheresController : MonoBehaviour
                 followPathCamera.relocatePoint(pointNum, upVector);
         }
 
-        if (isSelected && OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown))
+        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown))
         {
             string[] splittedName = { "" };
             if (followPath != null)

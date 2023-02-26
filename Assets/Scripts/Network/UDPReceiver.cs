@@ -18,21 +18,23 @@ public class UDPReceiver : MonoBehaviour
     // separate it in different ports since this is used both for assistant and director,
     // so that it is less messy for me
     [SerializeField] int serverPort = 8050;
-    [SerializeField] int pathPointsPort = 8051;
+    [SerializeField] int assistantToDirectorPort = 8051;
     [SerializeField] int pathPlayPort = 8052;
     [SerializeField] int rotateScenePort = 8053;
 
     //Thread receiveThread;
-    Thread receivePathPointsThread;
+    Thread assistantToDirectorThread;
     Thread receivePlayPathThread;
     Thread receiveSceneRotationThread;
 
     bool pointParsed;
+    bool newItemParsed;
     bool playParsed;
     bool rotationParsed;
 
     String receivedMessage;
     String receivedName;
+    String newReceivedName;
     int receivedCount;
     string receivedPoint;
     string receivedPlay;
@@ -52,10 +54,15 @@ public class UDPReceiver : MonoBehaviour
     Quaternion remoteStartRot;
     //Vector3 currRot;
     Quaternion currRot;
-    
+
 
     public GameObject hermione;
     public GameObject harry;
+
+    enum assistantToDirectorMessages{
+        NEW_ITEM,
+        NEW_POINT
+    }
 
     // main thread that listens to UDP messages through a defined port
     void UDP_ReceieveThread()
@@ -113,24 +120,37 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
-    void UDP_PathPointsReceive() 
+    void UDP_assistantToDirectorReceive()
     {
-        clientPath = new UdpClient(pathPointsPort);
+        clientPath = new UdpClient(assistantToDirectorPort);
         // loop needed to keep listening
         while (true)
         {
             try
             {
                 // recieve messages through the end point
-                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPointsPort);
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, assistantToDirectorPort);
                 byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedName = Encoding.ASCII.GetString(receiveBytes);
-                Debug.Log(receivedName);
 
-                receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                receivedPoint = Encoding.ASCII.GetString(receiveBytes);
+                string receivedString = Encoding.ASCII.GetString(receiveBytes);
+                string[] splittedMessage = receivedString.Split(":");
+                assistantToDirectorMessages message_enum = (assistantToDirectorMessages)Enum.Parse(typeof(assistantToDirectorMessages), splittedMessage[0]);
+                string message = splittedMessage[1];
 
-                pointParsed = false;
+                switch (message_enum)
+                {
+                    case assistantToDirectorMessages.NEW_ITEM:
+                        newReceivedName = message;
+                        newItemParsed = false;
+                        break;
+                    case assistantToDirectorMessages.NEW_POINT:
+                        receivedName = message;
+                        receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                        receivedPoint = Encoding.ASCII.GetString(receiveBytes);
+
+                        pointParsed = false;
+                        break;
+                }
             }
             catch (Exception e)
             {
@@ -225,9 +245,9 @@ public class UDPReceiver : MonoBehaviour
               //client.Close();
         //}
 
-        if (receivePathPointsThread != null)
+        if (assistantToDirectorThread != null)
         {
-            receivePathPointsThread.Abort();
+            assistantToDirectorThread.Abort();
             clientPath.Close();
         }
 
@@ -254,9 +274,9 @@ public class UDPReceiver : MonoBehaviour
         // director wants to receive new point paths created by the assistant
         if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
         {
-            receivePathPointsThread = new Thread(UDP_PathPointsReceive);
-            receivePathPointsThread.IsBackground = true;
-            receivePathPointsThread.Start();
+            assistantToDirectorThread = new Thread(UDP_assistantToDirectorReceive);
+            assistantToDirectorThread.IsBackground = true;
+            assistantToDirectorThread.Start();
 
             receiveSceneRotationThread = new Thread(UDP_RotateSceneReceive);
             receiveSceneRotationThread.IsBackground = true;
@@ -275,6 +295,7 @@ public class UDPReceiver : MonoBehaviour
         //startRot = ScreenCamera.transform.rotation.eulerAngles;
         startRot = ScreenCamera.transform.rotation;
 
+        newItemParsed = true;
         pointParsed = true;
         playParsed = true;
         rotationParsed = true;
@@ -294,6 +315,11 @@ public class UDPReceiver : MonoBehaviour
             ScreenCamera.transform.rotation = remoteRotDiff * startRot;
         }
 
+        if (!newItemParsed)
+        {
+            ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
+            newItemParsed = true;
+        }
         if (!pointParsed)
             parsePoint();
 

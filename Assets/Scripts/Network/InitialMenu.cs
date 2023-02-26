@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 public class InitialMenu : MonoBehaviour
 {
+    [SerializeField] Color selectedColor;
+    [SerializeField] Color normalColor;
+
     public ModesManager modesManager;
 
     //public void setDirectorRole() {
@@ -26,12 +29,12 @@ public class InitialMenu : MonoBehaviour
 
         GameObject MRButton = GameObject.Find("MR Button");
         ColorBlock buttonColors = MRButton.GetComponent<Button>().colors;
-        buttonColors.normalColor = new Color(0.6588235f, 0.4117647f, 0.7450981f);
+        buttonColors.normalColor = selectedColor;
         MRButton.GetComponent<Button>().colors = buttonColors;
 
         GameObject VRButton = GameObject.Find("VR Button");
         buttonColors = VRButton.GetComponent<Button>().colors;
-        buttonColors.normalColor = new Color(0.7924528f, 0.7924528f, 0.7924528f);
+        buttonColors.normalColor = normalColor;
         VRButton.GetComponent<Button>().colors = buttonColors;
     }
 
@@ -41,12 +44,12 @@ public class InitialMenu : MonoBehaviour
 
         GameObject VRButton = GameObject.Find("VR Button");
         ColorBlock buttonColors = VRButton.GetComponent<Button>().colors;
-        buttonColors.normalColor = new Color(0.6588235f, 0.4117647f, 0.7450981f);
+        buttonColors.normalColor = selectedColor;
         VRButton.GetComponent<Button>().colors = buttonColors;
 
         GameObject MRButton = GameObject.Find("MR Button");
         buttonColors = MRButton.GetComponent<Button>().colors;
-        buttonColors.normalColor = new Color(0.7924528f, 0.7924528f, 0.7924528f);
+        buttonColors.normalColor = normalColor;
         MRButton.GetComponent<Button>().colors = buttonColors;
     }
 

@@ -179,45 +179,6 @@ public class DefinePath : MonoBehaviour
         }
     }
 
-    public void relocatePoint(GameObject pathContainer, int pointNum, Vector3 direction)
-    {
-        GameObject line = pathContainer.transform.Find("Line").gameObject;
-        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
-        int pointsCount = currLineRenderer.positionCount;
-        
-        // relocate point
-        Vector3[] pathPositionsArray = new Vector3[pointsCount];
-        currLineRenderer.GetPositions(pathPositionsArray);
-        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
-        pathPositionsList[pointNum] += direction;
-
-        // reassign
-        pathPositionsArray = pathPositionsList.ToArray();
-        currLineRenderer.SetPositions(pathPositionsArray);
-        currLineRenderer.positionCount = pointsCount - 1;
-    }
-
-    public void sendPointPath(GameObject character, Vector3 pathPoint)
-    {
-        try
-        {
-            udpClient = new UdpClient(pathPointsPort);
-
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            // sending data
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), pathPointsPort);
-
-            byte[] message = Encoding.ASCII.GetBytes(character.transform.name);
-            udpClient.Send(message, message.Length, target);
-
-            message = Encoding.ASCII.GetBytes(pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture));
-            udpClient.Send(message, message.Length, target);
-
-            udpClient.Close();
-        }
-        catch (System.Exception e) { }
-    }
-
     // NEEDS DEVELOPEMENT
     public void changePathColor(GameObject pathContainer, Color pathColor)
     {

@@ -20,6 +20,7 @@ public class UDPSender : MonoBehaviour
     public Camera screenCamera;
     UdpClient client;
     public int serverPort = 8050;
+    public int assistantToDirectorPort = 8051;
     int rotateScenePort = 8053;
     public string ipAddress;
 
@@ -149,6 +150,41 @@ public class UDPSender : MonoBehaviour
         byte[] message = Encoding.ASCII.GetBytes("RESET_POSROT");
         client.Send(message, message.Length, target);
         client.Close();
+    }
+
+    public void sendPointPath(GameObject item, Vector3 pathPoint)
+    {
+        try
+        {
+            client = new UdpClient(assistantToDirectorPort);
+
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            // sending data
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
+
+            byte[] message = Encoding.ASCII.GetBytes("NEW_POINT: " + item.transform.name);
+            client.Send(message, message.Length, target);
+
+            message = Encoding.ASCII.GetBytes(pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture));
+            client.Send(message, message.Length, target);
+
+            client.Close();
+        }
+        catch (System.Exception e) { }
+    }
+
+    public void sendItem(String name)
+    {
+        try
+        {
+            client = new UdpClient(assistantToDirectorPort);
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
+            byte[] message = Encoding.ASCII.GetBytes("NEW_ITEM:" + name);
+            client.Send(message, message.Length, target);
+            client.Close();
+        }
+        catch(System.Exception e) { }
     }
 
     IEnumerator sendInitialParameters()
