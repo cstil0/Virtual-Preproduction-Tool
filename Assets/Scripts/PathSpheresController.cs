@@ -15,8 +15,8 @@ public class PathSpheresController : MonoBehaviour
     FollowPath followPath;
     public FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;
-    [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.05f, 0.0f);
-    [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.05f, 0.0f);
+    [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.005f, 0.0f);
+    [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.005f, 0.0f);
 
 
     // Update is called once per frame
@@ -141,7 +141,8 @@ public class PathSpheresController : MonoBehaviour
         // add the rigidbody once the hand did the trigger exit to avoid pulling out the OVRPlayer
         if (!triggerOn)
         {
-            gameObject.transform.parent.GetComponent<SphereCollider>().enabled = true;
+            if (followPathCamera != null)
+                gameObject.transform.parent.GetComponent<SphereCollider>().enabled = true;
         }
     }
 

@@ -5750,7 +5750,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 8
+  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -20975,7 +20975,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 8
+  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -21536,6 +21536,8 @@ MonoBehaviour:
   isPointOnTrigger: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
+  characterRotationLeft: {x: 0, y: -5, z: 0}
+  characterRotationRight: {x: 0, y: 5, z: 0}
 --- !u!1 &1814684605
 GameObject:
   m_ObjectHideFlags: 0
@@ -21780,7 +21782,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   posSpeed: 3
-  rotSpeed: 8
+  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
