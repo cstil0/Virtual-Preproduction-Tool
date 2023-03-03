@@ -7,6 +7,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Globalization;
+using Unity.VisualScripting;
+using System.Security.Cryptography;
+using static UnityEditor.Progress;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -27,18 +30,20 @@ public class UDPReceiver : MonoBehaviour
     Thread receivePlayPathThread;
     Thread receiveSceneRotationThread;
 
-    bool pointParsed;
+    bool pointPositionParsed;
+    bool pointRotationParsed;
     bool newItemParsed;
     bool playParsed;
-    bool rotationParsed;
+    bool sceneRotationParsed;
 
     String receivedMessage;
     String receivedName;
     String newReceivedName;
     int receivedCount;
-    string receivedPoint;
+    string receivedPointPosition;
+    string receivedPointRotation;
     string receivedPlay;
-    string receivedRotation;
+    string receivedSceneRotation;
     //double receivedPointX;
     //double receivedPointY;
     //double receivedPointZ;
@@ -47,6 +52,7 @@ public class UDPReceiver : MonoBehaviour
     Vector3 startPos;
     Vector3 remoteStartPos;
     Vector3 currPos;
+    Vector3 newPointPosition;
 
     //Vector3 startRot;
     Quaternion startRot;
@@ -61,7 +67,8 @@ public class UDPReceiver : MonoBehaviour
 
     enum assistantToDirectorMessages{
         NEW_ITEM,
-        NEW_POINT
+        NEW_POINT,
+        NEW_ROTATION
     }
 
     // main thread that listens to UDP messages through a defined port
@@ -146,9 +153,12 @@ public class UDPReceiver : MonoBehaviour
                     case assistantToDirectorMessages.NEW_POINT:
                         receivedName = message;
                         receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                        receivedPoint = Encoding.ASCII.GetString(receiveBytes);
-
-                        pointParsed = false;
+                        receivedPointPosition = Encoding.ASCII.GetString(receiveBytes);
+                        pointPositionParsed = false;
+                        break;
+                    case assistantToDirectorMessages.NEW_ROTATION:
+                        receivedPointRotation = Encoding.ASCII.GetString(receiveBytes);
+                        pointRotationParsed = false;
                         break;
                 }
             }
@@ -192,9 +202,9 @@ public class UDPReceiver : MonoBehaviour
                 // recieve messages through the end point
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, rotateScenePort);
                 byte[] receiveBytes = clientRotation.Receive(ref remoteEndPoint);
-                receivedRotation = Encoding.ASCII.GetString(receiveBytes);
+                receivedSceneRotation = Encoding.ASCII.GetString(receiveBytes);
 
-                rotationParsed = false;
+                sceneRotationParsed = false;
             }
             catch (Exception e)
             {
@@ -203,20 +213,53 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
-    void parsePoint()
+    void parsePointPosition()
     {
-        pointParsed = true;
-        GameObject character = GameObject.Find(receivedName);
+        pointPositionParsed = true;
+        GameObject item = GameObject.Find(receivedName);
 
-        string[] splittedMessage = receivedPoint.Split(" ");
+        string[] splittedMessage = receivedPointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
         float posY = - float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
         float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
-        Vector3 newPoint = new Vector3(posX, posY, posZ);
+        Vector3 newPointPosition = new Vector3(posX, posY, posZ);
 
-        //Vector3 newPoint = new Vector3((float)receivedPointX, (float)receivedPointY, (float)receivedPointZ);
+        item.TryGetComponent<FollowPath>(out FollowPath followPath);
+        if (followPath != null)
+        {
+            followPath.defineNewPathPoint(newPointPosition);
+            int pointsCoint = followPath.pathPositions.Count;
+            if (pointsCoint == 1)
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedName);
 
-        character.GetComponent<FollowPath>().defineNewPathPoint(newPoint);
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedName, pointsCoint - 1);
+        }
+
+    }
+
+    void parsePointRotation()
+    {
+        pointRotationParsed = true;
+        GameObject item = GameObject.Find(receivedName);
+
+        string[] splittedMessage = receivedPointRotation.Split(" ");
+        float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
+        float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+        float rotZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+        float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
+        Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
+
+        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+        if (followPathCamera != null)
+        {
+            followPathCamera.defineNewPathPoint(newPointPosition, newRotation);
+            int pointsCount = followPathCamera.pathPositions.Count;
+            if (pointsCount == 1)
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedName);
+
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedName, pointsCount - 1);
+        }
+
     }
 
     void parsePlayMessage()
@@ -229,11 +272,11 @@ public class UDPReceiver : MonoBehaviour
             DirectorPanelManager.instance.stopPath();
     }
 
-    void parseRotationMessage()
+    void parseSceneRotationMessage()
     {
-        rotationParsed = true;
+        sceneRotationParsed = true;
 
-        float rotationAngle = float.Parse(receivedRotation);
+        float rotationAngle = float.Parse(receivedSceneRotation);
         UDPSender.instance.rotateItemsInScene(rotationAngle);
     }
 
@@ -296,9 +339,9 @@ public class UDPReceiver : MonoBehaviour
         startRot = ScreenCamera.transform.rotation;
 
         newItemParsed = true;
-        pointParsed = true;
+        pointPositionParsed = true;
         playParsed = true;
-        rotationParsed = true;
+        sceneRotationParsed = true;
     }
 
     // Update is called once per frame
@@ -320,12 +363,14 @@ public class UDPReceiver : MonoBehaviour
             ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
             newItemParsed = true;
         }
-        if (!pointParsed)
-            parsePoint();
+        if (!pointPositionParsed)
+            parsePointPosition();
+        if (!pointRotationParsed)
+            parsePointRotation();
 
         if (!playParsed)
             parsePlayMessage();
-        if (!rotationParsed)
-            parseRotationMessage();
+        if (!sceneRotationParsed)
+            parseSceneRotationMessage();
     }
 }

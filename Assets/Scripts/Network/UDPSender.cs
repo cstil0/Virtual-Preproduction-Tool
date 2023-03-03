@@ -187,6 +187,16 @@ public class UDPSender : MonoBehaviour
         catch(System.Exception e) { }
     }
 
+    public void sendDeletePoint()
+    {
+
+    } 
+
+    public void sendChangeSpeed()
+    {
+
+    }
+
     IEnumerator sendInitialParameters()
     {
         sendCameraType();

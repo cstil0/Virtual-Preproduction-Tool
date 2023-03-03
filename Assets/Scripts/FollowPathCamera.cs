@@ -5,6 +5,7 @@ using System.Linq;
 using System.Transactions;
 using TMPro;
 using Unity.Netcode;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,7 @@ public class FollowPathCamera : MonoBehaviour
     public float rotSpeed = 10.0f;
     float pathLength;
     float currPathPosition;
+    float lastRotFactor = 0;
 
     Vector3 startPosition;
     //Vector3 startDiffPosition;
@@ -203,9 +205,10 @@ public class FollowPathCamera : MonoBehaviour
         //    isPlaying = false;
         //}
 
-        currPathPosition += speed;
-        if (isPlaying && currPathPosition < pathLength)
+        float tempCurrPathPosition = currPathPosition + speed;
+        if (isPlaying && tempCurrPathPosition < pathLength)
         {
+            currPathPosition = tempCurrPathPosition;
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
 
             /// rotate the empty object that is inside the camera so that the dolly tracker follows it
@@ -213,30 +216,62 @@ public class FollowPathCamera : MonoBehaviour
             float floorPathPos = Mathf.Floor(currPathPosition);
             float factor = currPathPosition - floorPathPos;
 
+            //if (factor == 0)
+            //    lastRotFactor = 0;
+
             Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
             //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
             Vector3 lastTargetRot = pathRotations[(int)floorPathPos];
             // find the minimum angle for each axis
-            //Vector3 angDiff = currTargetRot - lastTargetRot;
-            //Vector3 angDiffInv = lastTargetRot - currTargetRot;
             //Vector3 minAnglesDiff = new Vector3(Mathf.Min(angDiff.x, angDiffInv.x), Mathf.Min(angDiff.y, angDiffInv.y), Mathf.Min(angDiff.z, angDiffInv.z));
 
             // interpolate
             //Vector3 targetRot = lastTargetRot + minAnglesDiff * factor;
 
             //Vector3 targetRot = Vector3.Slerp(lastTargetRot, currTargetRot, factor);
-            ////Vector3 targetRot = lastTargetRot + (currTargetRot - lastTargetRot) * factor;
+
+            Vector3 angDiff = currTargetRot - lastTargetRot;
+            Vector3 minAngDiff = findMinAngle(angDiff);
+            Vector3 targetRot = lastTargetRot + (minAngDiff) * factor;
+
             //rotationController.transform.rotation = Quaternion.Euler(targetRot);
 
-            Quaternion lastTargetQuat = Quaternion.Euler(lastTargetRot);
-            Quaternion currTargetQuat = Quaternion.Euler(currTargetRot);
-            Quaternion targetQuat = Quaternion.RotateTowards(gameObject.transform.rotation, currTargetQuat, rotSpeed * Time.deltaTime);
-            //Vector3 targetRot = Vector3.RotateTowards(currTargetRot, last)
-            rotationController.transform.rotation = targetQuat;
+            //Quaternion lastTargetQuat = Quaternion.Euler(lastTargetRot);
+            //Quaternion currTargetQuat = Quaternion.Euler(currTargetRot);
+            ////Quaternion targetQuat = Quaternion.RotateTowards(gameObject.transform.rotation, currTargetQuat, rotSpeed * Time.deltaTime);
+            //Vector3 rotDiff = (currTargetRot - lastTargetRot) * (factor - lastRotFactor);
+            //float maxDelta = findMax(rotDiff.x, rotDiff.y, rotDiff.z);
+            ////Quaternion targetQuat = Quaternion.RotateTowards(gameObject.transform.rotation, currTargetQuat, maxDelta * 0.1f);
+            ////Vector3 targetRot = Vector3.RotateTowards(currTargetRot, last)
+            rotationController.transform.rotation = Quaternion.Euler(targetRot);
+            lastRotFactor = factor;
         }
     }
 
-    void defineNewPathPoint(Vector3 newPoint, Quaternion newRot)
+    Vector3 vector3Abs(Vector3 vector)
+    {
+        return new Vector3(Math.Abs(vector.x), Math.Abs(vector.y), Math.Abs(vector.z));
+    }
+
+    Vector3 findMinAngle(Vector3 angDiff)
+    {
+        Vector3 angDiffInv = vector3Abs(angDiff) - new Vector3(360.0f, 360.0f, 360.0f);
+
+        float minAngDiffX = angDiff.x;
+        float minAngDiffY = angDiff.y;
+        float minAngDiffZ = angDiff.z;
+        
+        if (Math.Abs(angDiffInv.x) < minAngDiffX)
+            minAngDiffX = angDiffInv.x;
+        if (Math.Abs(angDiffInv.y) < minAngDiffY)
+            minAngDiffY = angDiffInv.y;
+        if (Math.Abs(angDiffInv.z) < minAngDiffZ)
+            minAngDiffZ = angDiffInv.z;
+
+        return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
+    }
+
+    public void defineNewPathPoint(Vector3 newPoint, Quaternion newRot)
     {
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         pathLength = wayPoints.Length;
@@ -266,21 +301,21 @@ public class FollowPathCamera : MonoBehaviour
     {
         GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
 
-        for (int i = 0; i < paths.Length; i++)
-        {
-            Transform currPath = paths[i].transform;
+        //for (int i = 0; i < paths.Length; i++)
+        //{
+        //    Transform currPath = paths[i].transform;
 
-            for (int j = 0; j < currPath.childCount; j++)
-            {
-                GameObject pathObject = currPath.GetChild(j).gameObject;
+        //    for (int j = 0; j < currPath.childCount; j++)
+        //    {
+        //        GameObject pathObject = currPath.GetChild(j).gameObject;
 
-                if (pathObject.name.Contains("Line"))
-                    pathObject.GetComponent<LineRenderer>().enabled = false;
+        //        if (pathObject.name.Contains("Line"))
+        //            pathObject.GetComponent<LineRenderer>().enabled = false;
 
-                else if (pathObject.name.Contains("Point"))
-                    pathObject.SetActive(false);
-            }
-        }
+        //        else if (pathObject.name.Contains("Point"))
+        //            pathObject.SetActive(false);
+        //    }
+        //}
 
         // cameras are moved while defining their position and rotation
         // so we need them to go to the start location before playing their movement
@@ -319,10 +354,10 @@ public class FollowPathCamera : MonoBehaviour
                 GameObject pathObject = currPath.GetChild(j).gameObject;
 
                 if (pathObject.name.Contains("Line"))
-                    pathObject.GetComponent<LineRenderer>().enabled = false;
+                    pathObject.GetComponent<LineRenderer>().enabled = true;
 
                 else if (pathObject.name.Contains("Point"))
-                    pathObject.SetActive(false);
+                    pathObject.SetActive(true);
             }
         }
 

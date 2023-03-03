@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,13 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     [SerializeField] GameObject panelLayout;
     [SerializeField] GameObject itemsOptionsPanel;
+    [SerializeField] GameObject pointsPanel;
+
     [SerializeField] GameObject itemButtonPrefab;
+    [SerializeField] GameObject pointButtonPrefab;
+    [SerializeField] GameObject pointsLayoutPrefab;
+
+    private GameObject currPointPressed;
 
     private void Awake()
     {
@@ -53,6 +60,14 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         itemsOptionsPanel.SetActive(true);
 
+        for (int i = 0; i < pointsPanel.transform.childCount; i++)
+        {
+            GameObject currLayout = pointsPanel.transform.GetChild(i).gameObject;
+            if (currLayout.name.Contains(buttonText.text))
+                currLayout.SetActive(true);
+            else
+                currLayout.SetActive(false);
+        }
     }
 
     public void onCloseButtonPressed()
@@ -74,7 +89,17 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     public void onSpeedChange()
     {
+        UDPSender.instance.sendChangeSpeed();
+    }
 
+    public void onTrashPressed()
+    {
+        UDPSender.instance.sendDeletePoint();
+    }
+
+    public void onPointPressed(GameObject pointButton)
+    {
+        currPointPressed = pointButton;
     }
 
     public void addNewItemButton(string name)
@@ -89,5 +114,29 @@ public class ItemsDirectorPanelController : MonoBehaviour
         newButton.name = name + "Button";
         TMP_Text buttonText = newButton.transform.GetChild(0).GetComponent<TMP_Text>();
         newButton.GetComponent<Button>().onClick.AddListener( delegate { onItemsButtonPressed(buttonText); });
+    }
+
+    public void addPointsLayout(string name)
+    {
+        GameObject newLayout = Instantiate(pointsLayoutPrefab);
+        newLayout.transform.parent = pointsPanel.transform;
+        newLayout.name = name + " Layout";
+    }
+
+    public void addNewPointButton(string name, int pointNum)
+    {
+        GameObject newPointButton = Instantiate(pointButtonPrefab);
+
+        for (int i = 0; i < pointsPanel.transform.childCount; i++)
+        {
+            GameObject currLayout = pointsPanel.transform.GetChild(i).gameObject;
+
+            if (!currLayout.name.Contains(name))
+                continue;
+
+            newPointButton.transform.parent = currLayout.transform;
+        }
+
+        newPointButton.name = "Point " + pointNum;
     }
 }
