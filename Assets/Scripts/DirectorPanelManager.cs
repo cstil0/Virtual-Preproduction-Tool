@@ -95,7 +95,7 @@ public class DirectorPanelManager : MonoBehaviour
             // sending data
             IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), pathPlayPort);
 
-            byte[] message = Encoding.ASCII.GetBytes(playMessage);
+            byte[] message = Encoding.ASCII.GetBytes("PLAY_PATH:" + playMessage);
             client.Send(message, message.Length, target);
 
             client.Close();

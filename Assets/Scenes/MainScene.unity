@@ -5607,11 +5607,10 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 893955598}
   cinemachineSmoothPath: {fileID: 1494105649}
   rotationController: {fileID: 1633434179}
+  speed: 0.005
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
-  posSpeed: 3
-  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -6645,13 +6644,15 @@ MonoBehaviour:
   trashButton: {fileID: 1057622782}
   panelLayout: {fileID: 777726943}
   itemsOptionsPanel: {fileID: 1606753557}
-  pointsPanel: {fileID: 0}
+  pointsPanel: {fileID: 105928446}
   itemButtonPrefab: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
     type: 3}
   pointButtonPrefab: {fileID: 6865409764709355656, guid: a2811186aabc5e1479f26f77718a4fea,
     type: 3}
   pointsLayoutPrefab: {fileID: 5868563464203099476, guid: 6cd5a830ed0f8b643b65f2ad47c603d8,
     type: 3}
+  selectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
+  normalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
 --- !u!1 &609413782
 GameObject:
   m_ObjectHideFlags: 0
@@ -10637,7 +10638,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 944155848}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 602565775}
+        m_TargetAssemblyTypeName: ItemsDirectorPanelController, Assembly-CSharp
+        m_MethodName: onRemoveItemPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &944155848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13246,7 +13259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverPort: 8050
   assistantToDirectorPort: 8051
-  pathPlayPort: 8052
+  directoToAssistantPort: 8052
   rotateScenePort: 8053
   ScreenCamera: {fileID: 1825172517}
   hermione: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
@@ -14759,6 +14772,7 @@ MonoBehaviour:
   screenCamera: {fileID: 1825172517}
   serverPort: 8050
   assistantToDirectorPort: 8051
+  directoToAssistantPort: 8052
   ipAddress: 192.168.0.10
   sceneRotation: 0
   OVRPlayer: {fileID: 1972393813}
@@ -15789,7 +15803,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 602565775}
         m_TargetAssemblyTypeName: ItemsDirectorPanelController, Assembly-CSharp
-        m_MethodName: onSpeedChange
+        m_MethodName: onSpeedInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -20700,11 +20714,10 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 863538880}
   cinemachineSmoothPath: {fileID: 456117334}
   rotationController: {fileID: 475193469}
+  speed: 0.005
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
-  posSpeed: 3
-  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -21507,11 +21520,10 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 589624330}
   cinemachineSmoothPath: {fileID: 292259964}
   rotationController: {fileID: 912164437}
+  speed: 0.005
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
-  posSpeed: 3
-  rotSpeed: 10
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0

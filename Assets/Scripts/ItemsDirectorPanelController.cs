@@ -25,7 +25,14 @@ public class ItemsDirectorPanelController : MonoBehaviour
     [SerializeField] GameObject pointButtonPrefab;
     [SerializeField] GameObject pointsLayoutPrefab;
 
-    private GameObject currPointPressed;
+    private int currPointPressed;
+    private string currItemPressed;
+    private GameObject currItemGO;
+    private FollowPath currFollowPath;
+    private FollowPathCamera currFollowPathCamera;
+
+    [SerializeField] Color selectedColor;
+    [SerializeField] Color normalColor;
 
     private void Awake()
     {
@@ -50,56 +57,139 @@ public class ItemsDirectorPanelController : MonoBehaviour
         
     }
 
-    public void onItemsButtonPressed(TMP_Text buttonText)
+    public void onItemsButtonPressed(GameObject itemButtonGO)
     {
+        TMP_Text buttonText = itemButtonGO.transform.GetChild(0).GetComponent<TMP_Text>();
+        Button itemButton = itemButtonGO.GetComponent<Button>();
+
+        bool isAlreadySelected = false;
+        if (currItemPressed == buttonText.text)
+            isAlreadySelected = true;
+        else
+            currItemPressed = buttonText.text;
+
         itemName.text = buttonText.text;
         if (buttonText.transform.parent.name.Contains("Camera"))
             removeButton.gameObject.SetActive(false);
         else
-            removeButton.gameObject.SetActive(true);
+            // if it is already selected, we want to hide the remove button. Otherwise, show it
+            removeButton.gameObject.SetActive(!isAlreadySelected);
 
-        itemsOptionsPanel.SetActive(true);
+        itemsOptionsPanel.SetActive(!isAlreadySelected);
 
         for (int i = 0; i < pointsPanel.transform.childCount; i++)
         {
             GameObject currLayout = pointsPanel.transform.GetChild(i).gameObject;
             if (currLayout.name.Contains(buttonText.text))
-                currLayout.SetActive(true);
+                currLayout.SetActive(!isAlreadySelected);
             else
                 currLayout.SetActive(false);
+        }
+
+        if (!isAlreadySelected)
+        {
+            // get speed value
+            currItemGO = GameObject.Find(currItemPressed);
+            currItemGO.TryGetComponent<FollowPath>(out currFollowPath);
+            currItemGO.TryGetComponent<FollowPathCamera>(out currFollowPathCamera);
+
+            if (currFollowPath != null)
+                speedInput.text = currFollowPath.posSpeed.ToString();
+
+            if (currFollowPathCamera != null)
+                speedInput.text = currFollowPathCamera.speed.ToString();
+
+            // change color to visualize it as selected
+            ColorBlock buttonColors = itemButton.GetComponent<Button>().colors;
+            buttonColors.normalColor = normalColor;
+            itemButton.GetComponent<Button>().colors = buttonColors;
+        }
+        else
+        {
+
         }
     }
 
     public void onCloseButtonPressed()
     {
-        gameObject.SetActive(false);
+        itemsOptionsPanel.SetActive(false);
+        currItemGO = null;
+        currItemPressed = null;
+        currPointPressed = -1;
     }
 
     public void onSpeedPlusPressed()
     {
         speedInput.text = (int.Parse(speedInput.text) + 1).ToString();
-        onSpeedChange();
+        onSpeedChange(int.Parse(speedInput.text));
     }
 
     public void onSpeedMinusPressed()
     {
         speedInput.text = (int.Parse(speedInput.text) - 1).ToString();
-        onSpeedChange();
+        onSpeedChange(int.Parse(speedInput.text));
     }
 
-    public void onSpeedChange()
+    public void onSpeedInput()
     {
-        UDPSender.instance.sendChangeSpeed();
+        onSpeedChange(int.Parse(speedInput.text));
+    }
+
+    public void onSpeedChange(int speed)
+    {
+        UDPSender.instance.sendChangeSpeed(speed, currItemPressed);
+
+        if (currFollowPath != null)
+            currFollowPath.posSpeed = speed;
+
+        if (currFollowPathCamera != null)
+            currFollowPathCamera.speed = speed;
     }
 
     public void onTrashPressed()
     {
-        UDPSender.instance.sendDeletePoint();
+        UDPSender.instance.sendDeletePoint(currPointPressed, currItemPressed);
+
+        currItemGO.TryGetComponent<FollowPath>(out FollowPath followPath);
+        currItemGO.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+
+        if (followPath != null)
+            followPath.deletePathPoint(currPointPressed);
+
+        if (followPathCamera != null)
+            followPathCamera.deletePathPoint(currPointPressed);
+
+        currPointPressed = -1;
     }
 
     public void onPointPressed(GameObject pointButton)
     {
-        currPointPressed = pointButton;
+        string[] splittedName = pointButton.name.Split(" ");
+        int pointNum = int.Parse(splittedName[1]);
+
+        if (pointNum == currPointPressed)
+        {
+            currPointPressed = -1;
+            ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
+            buttonColors.normalColor = normalColor;
+            pointButton.GetComponent<Button>().colors = buttonColors;
+        }
+        else
+        {
+            currPointPressed = pointNum;
+            ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
+            buttonColors.selectedColor = selectedColor;
+            pointButton.GetComponent<Button>().colors = buttonColors;
+        }
+    }
+
+    public void onRemoveItemPressed()
+    {
+        if (!currItemPressed.Contains("Camera"))
+        {
+            UDPSender.instance.sendDeleteItem(currItemPressed);
+            Destroy(currItemGO);
+        }
     }
 
     public void addNewItemButton(string name)
@@ -112,8 +202,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         
         newButton.transform.GetChild(0).GetComponent<TMP_Text>().text = name;
         newButton.name = name + "Button";
-        TMP_Text buttonText = newButton.transform.GetChild(0).GetComponent<TMP_Text>();
-        newButton.GetComponent<Button>().onClick.AddListener( delegate { onItemsButtonPressed(buttonText); });
+        newButton.GetComponent<Button>().onClick.AddListener( delegate { onItemsButtonPressed(newButton); });
     }
 
     public void addPointsLayout(string name)

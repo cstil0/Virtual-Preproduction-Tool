@@ -392,6 +392,12 @@ public class FollowPath : MonoBehaviour
         gameObject.transform.Rotate(rotation);
     }
 
+    public void changeSpeed(float speed)
+    {
+        posSpeed = speed;
+        rotSpeed = speed * 3;
+    }
+
     //void deleteCurrentPath()
     //{
     //    Transform pathButtons = gameObject.transform.Find("Paths buttons");

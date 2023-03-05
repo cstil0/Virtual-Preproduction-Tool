@@ -210,7 +210,8 @@ public class ItemsMenuController : MonoBehaviour
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
         GameObject objectInstance = Instantiate(itemPrefab);
-        if (objectInstance.name.Contains("(Clone)"))
+        string wrongName = objectInstance.name;
+        if (wrongName.Contains("(Clone)"))
         {
             string[] splittedName = objectInstance.name.Split("(Clone)");
             objectInstance.name = splittedName[0];
@@ -233,7 +234,6 @@ public class ItemsMenuController : MonoBehaviour
         //objectInstance.transform.Translate(-attachPoint, handController.transform);
 
         objectInstance.GetComponent<NetworkObject>().Spawn();
-
-        UDPSender.instance.sendItem(objectInstance.name);
+        UDPSender.instance.sendItemMiddle(objectInstance.name, wrongName);
     }
 }

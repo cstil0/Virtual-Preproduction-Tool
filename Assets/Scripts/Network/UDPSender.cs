@@ -21,6 +21,7 @@ public class UDPSender : MonoBehaviour
     UdpClient client;
     public int serverPort = 8050;
     public int assistantToDirectorPort = 8051;
+    public int directoToAssistantPort = 8052;
     int rotateScenePort = 8053;
     public string ipAddress;
 
@@ -173,28 +174,69 @@ public class UDPSender : MonoBehaviour
         catch (System.Exception e) { }
     }
 
-    public void sendItem(String name)
+    public void sendItemMiddle(string name, string wrongName)
     {
+        //this is needed because if starting it at the menu script, it will get disabled and the coroutine will break
+        StartCoroutine(sendItem(name, wrongName));
+    }
+
+    public IEnumerator sendItem(string name, string wrongName)
+    {
+        // wait five seconds to ensure that object was already spawned at client side
+        yield return new WaitForSeconds(1.0f);
+
         try
         {
             client = new UdpClient(assistantToDirectorPort);
             string ipAddress = ModesManager.instance.IPAddress.text;
             IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
-            byte[] message = Encoding.ASCII.GetBytes("NEW_ITEM:" + name);
+            byte[] message = Encoding.ASCII.GetBytes("NEW_ITEM:" + name + ":" + wrongName);
             client.Send(message, message.Length, target);
             client.Close();
         }
         catch(System.Exception e) { }
     }
 
-    public void sendDeletePoint()
+    public void sendDeletePoint(int pointNum, string name)
     {
+        try
+        {
+            client = new UdpClient(directoToAssistantPort);
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
+            byte[] message = Encoding.ASCII.GetBytes("DELETE_POINT:" + name + ":" + pointNum);
+            client.Send(message, message.Length, target);
+            client.Close();
+        }
+        catch (System.Exception e) { }
+    }
 
-    } 
-
-    public void sendChangeSpeed()
+    public void sendDeleteItem(string name)
     {
+        try
+        {
+            client = new UdpClient(directoToAssistantPort);
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
+            byte[] message = Encoding.ASCII.GetBytes("DELETE_ITEM:" + name);
+            client.Send(message, message.Length, target);
+            client.Close();
+        }
+        catch (System.Exception e) { }
+    }
 
+    public void sendChangeSpeed(float speed, string name)
+    {
+        try
+        {
+            client = new UdpClient(directoToAssistantPort);
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
+            byte[] message = Encoding.ASCII.GetBytes("CHANGE_SPEED:" + name + ":" + speed);
+            client.Send(message, message.Length, target);
+            client.Close();
+        }
+        catch (System.Exception e) { }
     }
 
     IEnumerator sendInitialParameters()

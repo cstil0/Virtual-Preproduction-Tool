@@ -9,7 +9,6 @@ using System.Threading;
 using System.Globalization;
 using Unity.VisualScripting;
 using System.Security.Cryptography;
-using static UnityEditor.Progress;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -22,31 +21,37 @@ public class UDPReceiver : MonoBehaviour
     // so that it is less messy for me
     [SerializeField] int serverPort = 8050;
     [SerializeField] int assistantToDirectorPort = 8051;
-    [SerializeField] int pathPlayPort = 8052;
+    [SerializeField] int directoToAssistantPort = 8052;
     [SerializeField] int rotateScenePort = 8053;
 
     //Thread receiveThread;
     Thread assistantToDirectorThread;
-    Thread receivePlayPathThread;
+    Thread directorToAssistantThread;
     Thread receiveSceneRotationThread;
 
     bool pointPositionParsed;
     bool pointRotationParsed;
     bool newItemParsed;
     bool playParsed;
+    bool speedParsed;
+    bool deletePointParsed;
+    bool deleteItemParsed;
     bool sceneRotationParsed;
 
     String receivedMessage;
-    String receivedName;
+    String receivedPointName;
+    String receivedSpeedName;
+    float receivedSpeedValue;
+    String receivedDeleteItemName;
+    String receivedDeletePointName;
+    int receivedDeletePointNum;
     String newReceivedName;
+    String newWrongReceivedName;
     int receivedCount;
     string receivedPointPosition;
     string receivedPointRotation;
     string receivedPlay;
     string receivedSceneRotation;
-    //double receivedPointX;
-    //double receivedPointY;
-    //double receivedPointZ;
 
     public Camera ScreenCamera;
     Vector3 startPos;
@@ -69,6 +74,14 @@ public class UDPReceiver : MonoBehaviour
         NEW_ITEM,
         NEW_POINT,
         NEW_ROTATION
+    }
+
+    enum directorToAssistantMessages
+    {
+        CHANGE_SPEED,
+        PLAY_PATH,
+        DELETE_POINT,
+        DELETE_ITEM
     }
 
     // main thread that listens to UDP messages through a defined port
@@ -137,9 +150,9 @@ public class UDPReceiver : MonoBehaviour
             {
                 // recieve messages through the end point
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, assistantToDirectorPort);
-                byte[] receiveBytes = clientPath.Receive(ref remoteEndPoint);
+                byte[] receivedBytes = clientPath.Receive(ref remoteEndPoint);
 
-                string receivedString = Encoding.ASCII.GetString(receiveBytes);
+                string receivedString = Encoding.ASCII.GetString(receivedBytes);
                 string[] splittedMessage = receivedString.Split(":");
                 assistantToDirectorMessages message_enum = (assistantToDirectorMessages)Enum.Parse(typeof(assistantToDirectorMessages), splittedMessage[0]);
                 string message = splittedMessage[1];
@@ -147,17 +160,18 @@ public class UDPReceiver : MonoBehaviour
                 switch (message_enum)
                 {
                     case assistantToDirectorMessages.NEW_ITEM:
-                        newReceivedName = message;
+                        newReceivedName = splittedMessage[1];
+                        newWrongReceivedName = splittedMessage[2];
                         newItemParsed = false;
                         break;
                     case assistantToDirectorMessages.NEW_POINT:
-                        receivedName = message;
-                        receiveBytes = clientPath.Receive(ref remoteEndPoint);
-                        receivedPointPosition = Encoding.ASCII.GetString(receiveBytes);
+                        receivedPointName = message;
+                        receivedBytes = clientPath.Receive(ref remoteEndPoint);
+                        receivedPointPosition = Encoding.ASCII.GetString(receivedBytes);
                         pointPositionParsed = false;
                         break;
                     case assistantToDirectorMessages.NEW_ROTATION:
-                        receivedPointRotation = Encoding.ASCII.GetString(receiveBytes);
+                        receivedPointRotation = Encoding.ASCII.GetString(receivedBytes);
                         pointRotationParsed = false;
                         break;
                 }
@@ -169,20 +183,43 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
-    void UDP_PlayPathReceive()
+    void UDP_directorToAssistantReceive()
     {
-        clientPlay = new UdpClient(pathPlayPort);
+        clientPlay = new UdpClient(directoToAssistantPort);
         // loop needed to keep listening
         while (true)
         {
             try
             {
                 // recieve messages through the end point
-                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, pathPlayPort);
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, directoToAssistantPort);
                 byte[] receiveBytes = clientPlay.Receive(ref remoteEndPoint);
-                receivedPlay = Encoding.ASCII.GetString(receiveBytes);
 
-                playParsed = false;
+                string receivedString = Encoding.ASCII.GetString(receiveBytes);
+                string[] splittedMessage = receivedString.Split(":");
+                directorToAssistantMessages message_enum = (directorToAssistantMessages)Enum.Parse(typeof(directorToAssistantMessages), splittedMessage[0]);
+
+                switch (message_enum)
+                {
+                    case directorToAssistantMessages.PLAY_PATH:
+                        receivedPlay = splittedMessage[1];
+                        playParsed = false;
+                        break;
+                    case directorToAssistantMessages.CHANGE_SPEED:
+                        receivedSpeedName = splittedMessage[1];
+                        receivedSpeedValue = float.Parse(splittedMessage[2]);
+                        speedParsed = false;
+                        break;
+                    case directorToAssistantMessages.DELETE_POINT:
+                        receivedDeletePointName = splittedMessage[1];
+                        receivedDeletePointNum = int.Parse(splittedMessage[2]);
+                        deletePointParsed = false;
+                        break;
+                    case directorToAssistantMessages.DELETE_ITEM:
+                        deleteItemParsed = false;
+                        receivedDeleteItemName = splittedMessage[1];
+                        break;
+                }
             }
             catch (Exception e)
             {
@@ -216,7 +253,7 @@ public class UDPReceiver : MonoBehaviour
     void parsePointPosition()
     {
         pointPositionParsed = true;
-        GameObject item = GameObject.Find(receivedName);
+        GameObject item = GameObject.Find(receivedPointName);
 
         string[] splittedMessage = receivedPointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -230,9 +267,9 @@ public class UDPReceiver : MonoBehaviour
             followPath.defineNewPathPoint(newPointPosition);
             int pointsCoint = followPath.pathPositions.Count;
             if (pointsCoint == 1)
-                ItemsDirectorPanelController.instance.addPointsLayout(receivedName);
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
 
-            ItemsDirectorPanelController.instance.addNewPointButton(receivedName, pointsCoint - 1);
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCoint - 1);
         }
 
     }
@@ -240,7 +277,7 @@ public class UDPReceiver : MonoBehaviour
     void parsePointRotation()
     {
         pointRotationParsed = true;
-        GameObject item = GameObject.Find(receivedName);
+        GameObject item = GameObject.Find(receivedPointName);
 
         string[] splittedMessage = receivedPointRotation.Split(" ");
         float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -255,11 +292,10 @@ public class UDPReceiver : MonoBehaviour
             followPathCamera.defineNewPathPoint(newPointPosition, newRotation);
             int pointsCount = followPathCamera.pathPositions.Count;
             if (pointsCount == 1)
-                ItemsDirectorPanelController.instance.addPointsLayout(receivedName);
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
 
-            ItemsDirectorPanelController.instance.addNewPointButton(receivedName, pointsCount - 1);
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
         }
-
     }
 
     void parsePlayMessage()
@@ -270,6 +306,46 @@ public class UDPReceiver : MonoBehaviour
             DirectorPanelManager.instance.playPath();
         else if (receivedPlay == "STOP")
             DirectorPanelManager.instance.stopPath();
+    }
+
+    void parseSpeed()
+    {
+        speedParsed = true;
+
+        GameObject item = GameObject.Find(receivedSpeedName);
+        item.TryGetComponent<FollowPath>(out FollowPath followPath);
+        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+
+        if (followPath != null)
+            followPath.changeSpeed(receivedSpeedValue);
+
+        if (followPathCamera != null)
+            followPathCamera.changeSpeed(receivedSpeedValue);
+    }
+
+    void parseDeletePoint()
+    {
+        deletePointParsed = true;
+
+        GameObject item = GameObject.Find(receivedDeletePointName);
+        item.TryGetComponent<FollowPath>(out FollowPath followPath);
+        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+
+        if (followPath != null)
+            followPath.deletePathPoint(receivedDeletePointNum);
+
+        if (followPathCamera != null)
+            followPathCamera.deletePathPoint(receivedDeletePointNum);
+    }
+
+    void parseDeleteItem()
+    {
+        deleteItemParsed = true;
+
+        if (!receivedDeleteItemName.Contains("Camera")){
+            GameObject item = GameObject.Find(receivedDeleteItemName);
+            Destroy(item);
+        }
     }
 
     void parseSceneRotationMessage()
@@ -294,9 +370,9 @@ public class UDPReceiver : MonoBehaviour
             clientPath.Close();
         }
 
-        if (receivePlayPathThread != null)
+        if (directorToAssistantThread != null)
         {
-            receivePlayPathThread.Abort();
+            directorToAssistantThread.Abort();
             clientPlay.Close();
         }
 
@@ -329,9 +405,9 @@ public class UDPReceiver : MonoBehaviour
         // assistant wants to receive when director plays or stops the path play, since it controlls the position with network manager
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
         {
-            receivePlayPathThread = new Thread(UDP_PlayPathReceive);
-            receivePlayPathThread.IsBackground = true;
-            receivePlayPathThread.Start();
+            directorToAssistantThread = new Thread(UDP_directorToAssistantReceive);
+            directorToAssistantThread.IsBackground = true;
+            directorToAssistantThread.Start();
         }
 
         startPos = ScreenCamera.transform.position;
@@ -341,6 +417,9 @@ public class UDPReceiver : MonoBehaviour
         newItemParsed = true;
         pointPositionParsed = true;
         playParsed = true;
+        speedParsed = true;
+        deletePointParsed = true;
+        deleteItemParsed = true;
         sceneRotationParsed = true;
     }
 
@@ -360,16 +439,30 @@ public class UDPReceiver : MonoBehaviour
 
         if (!newItemParsed)
         {
-            ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
             newItemParsed = true;
+
+            GameObject item = GameObject.Find(newWrongReceivedName);
+            item.name = newReceivedName;
+            ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
         }
         if (!pointPositionParsed)
             parsePointPosition();
+
         if (!pointRotationParsed)
             parsePointRotation();
 
         if (!playParsed)
             parsePlayMessage();
+
+        if (!speedParsed)
+            parseSpeed();
+
+        if (!deletePointParsed)
+            parseDeletePoint();
+
+        if (!deleteItemParsed)
+            parseDeleteItem();
+
         if (!sceneRotationParsed)
             parseSceneRotationMessage();
     }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Transactions;
 using TMPro;
 using Unity.Netcode;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,7 @@ public class FollowPathCamera : MonoBehaviour
     private CinemachineTrackedDolly cinemachineTrackedDolly;
     [SerializeField] CinemachineSmoothPath cinemachineSmoothPath;
     [SerializeField] GameObject rotationController;
-    float speed = 0.005f;
+    public float speed = 0.005f;
 
     public GameObject handController;
     //[SerializeField] GameObject miniCamera;
@@ -24,8 +23,8 @@ public class FollowPathCamera : MonoBehaviour
     //public List<Quaternion> pathRotations;
     // relate each path ID with the start and end positions in the pathPositions list
     //public Dictionary<int, int[]> pathStartEnd;
-    public float posSpeed = 10.0f;
-    public float rotSpeed = 10.0f;
+    //public float posSpeed = 10.0f;
+    //public float rotSpeed = 10.0f;
     float pathLength;
     float currPathPosition;
     float lastRotFactor = 0;
@@ -166,16 +165,6 @@ public class FollowPathCamera : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
-        }
-        else if (Input.GetKeyDown(KeyCode.M) && isSelectedForPath)
-        {
-            posSpeed += 0.1f;
-            rotSpeed += 0.1f;
-        }
-        else if (Input.GetKeyUp(KeyCode.N) && isSelectedForPath)
-        {
-            posSpeed -= 0.1f;
-            rotSpeed -= 0.1f;
         }
 
         //if (isPlaying && (posCount < pathPositions.Count))
@@ -449,6 +438,11 @@ public class FollowPathCamera : MonoBehaviour
         // relocate sphere
         Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
         sphere.position = newPoint;
+    }
+
+    public void changeSpeed(float newSpeed)
+    {
+        speed = newSpeed;
     }
 
     //void deleteCurrentPath()
