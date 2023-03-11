@@ -11,6 +11,7 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject canvas;
     RotationScale rotationScale;
     private int itemsCount = 0;
+    public GameObject itemsParent;
 
 
     // SERIA GUAI PODER MOSTRAR LES VARIABLES SEGONS EL ENUM SELECCIONAT PERÒ S'HA DE CREAR UN NOU EDITOR I ÉS UNA MICA LIADA DE MOMENT
@@ -209,7 +210,7 @@ public class ItemsMenuController : MonoBehaviour
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
-        GameObject objectInstance = Instantiate(itemPrefab);
+        GameObject objectInstance = Instantiate(itemPrefab,itemsParent.transform);
         string wrongName = objectInstance.name;
         if (wrongName.Contains("(Clone)"))
         {

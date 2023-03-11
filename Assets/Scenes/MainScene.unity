@@ -288,6 +288,7 @@ MonoBehaviour:
   button: {fileID: 9637092}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 6612305363317834161, guid: 974e9be7e060b9a49a0dbe8ab44cecec,
@@ -462,6 +463,7 @@ MonoBehaviour:
   button: {fileID: 12627767}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: 83253f5927b47614ab33204c64e63e36,
@@ -1520,6 +1522,7 @@ MonoBehaviour:
   button: {fileID: 170530979}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 8040191701624547288, guid: 07e2d58f7bda75141928ed18631d548c,
@@ -1941,7 +1944,17 @@ PrefabInstance:
     - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_text
-      value: Camera 3
+      value: MainCamera 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -1952,6 +1965,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: onItemsButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 201677017}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505909, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -2068,6 +2091,12 @@ PrefabInstance:
 --- !u!224 &201677016 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2596619740090505909, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+    type: 3}
+  m_PrefabInstance: {fileID: 201677015}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &201677017 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
     type: 3}
   m_PrefabInstance: {fileID: 201677015}
   m_PrefabAsset: {fileID: 0}
@@ -2418,6 +2447,7 @@ MonoBehaviour:
   button: {fileID: 221788181}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 592494078}
   itemPrefab: {fileID: 0}
@@ -2587,6 +2617,7 @@ MonoBehaviour:
   button: {fileID: 240409005}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: 1df39fd2de48adc408dd7e08abd8363d,
@@ -4513,6 +4544,7 @@ MonoBehaviour:
   button: {fileID: 403726936}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 4659966851946630487, guid: 41a9f147f1a0c144e88d708318b3ef24,
@@ -5169,6 +5201,7 @@ MonoBehaviour:
   button: {fileID: 471817132}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 1487908819022706140, guid: ecb2678622a8b2748bab8a97e25f4f5b,
@@ -6651,6 +6684,7 @@ MonoBehaviour:
     type: 3}
   pointsLayoutPrefab: {fileID: 5868563464203099476, guid: 6cd5a830ed0f8b643b65f2ad47c603d8,
     type: 3}
+  itemsParent: {fileID: 0}
   selectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
   normalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
 --- !u!1 &609413782
@@ -8952,6 +8986,7 @@ MonoBehaviour:
   button: {fileID: 826148388}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: 15621df1406ec4b4ba198ef1faac332e,
@@ -9069,8 +9104,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831937894}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00000046880365}
+  m_LocalScale: {x: 0.99999994, y: 1, z: 0.99999994}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 550185698}
@@ -9208,6 +9243,7 @@ MonoBehaviour:
   button: {fileID: 831937894}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 908388035}
   itemPrefab: {fileID: 861928155}
@@ -9790,6 +9826,7 @@ MonoBehaviour:
   button: {fileID: 871733118}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 2422529291043784021, guid: 1ad9324c8d1b32a4eba0a94eb631e080,
@@ -11823,6 +11860,7 @@ MonoBehaviour:
   button: {fileID: 1041622617}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: 197d94e4699c98b49b4202d3b2fb2319,
@@ -12182,6 +12220,7 @@ Transform:
   - {fileID: 1776131375}
   - {fileID: 479241774}
   - {fileID: 293364115}
+  - {fileID: 1959356654}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12450,6 +12489,7 @@ MonoBehaviour:
   button: {fileID: 1121565074}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: bdd38bb699b9b3b4f8642b733b8e567c,
@@ -12624,6 +12664,7 @@ MonoBehaviour:
   button: {fileID: 1132373571}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 4270905507144806461, guid: 44e49cd5d3931a3449aedbb3bed229e2,
@@ -13261,6 +13302,7 @@ MonoBehaviour:
   assistantToDirectorPort: 8051
   directoToAssistantPort: 8052
   rotateScenePort: 8053
+  itemsParent: {fileID: 1959356655}
   ScreenCamera: {fileID: 1825172517}
   hermione: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
     type: 3}
@@ -16061,6 +16103,7 @@ MonoBehaviour:
   button: {fileID: 1409443045}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: b51b04af138ba244db5d6225ff1f04f9,
@@ -16281,6 +16324,7 @@ MonoBehaviour:
   button: {fileID: 1429887842}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: f945b47f0adf82645aadd67b144e1693,
@@ -16677,7 +16721,17 @@ PrefabInstance:
     - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_text
-      value: Camera 2
+      value: MainCamera 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -16688,6 +16742,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: onItemsButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 1478097216}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505909, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -16804,6 +16868,12 @@ PrefabInstance:
 --- !u!224 &1478097215 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2596619740090505909, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+    type: 3}
+  m_PrefabInstance: {fileID: 1478097214}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1478097216 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
     type: 3}
   m_PrefabInstance: {fileID: 1478097214}
   m_PrefabAsset: {fileID: 0}
@@ -17607,6 +17677,7 @@ MonoBehaviour:
   button: {fileID: 1578024890}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9195308507420792288, guid: 75e54243e6d204bf7a1c6910b40e77f2,
@@ -17898,6 +17969,7 @@ MonoBehaviour:
   button: {fileID: 1583869483}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 9076595271573128782, guid: fa5cfa7eb835e8f4d8b5e6117cde0f49,
@@ -18784,6 +18856,7 @@ MonoBehaviour:
   button: {fileID: 1590508736}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 4520857037623629173, guid: 789abb7f53271e54dbb65cdcef6d9709,
@@ -19096,6 +19169,7 @@ MonoBehaviour:
   button: {fileID: 1606785151}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 8743182773991339718, guid: ce93ff107136054478856e4ed60e7c47,
@@ -19299,6 +19373,7 @@ MonoBehaviour:
   button: {fileID: 1609511216}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 908388035}
   newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
@@ -19591,6 +19666,7 @@ MonoBehaviour:
   button: {fileID: 1650977973}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 5458788754564632185, guid: ffdd9f5a42398714a86d078d7b118cea,
@@ -21023,6 +21099,7 @@ MonoBehaviour:
   button: {fileID: 1803688654}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 238554837}
   itemPrefab: {fileID: 0}
@@ -21420,6 +21497,7 @@ MonoBehaviour:
   button: {fileID: 1814684605}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2,
@@ -21739,6 +21817,7 @@ MonoBehaviour:
   button: {fileID: 1832551504}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 592494078}
   newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
@@ -22068,6 +22147,7 @@ MonoBehaviour:
   button: {fileID: 1884965498}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 1237137997}
   newMenu: {fileID: 818087570}
   itemPrefab: {fileID: 0}
@@ -22519,6 +22599,92 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953880264}
   m_CullTransparentMesh: 1
+--- !u!1001 &1959356653
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1087597333}
+    m_Modifications:
+    - target: {fileID: 84317289544577707, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 91636666
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106250, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_Name
+      value: ItemsParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 382337939062ef64db421247bb2ba993, type: 3}
+--- !u!4 &1959356654 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2772474358275106251, guid: 382337939062ef64db421247bb2ba993,
+    type: 3}
+  m_PrefabInstance: {fileID: 1959356653}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1959356655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2772474358275106250, guid: 382337939062ef64db421247bb2ba993,
+    type: 3}
+  m_PrefabInstance: {fileID: 1959356653}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1966392767 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100010, guid: ce816f2e6abb0504092c23ed9b970dfd,
@@ -24629,6 +24795,7 @@ MonoBehaviour:
   button: {fileID: 2101871509}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 818087570}
   newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
@@ -25134,6 +25301,7 @@ MonoBehaviour:
   button: {fileID: 2143720715}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 238554837}
   newMenu: {fileID: 1237137997}
   itemPrefab: {fileID: 0}
@@ -25225,6 +25393,7 @@ MonoBehaviour:
   button: {fileID: 2146690619}
   handController: {fileID: 861928155}
   canvas: {fileID: 989086354}
+  itemsParent: {fileID: 1959356655}
   currMenu: {fileID: 0}
   newMenu: {fileID: 0}
   itemPrefab: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
@@ -25322,7 +25491,17 @@ PrefabInstance:
     - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_text
-      value: Camera 1
+      value: MainCamera 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619739200494096, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -25333,6 +25512,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: onItemsButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 2596619739518822628}
+    - target: {fileID: 2596619740090505908, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2596619740090505909, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
@@ -25446,6 +25635,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eff1ce10390a2b41b6b3055e4096efc, type: 3}
+--- !u!1 &2596619739518822628 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2596619739518822627}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5781834975337223585
 PrefabInstance:
   m_ObjectHideFlags: 0

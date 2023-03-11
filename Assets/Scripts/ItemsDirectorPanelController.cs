@@ -1,3 +1,5 @@
+using Microsoft.MixedReality.Toolkit;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -25,6 +27,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
     [SerializeField] GameObject pointButtonPrefab;
     [SerializeField] GameObject pointsLayoutPrefab;
 
+    [SerializeField] GameObject itemsParent;
     private int currPointPressed;
     private string currItemPressed;
     private GameObject currItemGO;
@@ -62,11 +65,16 @@ public class ItemsDirectorPanelController : MonoBehaviour
         TMP_Text buttonText = itemButtonGO.transform.GetChild(0).GetComponent<TMP_Text>();
         Button itemButton = itemButtonGO.GetComponent<Button>();
 
+        string lastItemPressed = "";
         bool isAlreadySelected = false;
         if (currItemPressed == buttonText.text)
             isAlreadySelected = true;
         else
+        {
+            if (currItemPressed != null)
+                lastItemPressed = currItemPressed;
             currItemPressed = buttonText.text;
+        }
 
         itemName.text = buttonText.text;
         if (buttonText.transform.parent.name.Contains("Camera"))
@@ -89,9 +97,9 @@ public class ItemsDirectorPanelController : MonoBehaviour
         if (!isAlreadySelected)
         {
             // get speed value
-            currItemGO = GameObject.Find(currItemPressed);
-            currItemGO.TryGetComponent<FollowPath>(out currFollowPath);
-            currItemGO.TryGetComponent<FollowPathCamera>(out currFollowPathCamera);
+            currItemGO = itemsParent.transform.Find(currItemPressed).gameObject;
+            currItemGO.TryGetComponent(out currFollowPath);
+            currItemGO.TryGetComponent(out currFollowPathCamera);
 
             if (currFollowPath != null)
                 speedInput.text = currFollowPath.posSpeed.ToString();
@@ -101,12 +109,24 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
             // change color to visualize it as selected
             ColorBlock buttonColors = itemButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = normalColor;
+            buttonColors.normalColor = selectedColor;
             itemButton.GetComponent<Button>().colors = buttonColors;
+
+            if (lastItemPressed != "")
+            {
+                GameObject lastItemButton = panelLayout.transform.Find(lastItemPressed + "Button").gameObject;
+                ColorBlock lastButtonColors = lastItemButton.GetComponent<Button>().colors;
+                buttonColors.normalColor = normalColor;
+                lastItemButton.GetComponent<Button>().colors = lastButtonColors;
+            }
         }
         else
         {
+            ColorBlock buttonColors = itemButton.GetComponent<Button>().colors;
+            buttonColors.normalColor = normalColor;
+            itemButton.GetComponent<Button>().colors = buttonColors;
 
+            currItemPressed = "";
         }
     }
 
@@ -159,6 +179,10 @@ public class ItemsDirectorPanelController : MonoBehaviour
         if (followPathCamera != null)
             followPathCamera.deletePathPoint(currPointPressed);
 
+        Transform itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " LAYOUT");
+        GameObject pointButton = itemPointsLayout.Find("Point " + currPointPressed).gameObject;
+
+        Destroy(pointButton);
         currPointPressed = -1;
     }
 
@@ -188,7 +212,16 @@ public class ItemsDirectorPanelController : MonoBehaviour
         if (!currItemPressed.Contains("Camera"))
         {
             UDPSender.instance.sendDeleteItem(currItemPressed);
-            Destroy(currItemGO);
+            GameObject itemButton = panelLayout.transform.Find(currItemPressed + "Button").gameObject;
+            Destroy(itemButton);
+
+            // the item may not have any point createdn yet, so we need to handle exceptions
+            try
+            {
+                GameObject itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " LAYOUT").gameObject;
+                Destroy(itemPointsLayout);
+            }
+            catch (Exception e) { }
         }
     }
 

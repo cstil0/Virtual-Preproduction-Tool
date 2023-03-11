@@ -24,6 +24,8 @@ public class UDPReceiver : MonoBehaviour
     [SerializeField] int directoToAssistantPort = 8052;
     [SerializeField] int rotateScenePort = 8053;
 
+    [SerializeField] GameObject itemsParent;
+
     //Thread receiveThread;
     Thread assistantToDirectorThread;
     Thread directorToAssistantThread;
@@ -253,7 +255,7 @@ public class UDPReceiver : MonoBehaviour
     void parsePointPosition()
     {
         pointPositionParsed = true;
-        GameObject item = GameObject.Find(receivedPointName);
+        GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
 
         string[] splittedMessage = receivedPointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -261,7 +263,7 @@ public class UDPReceiver : MonoBehaviour
         float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
         Vector3 newPointPosition = new Vector3(posX, posY, posZ);
 
-        item.TryGetComponent<FollowPath>(out FollowPath followPath);
+        item.TryGetComponent(out FollowPath followPath);
         if (followPath != null)
         {
             followPath.defineNewPathPoint(newPointPosition);
@@ -277,7 +279,7 @@ public class UDPReceiver : MonoBehaviour
     void parsePointRotation()
     {
         pointRotationParsed = true;
-        GameObject item = GameObject.Find(receivedPointName);
+        GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
 
         string[] splittedMessage = receivedPointRotation.Split(" ");
         float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -286,7 +288,7 @@ public class UDPReceiver : MonoBehaviour
         float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
         Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
 
-        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
         if (followPathCamera != null)
         {
             followPathCamera.defineNewPathPoint(newPointPosition, newRotation);
@@ -312,9 +314,9 @@ public class UDPReceiver : MonoBehaviour
     {
         speedParsed = true;
 
-        GameObject item = GameObject.Find(receivedSpeedName);
-        item.TryGetComponent<FollowPath>(out FollowPath followPath);
-        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+        GameObject item = itemsParent.transform.Find(receivedSpeedName).gameObject;
+        item.TryGetComponent(out FollowPath followPath);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
             followPath.changeSpeed(receivedSpeedValue);
@@ -327,9 +329,9 @@ public class UDPReceiver : MonoBehaviour
     {
         deletePointParsed = true;
 
-        GameObject item = GameObject.Find(receivedDeletePointName);
-        item.TryGetComponent<FollowPath>(out FollowPath followPath);
-        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+        GameObject item = itemsParent.transform.Find(receivedDeletePointName).gameObject;
+        item.TryGetComponent(out FollowPath followPath);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
             followPath.deletePathPoint(receivedDeletePointNum);
@@ -440,9 +442,7 @@ public class UDPReceiver : MonoBehaviour
         if (!newItemParsed)
         {
             newItemParsed = true;
-
-            GameObject item = GameObject.Find(newWrongReceivedName);
-            item.name = newReceivedName;
+            itemsParent.transform.Find(newWrongReceivedName).name = newReceivedName;
             ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
         }
         if (!pointPositionParsed)
