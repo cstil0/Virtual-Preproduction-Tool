@@ -260,7 +260,7 @@ public class FollowPathCamera : MonoBehaviour
         return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
     }
 
-    public void defineNewPathPoint(Vector3 newPoint, Quaternion newRot)
+    public void defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         pathLength = wayPoints.Length;
@@ -276,12 +276,15 @@ public class FollowPathCamera : MonoBehaviour
         pathPositions.Add(newPoint);
         pathRotations.Add(newRot.eulerAngles);
 
-        if (pathLength == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
-        else
-            DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
+        if (instantiatePos)
+        {
+            if (pathLength == 0)
+                pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
+            else
+                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
         
-        UDPSender.instance.sendPointPath(gameObject, newPoint);
+            UDPSender.instance.sendPointPath(gameObject, newPoint);
+        }
 
         //GameObject newMiniCamera = Instantiate(miniCamera);
     }

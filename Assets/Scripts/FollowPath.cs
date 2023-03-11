@@ -249,19 +249,22 @@ public class FollowPath : MonoBehaviour
             currentSelectedPath = 0;
     }
 
-    public void defineNewPathPoint(Vector3 controllerPos)
+    public void defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
     {
         Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
 
         pathPositions.Add(newPoint);
-        if (pointsCount == 0)
-            pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
-        else 
-            DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+        if (instantiatePoint)
+        {
+            if (pointsCount == 0)
+                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+            else 
+                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
 
 
-        // send new path point from assistant to director so that he can also play and visualize paths
-        UDPSender.instance.sendPointPath(gameObject, newPoint);
+            // send new path point from assistant to director so that he can also play and visualize paths
+            UDPSender.instance.sendPointPath(gameObject, newPoint);
+        }
 
         pointsCount++;
     }

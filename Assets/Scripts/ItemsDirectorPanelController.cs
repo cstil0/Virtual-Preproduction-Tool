@@ -243,6 +243,13 @@ public class ItemsDirectorPanelController : MonoBehaviour
         GameObject newLayout = Instantiate(pointsLayoutPrefab);
         newLayout.transform.parent = pointsPanel.transform;
         newLayout.name = name + " Layout";
+
+        RectTransform rTrans = newLayout.GetComponent<RectTransform>();
+        rTrans.offsetMin = new Vector2(10, 7);
+        rTrans.offsetMax = new Vector2(-10, -7);
+        rTrans.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        rTrans.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+        rTrans.localPosition = new Vector3(rTrans.localPosition.x, rTrans.localPosition.y, 0);
     }
 
     public void addNewPointButton(string name, int pointNum)
@@ -257,8 +264,13 @@ public class ItemsDirectorPanelController : MonoBehaviour
                 continue;
 
             newPointButton.transform.parent = currLayout.transform;
+            RectTransform rTrans = newPointButton.GetComponent<RectTransform>();
+            rTrans.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            rTrans.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+            rTrans.localPosition = new Vector3(rTrans.localPosition.x, rTrans.localPosition.y, 0);
         }
 
         newPointButton.name = "Point " + pointNum;
+        newPointButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pointNum.ToString();
     }
 }

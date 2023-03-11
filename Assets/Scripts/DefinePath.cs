@@ -77,6 +77,7 @@ public class DefinePath : MonoBehaviour
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
         spherePoint.transform.SetParent(pathContainer.transform);
+
         // set the new point to the line renderer in the 0 index
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         currLineRenderer.SetPosition(pointsCount, newPosition);

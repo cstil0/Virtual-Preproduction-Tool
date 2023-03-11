@@ -163,7 +163,7 @@ public class UDPSender : MonoBehaviour
             // sending data
             IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
 
-            byte[] message = Encoding.ASCII.GetBytes("NEW_POINT: " + item.transform.name);
+            byte[] message = Encoding.ASCII.GetBytes("NEW_POINT:" + item.transform.name);
             client.Send(message, message.Length, target);
 
             message = Encoding.ASCII.GetBytes(pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture));

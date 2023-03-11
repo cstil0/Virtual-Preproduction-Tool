@@ -210,7 +210,7 @@ public class ItemsMenuController : MonoBehaviour
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
-        GameObject objectInstance = Instantiate(itemPrefab,itemsParent.transform);
+        GameObject objectInstance = Instantiate(itemPrefab);
         string wrongName = objectInstance.name;
         if (wrongName.Contains("(Clone)"))
         {
@@ -235,6 +235,7 @@ public class ItemsMenuController : MonoBehaviour
         //objectInstance.transform.Translate(-attachPoint, handController.transform);
 
         objectInstance.GetComponent<NetworkObject>().Spawn();
+        objectInstance.transform.parent = itemsParent.transform;
         UDPSender.instance.sendItemMiddle(objectInstance.name, wrongName);
     }
 }
