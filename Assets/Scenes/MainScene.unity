@@ -3082,6 +3082,9 @@ GameObject:
   m_Component:
   - component: {fileID: 292259965}
   - component: {fileID: 292259964}
+  - component: {fileID: 292259968}
+  - component: {fileID: 292259967}
+  - component: {fileID: 292259966}
   m_Layer: 11
   m_Name: DollyTrack1
   m_TagString: Untagged
@@ -3115,14 +3118,60 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292259963}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.9904012, z: 0, w: 0.1382226}
   m_LocalPosition: {x: 7.51, y: 1.4, z: -1.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -164.11, z: 0}
+--- !u!114 &292259966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292259963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_allowOffhandGrab: 1
+  m_snapPosition: 0
+  m_snapOrientation: 0
+  m_snapOffset: {fileID: 0}
+  m_grabPoints: []
+--- !u!54 &292259967
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292259963}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!65 &292259968
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292259963}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18, y: 0.2, z: 0.35}
+  m_Center: {x: 0.03, y: 0.05, z: -0.07}
 --- !u!1 &293276119
 GameObject:
   m_ObjectHideFlags: 0
@@ -4744,6 +4793,9 @@ GameObject:
   m_Component:
   - component: {fileID: 456117335}
   - component: {fileID: 456117334}
+  - component: {fileID: 456117338}
+  - component: {fileID: 456117337}
+  - component: {fileID: 456117336}
   m_Layer: 12
   m_Name: DollyTrack2
   m_TagString: Untagged
@@ -4777,14 +4829,60 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456117333}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 4.246, y: 1.4, z: 0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &456117336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456117333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_allowOffhandGrab: 1
+  m_snapPosition: 0
+  m_snapOrientation: 0
+  m_snapOffset: {fileID: 0}
+  m_grabPoints: []
+--- !u!54 &456117337
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456117333}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &456117338
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456117333}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18, y: 0.2, z: 0.35}
+  m_Center: {x: 0.03, y: 0.05, z: -0.07}
 --- !u!1 &460232823
 GameObject:
   m_ObjectHideFlags: 0
@@ -5297,6 +5395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 475193470}
+  - component: {fileID: 475193473}
   m_Layer: 0
   m_Name: RotationControllerCamera2
   m_TagString: Untagged
@@ -5312,13 +5411,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475193469}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 4.582229, y: -0.27337825, z: 3.1138535}
+  m_LocalPosition: {x: 4.246, y: 1.4, z: 0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &475193473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475193469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8427819d444dd6142b9984b1d554f7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 861928155}
+  dollyTracker: {fileID: 456117333}
+  followPathCamera: {fileID: 1776131376}
 --- !u!1001 &479241773
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5330,6 +5444,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -0.07
       objectReference: {fileID: 0}
     - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
@@ -10400,6 +10524,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 912164438}
+  - component: {fileID: 912164442}
   m_Layer: 0
   m_Name: RotationControllerCamera1
   m_TagString: Untagged
@@ -10414,14 +10539,29 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912164437}
-  m_LocalRotation: {x: 0, y: -0.9859378, z: 0, w: 0.167113}
-  m_LocalPosition: {x: 4.582229, y: -0.27337825, z: 3.1138535}
+  m_LocalRotation: {x: 0, y: -0.9904012, z: 0, w: 0.1382226}
+  m_LocalPosition: {x: 7.51, y: 1.4, z: -1.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: -160.76, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -164.11, z: 0}
+--- !u!114 &912164442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912164437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8427819d444dd6142b9984b1d554f7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 861928155}
+  dollyTracker: {fileID: 292259963}
+  followPathCamera: {fileID: 1825172524}
 --- !u!1 &914847974
 GameObject:
   m_ObjectHideFlags: 0
@@ -13408,7 +13548,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 126, y: -118}
+  m_AnchoredPosition: {x: 117, y: -118}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1191896198
@@ -15756,8 +15896,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 31.190125, y: 54}
-  m_SizeDelta: {x: 45, y: 30}
+  m_AnchoredPosition: {x: 26.9, y: 54}
+  m_SizeDelta: {x: 60, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1352995539
 MonoBehaviour:
@@ -16883,6 +17023,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1494105650}
   - component: {fileID: 1494105649}
+  - component: {fileID: 1494105653}
+  - component: {fileID: 1494105652}
+  - component: {fileID: 1494105651}
   m_Layer: 13
   m_Name: DollyTrack3
   m_TagString: Untagged
@@ -16916,14 +17059,60 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1494105648}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.9663761, z: 0, w: -0.25713268}
   m_LocalPosition: {x: 1.92, y: 1.4, z: -0.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -209.8, z: 0}
+--- !u!114 &1494105651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494105648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_allowOffhandGrab: 1
+  m_snapPosition: 0
+  m_snapOrientation: 0
+  m_snapOffset: {fileID: 0}
+  m_grabPoints: []
+--- !u!54 &1494105652
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494105648}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &1494105653
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494105648}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18, y: 0.2, z: 0.35}
+  m_Center: {x: 0.03, y: 0.05, z: -0.07}
 --- !u!1 &1502464062
 GameObject:
   m_ObjectHideFlags: 0
@@ -17775,7 +17964,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1727
+    m_Bits: 2147483647
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8600000, guid: 70f52c0dc198a0e4480c50c0f5a7b973, type: 2}
   m_TargetDisplay: 0
@@ -18957,7 +19146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1606753558
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19384,6 +19573,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1633434180}
+  - component: {fileID: 1633434183}
   m_Layer: 0
   m_Name: RotationControllerCamera3
   m_TagString: Untagged
@@ -19399,13 +19589,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633434179}
   m_LocalRotation: {x: -0, y: -0.9663761, z: 0, w: -0.25713268}
-  m_LocalPosition: {x: 4.582229, y: -0.27337825, z: 3.1138535}
+  m_LocalPosition: {x: 1.92, y: 1.4, z: -0.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 266216893}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: -209.8, z: 0}
+--- !u!114 &1633434183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633434179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8427819d444dd6142b9984b1d554f7af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handController: {fileID: 861928155}
+  dollyTracker: {fileID: 1494105648}
+  followPathCamera: {fileID: 479241775}
 --- !u!1 &1635278465
 GameObject:
   m_ObjectHideFlags: 0
@@ -20481,6 +20686,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
+      propertyPath: m_Center.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
@@ -21547,39 +21762,6 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 5781834975337223585}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &1825172522
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825172511}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
---- !u!114 &1825172523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825172511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
 --- !u!114 &1825172524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21639,6 +21821,22 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!54 &1825172532
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825172511}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
 --- !u!4 &1828398787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 9f5a24a380916d14db9775daab4fe333,
@@ -25652,6 +25850,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
+      propertyPath: m_Center.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: m_Center.z
+      value: -0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 274941422599018155, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
@@ -25843,7 +26051,7 @@ PrefabInstance:
     - target: {fileID: 5781834974586894783, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.167113
+      value: 0.1382226
       objectReference: {fileID: 0}
     - target: {fileID: 5781834974586894783, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
@@ -25853,7 +26061,7 @@ PrefabInstance:
     - target: {fileID: 5781834974586894783, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.9859378
+      value: -0.9904012
       objectReference: {fileID: 0}
     - target: {fileID: 5781834974586894783, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
@@ -25966,8 +26174,8 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 5781834974976874785, guid: 76f555b9dfd0d0d4484816b700de078c, type: 3}
-    - {fileID: 5781834974976874975, guid: 76f555b9dfd0d0d4484816b700de078c, type: 3}
-    - {fileID: 5781834974976874974, guid: 76f555b9dfd0d0d4484816b700de078c, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 5326187050118787808, guid: 76f555b9dfd0d0d4484816b700de078c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 76f555b9dfd0d0d4484816b700de078c, type: 3}
