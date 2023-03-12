@@ -12,7 +12,7 @@ public class PathSpheresController : MonoBehaviour
     public bool isSelected = false;
 
     public GameObject item = null;
-    FollowPath followPath;
+    public FollowPath followPath;
     public FollowPathCamera followPathCamera;
     public bool isBeingCreated = true;
     [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.005f, 0.0f);

@@ -365,6 +365,10 @@ public class UDPReceiver : MonoBehaviour
         if (!receivedDeleteItemName.Contains("Camera")){
             GameObject item = GameObject.Find(receivedDeleteItemName);
             Destroy(item);
+
+            string[] splittedName = receivedDeleteItemName.Split(" ");
+            string itemNum = splittedName[1];
+            GameObject pathContainer = GameObject.Find("Path " + itemNum);
         }
     }
 

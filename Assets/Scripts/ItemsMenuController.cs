@@ -10,7 +10,7 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject handController;
     public GameObject canvas;
     RotationScale rotationScale;
-    private int itemsCount = 0;
+    public int itemsCount = 0;
     public GameObject itemsParent;
 
 
@@ -218,7 +218,7 @@ public class ItemsMenuController : MonoBehaviour
             objectInstance.name = splittedName[0];
         }
 
-        objectInstance.name += itemsCount.ToString();
+        objectInstance.name += " " + itemsCount.ToString();
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
         Vector3 handPosition = handController.transform.position;
         // només ens interessa la rotació de la y. +180 per què quedi com necessitem

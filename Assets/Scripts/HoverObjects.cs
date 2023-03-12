@@ -280,12 +280,28 @@ public class HoverObjects : MonoBehaviour
         else if (other.gameObject == currentPointCollider)
         {
             pointAlreadySelected = false;
-            currentPointCollider.GetComponent<PathSpheresController>().changeTriggerState(false);
-            // once the hand has exit the trigger at least once, then the point is able to be deleted
-            currentPointCollider.GetComponent<PathSpheresController>().isBeingCreated = false;
 
-            bool isSelected = currentPointCollider.GetComponent<PathSpheresController>().isSelected;
-            Color color = isSelected ? DefinePath.instance.hoverLineColor : DefinePath.instance.defaultLineColor;
+            PathSpheresController spheresController = currentPointCollider.GetComponent<PathSpheresController>();
+            // once the hand has exit the trigger at least once, then the point is able to be deleted
+            spheresController.isBeingCreated = false;
+            spheresController.changeTriggerState(false);
+            
+            bool isSelected = spheresController.isSelected;
+            // check if the parent item is selected to know which is the correct color to use
+            Color notHoverColor = DefinePath.instance.selectedLineColor;
+            if (spheresController.followPathCamera != null)
+            {
+                if (spheresController.followPathCamera.isSelectedForPath)
+                    notHoverColor = DefinePath.instance.defaultLineColor;
+            }
+
+            if (spheresController.followPath != null)
+            {
+                if (spheresController.followPath.isSelectedForPath)
+                    notHoverColor = DefinePath.instance.defaultLineColor;
+            }
+
+            Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
             changeColorMaterials(currentPointCollider, color);
             currentPointCollider = null;
         }
@@ -293,10 +309,20 @@ public class HoverObjects : MonoBehaviour
         else if (other.gameObject == currentMiniCameraCollider)
         {
             miniCameraAlreadySelected = false;
-            currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = false;
 
-            bool isSelected = currentMiniCameraCollider.GetComponent<CameraRotationController>().isSelected;
-            Color color = isSelected ? DefinePath.instance.hoverLineColor : DefinePath.instance.defaultLineColor;
+            CameraRotationController cameraRotationController = currentMiniCameraCollider.GetComponent<CameraRotationController>();
+            cameraRotationController.triggerOn = false;
+            
+            bool isSelected = cameraRotationController.isSelected;
+            // check if the parent item is selected to know which is the correct color to use
+            Color notHoverColor = DefinePath.instance.selectedLineColor;
+            if (cameraRotationController.followPathCamera != null)
+            {
+                if (cameraRotationController.followPathCamera.isSelectedForPath)
+                    notHoverColor = DefinePath.instance.defaultLineColor;
+            }
+
+            Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
             changeColorMaterials(currentMiniCameraCollider, color);
             currentMiniCameraCollider = null;
         }
