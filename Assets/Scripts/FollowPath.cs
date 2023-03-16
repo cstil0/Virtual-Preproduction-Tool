@@ -26,7 +26,7 @@ public class FollowPath : MonoBehaviour
     Animator animator;
 
     GameObject pathContainer;
-    int pathNum = -1;
+    //int pathNum = -1;
 
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
@@ -140,7 +140,7 @@ public class FollowPath : MonoBehaviour
                 if(pointsCount == 0)
                 {
                     defineNewPathPoint(handController.transform.position);
-                    pathNum = DefinePath.instance.pathsCount;
+                    //pathNum = DefinePath.instance.getItemsCount();
                 }
 
                 if (!isSelectedForPath)
@@ -358,10 +358,12 @@ public class FollowPath : MonoBehaviour
         }
     }
 
-    public void deletePathPoint(int pointNum)
+    public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
         pathPositions.RemoveAt(pointNum);
-        DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+
+        if (deleteLine)
+            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
         pointsCount--;
     }
 

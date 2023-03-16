@@ -174,12 +174,13 @@ public class ItemsDirectorPanelController : MonoBehaviour
         currItemGO.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
-            followPath.deletePathPoint(currPointPressed);
+            followPath.deletePathPoint(currPointPressed, false);
 
         if (followPathCamera != null)
-            followPathCamera.deletePathPoint(currPointPressed);
+            followPathCamera.deletePathPoint(currPointPressed, false);
 
-        Transform itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " LAYOUT");
+        // eliminate point button
+        Transform itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " Layout");
         GameObject pointButton = itemPointsLayout.Find("Point " + currPointPressed).gameObject;
 
         Destroy(pointButton);
@@ -272,5 +273,6 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         newPointButton.name = "Point " + pointNum;
         newPointButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pointNum.ToString();
+        newPointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(newPointButton); });
     }
 }

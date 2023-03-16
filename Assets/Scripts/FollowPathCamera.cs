@@ -133,7 +133,9 @@ public class FollowPathCamera : MonoBehaviour
                 secondaryIndexTriggerDown = true;
                 isSelectedForPath = !isSelectedForPath;
                 startPosition = gameObject.transform.position;
-                defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
+
+                if (pathPositions.Count == 0)
+                    defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
             }
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger)
             {
@@ -404,10 +406,11 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
-    public void deletePathPoint(int pointNum)
+    public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
         pathPositions.RemoveAt(pointNum);
-        DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+        if (deleteLine)
+            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
     }
 
     public void relocatePoint(int pointNum, Vector3 direction)

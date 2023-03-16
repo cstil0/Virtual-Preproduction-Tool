@@ -10,7 +10,6 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject handController;
     public GameObject canvas;
     RotationScale rotationScale;
-    public int itemsCount = 0;
     public GameObject itemsParent;
 
 
@@ -204,7 +203,7 @@ public class ItemsMenuController : MonoBehaviour
     // to instantiate the object that is passed according to the pressed button in the menu
     public void SpawnObject()
     {
-        itemsCount += 1;
+        DefinePath.instance.itemsCount += 1;
         Vector3 attachPoint = itemPrefab.transform.GetChild(0).localPosition;
         // access the script RotationScale in the prefab
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
@@ -218,7 +217,7 @@ public class ItemsMenuController : MonoBehaviour
             objectInstance.name = splittedName[0];
         }
 
-        objectInstance.name += " " + itemsCount.ToString();
+        objectInstance.name += " " + DefinePath.instance.itemsCount.ToString();
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
         Vector3 handPosition = handController.transform.position;
         // només ens interessa la rotació de la y. +180 per què quedi com necessitem

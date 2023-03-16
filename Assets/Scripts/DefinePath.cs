@@ -19,7 +19,6 @@ public class DefinePath : MonoBehaviour
     [SerializeField] GameObject emptyPrefab;
     [SerializeField] GameObject handController;
     [SerializeField] int pathPointsPort = 8051;
-    [SerializeField] ItemsMenuController itemsMenuController;
 
     public Color defaultLineColor;
     public Color hoverLineColor;
@@ -28,6 +27,7 @@ public class DefinePath : MonoBehaviour
     private UdpClient udpClient;
     public bool isThereCharacterSelected = false;
     private bool secondaryIndexTriggerDown = false;
+    public int itemsCount;
 
     private void Awake()
     {
@@ -105,7 +105,7 @@ public class DefinePath : MonoBehaviour
         spherePoint.transform.position = newPosition;
 
         // change names according to the counts so that it is easy to identify and search for each point and path
-        pathContainer.transform.name = "Path " + itemsMenuController.itemsCount;
+        pathContainer.transform.name = "Path " + itemsCount;
         line.transform.name = "Line";
         spherePoint.transform.name = "Point " + pointsCount;
 
@@ -197,4 +197,9 @@ public class DefinePath : MonoBehaviour
             }
         }
     }
+
+    //public int getItemsCount()
+    //{
+    //    return itemsMenuController.itemsCount;
+    //}
 }
