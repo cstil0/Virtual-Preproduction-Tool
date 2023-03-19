@@ -256,33 +256,24 @@ public class UDPReceiver : MonoBehaviour
     {
         pointPositionParsed = true;
 
-        // handle exceptions in case the item is not found
-        try
+        GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
+
+        string[] splittedMessage = receivedPointPosition.Split(" ");
+        float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
+        float posY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+        float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+        Vector3 newPointPosition = new Vector3(posX, posY, posZ);
+
+        item.TryGetComponent(out FollowPath followPath);
+        if (followPath != null)
         {
-            GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
+            StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
+            int pointsCoint = followPath.pathPositions.Count;
+            if (pointsCoint == 1)
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
 
-            string[] splittedMessage = receivedPointPosition.Split(" ");
-            float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
-            float posY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
-            float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
-            Vector3 newPointPosition = new Vector3(posX, posY, posZ);
-
-            item.TryGetComponent(out FollowPath followPath);
-            if (followPath != null)
-            {
-                followPath.defineNewPathPoint(newPointPosition, false);
-                int pointsCoint = followPath.pathPositions.Count;
-                if (pointsCoint == 1)
-                    ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
-
-                ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCoint - 1);
-            }
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCoint - 1);
         }
-        catch (Exception e)
-        {
-            Debug.LogError("ERROR PARSING POINT: " + e.Message);
-        }
-
     }
 
     void parsePointRotation()
@@ -304,7 +295,7 @@ public class UDPReceiver : MonoBehaviour
             item.TryGetComponent(out FollowPathCamera followPathCamera);
             if (followPathCamera != null)
             {
-                followPathCamera.defineNewPathPoint(newPointPosition, newRotation, false);
+                StartCoroutine(followPathCamera.defineNewPathPoint(newPointPosition, newRotation, false));
                 int pointsCount = followPathCamera.pathPositions.Count;
                 if (pointsCount == 1)
                     ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);

@@ -1,5 +1,6 @@
 using Cinemachine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
@@ -135,12 +136,12 @@ public class FollowPathCamera : MonoBehaviour
                 startPosition = gameObject.transform.position;
 
                 if (pathPositions.Count == 0)
-                    defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation);
+                    StartCoroutine(defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation));
             }
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
-                defineNewPathPoint(handController.transform.position, handController.transform.rotation);
+                StartCoroutine(defineNewPathPoint(handController.transform.position, handController.transform.rotation));
             }
         }
         else
@@ -262,7 +263,7 @@ public class FollowPathCamera : MonoBehaviour
         return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
     }
 
-    public void defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
+    public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         pathLength = wayPoints.Length;
@@ -284,7 +285,9 @@ public class FollowPathCamera : MonoBehaviour
                 pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
             else
                 DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
-        
+
+            yield return new WaitForSeconds(1.0f);
+
             UDPSender.instance.sendPointPath(gameObject, newPoint);
         }
 

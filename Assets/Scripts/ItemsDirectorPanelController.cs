@@ -65,14 +65,14 @@ public class ItemsDirectorPanelController : MonoBehaviour
         TMP_Text buttonText = itemButtonGO.transform.GetChild(0).GetComponent<TMP_Text>();
         Button itemButton = itemButtonGO.GetComponent<Button>();
 
-        string lastItemPressed = "";
+        //string lastItemPressed = "";
         bool isAlreadySelected = false;
         if (currItemPressed == buttonText.text)
             isAlreadySelected = true;
         else
         {
-            if (currItemPressed != null)
-                lastItemPressed = currItemPressed;
+            //if (currItemPressed != null)
+                //lastItemPressed = currItemPressed;
             currItemPressed = buttonText.text;
         }
 
@@ -107,17 +107,22 @@ public class ItemsDirectorPanelController : MonoBehaviour
             if (currFollowPathCamera != null)
                 speedInput.text = currFollowPathCamera.speed.ToString();
 
-            // change color to visualize it as selected
-            ColorBlock buttonColors = itemButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = selectedColor;
-            itemButton.GetComponent<Button>().colors = buttonColors;
-
-            if (lastItemPressed != "")
+            for (int i = 0; i < panelLayout.transform.childCount; i++)
             {
-                GameObject lastItemButton = panelLayout.transform.Find(lastItemPressed + "Button").gameObject;
-                ColorBlock lastButtonColors = lastItemButton.GetComponent<Button>().colors;
-                buttonColors.normalColor = normalColor;
-                lastItemButton.GetComponent<Button>().colors = lastButtonColors;
+                GameObject currButton = panelLayout.transform.GetChild(i).gameObject;
+                if (currButton.name == currItemPressed + "Button")
+                {
+                    // change color to visualize it as selected
+                    ColorBlock buttonColors = currButton.GetComponent<Button>().colors;
+                    buttonColors.normalColor = selectedColor;
+                    currButton.GetComponent<Button>().colors = buttonColors;
+                }
+                else
+                {
+                    ColorBlock lastButtonColors = currButton.GetComponent<Button>().colors;
+                    lastButtonColors.normalColor = normalColor;
+                    currButton.GetComponent<Button>().colors = lastButtonColors;
+                }
             }
         }
         else
@@ -152,7 +157,11 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     public void onSpeedInput()
     {
-        onSpeedChange(int.Parse(speedInput.text));
+        try
+        {
+            onSpeedChange(int.Parse(speedInput.text));
+        }
+        catch (Exception e) { }
     }
 
     public void onSpeedChange(int speed)
@@ -181,9 +190,20 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         // eliminate point button
         Transform itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " Layout");
-        GameObject pointButton = itemPointsLayout.Find("Point " + currPointPressed).gameObject;
 
-        Destroy(pointButton);
+        for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
+        {
+            if (i == currPointPressed)
+                Destroy(itemPointsLayout.transform.GetChild(i).gameObject);
+            // the substraction is due to the fact we are starting at the second position
+            if (i > currPointPressed)
+            {
+                Transform pointButton = itemPointsLayout.transform.GetChild(i);
+                pointButton.name = "Point " + (i - 1);
+                pointButton.GetChild(0).GetComponent<TMP_Text>().text = (i - 1).ToString();
+            }
+        }
+
         currPointPressed = -1;
     }
 

@@ -288,17 +288,17 @@ public class HoverObjects : MonoBehaviour
             
             bool isSelected = spheresController.isSelected;
             // check if the parent item is selected to know which is the correct color to use
-            Color notHoverColor = DefinePath.instance.selectedLineColor;
+            Color notHoverColor = DefinePath.instance.defaultLineColor;
             if (spheresController.followPathCamera != null)
             {
                 if (spheresController.followPathCamera.isSelectedForPath)
-                    notHoverColor = DefinePath.instance.defaultLineColor;
+                    notHoverColor = DefinePath.instance.selectedLineColor;
             }
 
             if (spheresController.followPath != null)
             {
                 if (spheresController.followPath.isSelectedForPath)
-                    notHoverColor = DefinePath.instance.defaultLineColor;
+                    notHoverColor = DefinePath.instance.selectedLineColor;
             }
 
             Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
@@ -315,11 +315,11 @@ public class HoverObjects : MonoBehaviour
             
             bool isSelected = cameraRotationController.isSelected;
             // check if the parent item is selected to know which is the correct color to use
-            Color notHoverColor = DefinePath.instance.selectedLineColor;
+            Color notHoverColor = DefinePath.instance.defaultLineColor;
             if (cameraRotationController.followPathCamera != null)
             {
                 if (cameraRotationController.followPathCamera.isSelectedForPath)
-                    notHoverColor = DefinePath.instance.defaultLineColor;
+                    notHoverColor = DefinePath.instance.selectedLineColor;
             }
 
             Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;

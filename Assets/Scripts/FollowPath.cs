@@ -139,7 +139,7 @@ public class FollowPath : MonoBehaviour
 
                 if(pointsCount == 0)
                 {
-                    defineNewPathPoint(handController.transform.position);
+                    StartCoroutine(defineNewPathPoint(handController.transform.position));
                     //pathNum = DefinePath.instance.getItemsCount();
                 }
 
@@ -152,7 +152,7 @@ public class FollowPath : MonoBehaviour
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
-                defineNewPathPoint(handController.transform.position);
+                StartCoroutine(defineNewPathPoint(handController.transform.position));
             }
         }
         else
@@ -249,24 +249,25 @@ public class FollowPath : MonoBehaviour
             currentSelectedPath = 0;
     }
 
-    public void defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
+    public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
     {
+        pointsCount++;
         Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
 
         pathPositions.Add(newPoint);
         if (instantiatePoint)
         {
-            if (pointsCount == 0)
-                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+            if (pointsCount == 1)
+                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, DefinePath.instance.spherePrefab);
             else 
-                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount, gameObject, DefinePath.instance.spherePrefab);
+                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, DefinePath.instance.spherePrefab);
 
-
+            yield return new WaitForSeconds(1.0f);
+            
             // send new path point from assistant to director so that he can also play and visualize paths
             UDPSender.instance.sendPointPath(gameObject, newPoint);
         }
 
-        pointsCount++;
     }
 
     void playLinePath()

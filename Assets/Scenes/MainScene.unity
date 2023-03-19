@@ -2083,7 +2083,7 @@ PrefabInstance:
     - target: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_Name
-      value: CameraButton3
+      value: MainCamera 3Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eff1ce10390a2b41b6b3055e4096efc, type: 3}
@@ -2468,7 +2468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &238554838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14238,7 +14238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1237137998
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17009,7 +17009,7 @@ PrefabInstance:
     - target: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_Name
-      value: CameraButton2
+      value: MainCamera 2Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eff1ce10390a2b41b6b3055e4096efc, type: 3}
@@ -25838,7 +25838,7 @@ PrefabInstance:
     - target: {fileID: 2596619740090505910, guid: 4eff1ce10390a2b41b6b3055e4096efc,
         type: 3}
       propertyPath: m_Name
-      value: CameraButton1
+      value: MainCamera 1Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eff1ce10390a2b41b6b3055e4096efc, type: 3}

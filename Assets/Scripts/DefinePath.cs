@@ -167,13 +167,14 @@ public class DefinePath : MonoBehaviour
         currLineRenderer.SetPositions(pathPositionsArray);
         currLineRenderer.positionCount = pointsCount - 1;
 
-
         // change following points name
         // start in second child since first one corresponds to the line renderer
-        for (int i = 1; i < pathContainer.transform.childCount; i++)
+        for (int i = 0; i < pathContainer.transform.childCount; i++)
         {
+            if (i == pointNum)
+                Destroy(pathContainer.transform.GetChild(i + 1).gameObject);
             // the substraction is due to the fact we are starting at the second position
-            if (i - 1 > pointNum)
+            if (i > pointNum)
                 pathContainer.transform.GetChild(i).name = "Point " + (i - 2);
         }
     }
