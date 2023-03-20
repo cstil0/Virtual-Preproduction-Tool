@@ -72,6 +72,7 @@ public class DefinePath : MonoBehaviour
         GameObject spherePoint = Instantiate(spherePrefab);
 
         pathContainer.GetComponent<NetworkObject>().Spawn();
+        line.GetComponent<NetworkObject>().Spawn();
         spherePoint.GetComponent<NetworkObject>().Spawn();
 
         // insert sphere and linerenderer inside the path container

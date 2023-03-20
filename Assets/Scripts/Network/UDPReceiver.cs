@@ -257,6 +257,8 @@ public class UDPReceiver : MonoBehaviour
         pointPositionParsed = true;
 
         GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
+        int itemNum = int.Parse(receivedPointName.Split(" ")[1]);
+        Transform pathContainer = gameObject.transform.Find("Path " + itemNum);
 
         string[] splittedMessage = receivedPointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -268,11 +270,17 @@ public class UDPReceiver : MonoBehaviour
         if (followPath != null)
         {
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
-            int pointsCoint = followPath.pathPositions.Count;
-            if (pointsCoint == 1)
+            int pointsCount = followPath.pathPositions.Count;
+            if (pointsCount == 1)
                 ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
 
-            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCoint - 1);
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
+
+            // add point to line renderer of the corresponding path
+            GameObject line = pathContainer.GetChild(0).gameObject;
+            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+            lineRenderer.positionCount += 1;
+            lineRenderer.SetPosition(pointsCount, newPointPosition);
         }
     }
 

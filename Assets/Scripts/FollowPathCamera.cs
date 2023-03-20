@@ -323,7 +323,7 @@ public class FollowPathCamera : MonoBehaviour
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
+        if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
         {
             UDPSender.instance.sendChangeCamera();
             UDPSender.instance.SendPosRot();
