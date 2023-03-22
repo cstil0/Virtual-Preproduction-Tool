@@ -258,7 +258,17 @@ public class UDPReceiver : MonoBehaviour
 
         GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
         int itemNum = int.Parse(receivedPointName.Split(" ")[1]);
-        Transform pathContainer = gameObject.transform.Find("Path " + itemNum);
+
+        Transform pathContainer;
+        try
+        {
+            pathContainer = GameObject.Find("PathParent(Clone)").transform;
+            pathContainer.name = "Path " + itemNum;
+        }
+        catch (Exception e)
+        {
+            pathContainer = GameObject.Find("Path " + itemNum).transform;
+        }
 
         string[] splittedMessage = receivedPointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -277,10 +287,18 @@ public class UDPReceiver : MonoBehaviour
             ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
 
             // add point to line renderer of the corresponding path
+            Transform pointTransform = pathContainer.GetChild(pointsCount);
+            // y is sended conditionated to the character height to make sure that it is always on the floor,
+            // so real y is taken from the actual sphere point position
+            float realPosY = pointTransform.position.y;
+             Vector3 realNewPosition = new Vector3(posX, realPosY, posZ);
             GameObject line = pathContainer.GetChild(0).gameObject;
             LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-            lineRenderer.positionCount += 1;
-            lineRenderer.SetPosition(pointsCount, newPointPosition);
+            if (pointsCount > 1)
+            {
+                lineRenderer.positionCount += 1;
+            }
+            lineRenderer.SetPosition(pointsCount - 1, realNewPosition);
         }
     }
 
@@ -464,6 +482,7 @@ public class UDPReceiver : MonoBehaviour
         if (!newItemParsed)
         {
             newItemParsed = true;
+            // change item name
             itemsParent.transform.Find(newWrongReceivedName).name = newReceivedName;
             ItemsDirectorPanelController.instance.addNewItemButton(newReceivedName);
         }

@@ -133,6 +133,7 @@ public class UDPSender : MonoBehaviour
     // ESTARIA BÉ FER UNA FUNCIÓ GENERAL QUE REBI EL MISSATGE I L'ENVII
     public void sendChangeCamera()
     {
+        Debug.Log("SENDING CHANGE CAMERA");
         screenCameraStartPos = screenCamera.transform.position;
         screenCameraStartRot = screenCamera.transform.rotation;
 
