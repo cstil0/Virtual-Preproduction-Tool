@@ -29,17 +29,45 @@ public class PathSpheresController : MonoBehaviour
             {
                 secondaryTriggerButtonDown = true;
                 string[] splittedName = { "" };
+                Transform parent = null;
                 if (followPath != null)
+                {
                     splittedName = gameObject.transform.name.Split(" ");
+                    parent = gameObject.transform.parent;
+                }
                 else if (followPathCamera != null)
+                {
                     splittedName = gameObject.transform.parent.name.Split(" ");
+                    parent = gameObject.transform.parent.parent;
+                }
 
                 try
                 {
                     int pointNum = int.Parse(splittedName[1]);
                     isSelected = !isSelected;
+
+                    if (isSelected)
+                    {
+                        // iterate through all points and deselect all
+                        for (int i = 1; i < parent.childCount; i++)
+                        {
+                            if (i == pointNum + 1)
+                                continue;
+
+                            GameObject currPoint = null;
+                            if (followPath != null)
+                                currPoint = parent.GetChild(i).gameObject;
+                            if (followPathCamera != null)
+                                currPoint = parent.GetChild(i).GetChild(1).gameObject;
+
+                            currPoint.GetComponent<PathSpheresController>().isSelected = false;
+                            Renderer renderer = currPoint.GetComponent<Renderer>();
+                            Material parentMaterial = renderer.material;
+                            parentMaterial.color = DefinePath.instance.selectedLineColor;
+                        }
+                    }
                 }
-                catch (Exception e) { }
+                catch (Exception e) { Debug.LogError(e.Message); }
 
                 
                 //if (followPath != null)

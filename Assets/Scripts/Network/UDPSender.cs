@@ -345,7 +345,7 @@ public class UDPSender : MonoBehaviour
             positionChanged = false;
         }
 
-        if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))
+        if (OVRInput.Get(OVRInput.RawButton.Y))
         {
             //if (!buttonDown)
             //{

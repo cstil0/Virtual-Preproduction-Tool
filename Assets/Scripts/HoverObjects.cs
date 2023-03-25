@@ -30,7 +30,7 @@ public class HoverObjects : MonoBehaviour
     }
 
     // recursive function that iterates through all materials of the tree and changes their color
-    private void changeColorMaterials(GameObject currentParent, Color color)
+    public void changeColorMaterials(GameObject currentParent, Color color)
     {
         Renderer renderer = currentParent.GetComponent<Renderer>();
         if (renderer != null)

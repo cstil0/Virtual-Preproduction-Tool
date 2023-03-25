@@ -370,9 +370,12 @@ public class FollowPath : MonoBehaviour
 
     public void relocatePoint(int pointNum, Vector3 direction)
     {
-        pathPositions[pointNum] += direction;
+        // relocate sphere
+        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
+        sphere.position += direction;
+        Vector3 newPoint = sphere.position;
 
-        Vector3 newPoint = pathPositions[pointNum];
+        pathPositions[pointNum] = newPoint;
 
         GameObject line = pathContainer.transform.Find("Line").gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
@@ -387,10 +390,6 @@ public class FollowPath : MonoBehaviour
         // reassign
         pathPositionsArray = pathPositionsList.ToArray();
         currLineRenderer.SetPositions(pathPositionsArray);
-
-        // relocate sphere
-        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
-        sphere.position = newPoint;
     }
 
     public void rotateCharacter(Vector3 rotation)
