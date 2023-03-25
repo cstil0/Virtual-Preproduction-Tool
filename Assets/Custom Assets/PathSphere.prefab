@@ -102,9 +102,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOn: 0
+  isSelected: 0
   item: {fileID: 0}
+  followPath: {fileID: 0}
   followPathCamera: {fileID: 0}
   isBeingCreated: 1
+  upVector: {x: 0, y: 0.005, z: 0}
+  downVector: {x: 0, y: -0.005, z: 0}
 --- !u!135 &8225235418700250822
 SphereCollider:
   m_ObjectHideFlags: 0
