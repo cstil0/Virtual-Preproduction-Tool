@@ -118,7 +118,7 @@ public class ItemsMenuController : MonoBehaviour
         // CREC QUE ESTARIA BÉ POSAR LES DUES ACCIONS EN AQUEST MATEIX SCRIPT, PERÒ NO M'HE ATREVIT A CANVIAR-HO PER ARA JA QUE HE FET MOLTS CANVIS
         // TAMBÉ S'HA DE FER ENCARA EL CANVI DE MENUBUTTONACTION A AQUEST
         // if button is pressed and hand is touching the menu do an action
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
         {
             //    // do it only once when the button is pressed and after button was released at least once
             //    if (!buttonDown && buttonReleasedOnce)
