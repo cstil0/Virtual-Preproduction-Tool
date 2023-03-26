@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using OVRTouchSample;
 
 public class ModesManager : MonoBehaviour
 {
@@ -178,7 +179,6 @@ public class ModesManager : MonoBehaviour
                 //eventSytem.GetComponent<EventSystem>().enabled = true;
                 GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
                 directorCanvas.GetComponent<EventSystem>().enabled = false;
-
 
                 //RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
 

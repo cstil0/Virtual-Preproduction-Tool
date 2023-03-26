@@ -51,7 +51,7 @@ namespace OVRTouchSample
         [SerializeField]
         private OVRInput.Controller m_controller = OVRInput.Controller.None;
         [SerializeField]
-        private Animator m_animator = null;
+        public Animator m_animator = null;
         [SerializeField]
         private HandPose m_defaultGrabPose = null;
 

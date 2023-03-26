@@ -28,6 +28,7 @@ public class UDPSender : MonoBehaviour
     bool resetStart;
     int buttonDown;
     bool positionChanged;
+    int posChangedCount = 0;
 
     Vector3 screenCameraStartPos;
     Quaternion screenCameraStartRot;
@@ -62,7 +63,6 @@ public class UDPSender : MonoBehaviour
 
         // sending data
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
-
         byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString());
         client.Send(message, message.Length, target);
 
@@ -133,7 +133,6 @@ public class UDPSender : MonoBehaviour
     // ESTARIA BÉ FER UNA FUNCIÓ GENERAL QUE REBI EL MISSATGE I L'ENVII
     public void sendChangeCamera()
     {
-        Debug.Log("SENDING CHANGE CAMERA");
         screenCameraStartPos = screenCamera.transform.position;
         screenCameraStartRot = screenCamera.transform.rotation;
 
@@ -328,7 +327,6 @@ public class UDPSender : MonoBehaviour
         Vector3 currentPos = screenCamera.transform.position;
         if (lastPos != currentPos)
         {
-
             if (!positionChanged)
                 resetStart = true;
             else
@@ -337,12 +335,19 @@ public class UDPSender : MonoBehaviour
             SendPosRot();
             positionChanged = true;
             lastPos = currentPos;
+            posChangedCount = 0;
         }
 
         else if (positionChanged)
         {
-            resetStart = false;
-            positionChanged = false;
+            // needed to make sure that position is not changing,
+            // since there are frames in between when where position does not change
+            posChangedCount += 1;
+            if (posChangedCount >= 10)
+            {
+                resetStart = false;
+                positionChanged = false;
+            }
         }
 
         if (OVRInput.Get(OVRInput.RawButton.Y))
