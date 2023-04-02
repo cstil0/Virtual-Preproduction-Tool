@@ -19,6 +19,7 @@ public class FollowPath : MonoBehaviour
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
     public int pointsCount;
+    public int currPoint;
     public Vector3 startPosition;
     Vector3 startDiffPosition;
     Quaternion startRotation;
@@ -192,9 +193,9 @@ public class FollowPath : MonoBehaviour
             rotSpeed -= 0.1f;
         }
 
-        if (isPlaying && pointsCount < pathPositions.Count)
+        if (isPlaying && currPoint < pathPositions.Count)
         {
-            Vector3 currTarget = pathPositions[pointsCount];
+            Vector3 currTarget = pathPositions[currPoint];
 
             // QUE HI FA AQUÍ EL POSSPEED? NO HAURIA DE SER 0.1? AH POTSER ERA PER QUE VAGI UNA MICA MÉS RÀPID SI EL PERSONATGE TB?
             if (animator != null)
@@ -205,7 +206,7 @@ public class FollowPath : MonoBehaviour
                 move(currTarget);
 
             if (gameObject.transform.position == currTarget)
-                pointsCount++;
+                currPoint++;
         }
         else
         {
@@ -297,7 +298,7 @@ public class FollowPath : MonoBehaviour
         isPlaying = false;
         gameObject.transform.position = startPosition;
         gameObject.transform.rotation = startRotation;
-        pointsCount = 0;
+        currPoint = 0;
 
         GameObject[] lines;
         lines = GameObject.FindGameObjectsWithTag("Line");

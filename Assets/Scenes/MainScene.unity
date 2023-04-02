@@ -5626,6 +5626,7 @@ MonoBehaviour:
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
+  startPosition: {x: 0, y: 0, z: 0}
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -13202,7 +13203,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.04, y: 0.03, z: 0.1}
-  m_Center: {x: 0.03, y: -0.013, z: 0.028}
+  m_Center: {x: 0.024, y: -0.013, z: 0.04}
 --- !u!1 &1148619319
 GameObject:
   m_ObjectHideFlags: 0
@@ -21350,6 +21351,7 @@ MonoBehaviour:
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
+  startPosition: {x: 0, y: 0, z: 0}
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -22003,6 +22005,7 @@ MonoBehaviour:
   posSpeed: 20
   rotSpeed: 7
   pointsCount: 0
+  currPoint: 0
   startPosition: {x: 0, y: 0, z: 0}
   triggerOn: 0
   isSelectedForPath: 0
@@ -22324,6 +22327,7 @@ MonoBehaviour:
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
+  startPosition: {x: 0, y: 0, z: 0}
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0

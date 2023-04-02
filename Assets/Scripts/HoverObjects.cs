@@ -101,7 +101,7 @@ public class HoverObjects : MonoBehaviour
                 // if the object has a limit rotation script mark it as selected
                 try
                 {
-                    currentItemCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, true);
+                    currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, true);
                 }
                 catch (System.Exception e) { }
 
@@ -202,7 +202,7 @@ public class HoverObjects : MonoBehaviour
         {
             try
             {
-                currentItemCollider.GetComponent<LimitPositionRotation>().objectSelected(gameObject, false);
+                currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, false);
             }
             catch (System.Exception e)
             {

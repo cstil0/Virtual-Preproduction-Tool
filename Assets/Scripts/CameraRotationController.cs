@@ -73,6 +73,8 @@ public class CameraRotationController : MonoBehaviour
     {
         string[] pathName = transform.parent.name.Split(" ");
         int pathNum = int.Parse(pathName[1]);
-        followPathCamera.pathRotations[pathNum] = currentSelectedMiniCamera.rotation.eulerAngles;
+        //followPathCamera.pathRotations[pathNum] = currentSelectedMiniCamera.rotation.eulerAngles;
+        GameObject dollyTracker = followPathCamera.cinemachineSmoothPath.gameObject;
+        dollyTracker.transform.rotation = currentSelectedMiniCamera.rotation;
     }
 }

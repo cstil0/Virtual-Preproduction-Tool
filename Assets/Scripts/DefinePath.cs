@@ -106,7 +106,11 @@ public class DefinePath : MonoBehaviour
         spherePoint.transform.position = newPosition;
 
         // change names according to the counts so that it is easy to identify and search for each point and path
-        pathContainer.transform.name = "Path " + itemsCount;
+        if (item.name.Contains("MainCamera"))
+            pathContainer.transform.name = "Path " + item.name;
+        else
+            pathContainer.transform.name = "Path " + itemsCount;
+
         line.transform.name = "Line";
         spherePoint.transform.name = "Point " + pointsCount;
 

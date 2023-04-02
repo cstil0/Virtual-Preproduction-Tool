@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7186115718343764628}
   - component: {fileID: 7337785318570382940}
   - component: {fileID: 8646470383290735690}
+  - component: {fileID: 6616071293350052568}
   m_Layer: 16
   m_Name: PathSphereCamera
   m_TagString: Untagged
@@ -65,8 +66,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.05067087
+  m_Center: {x: 0, y: 0, z: 0.00057359785}
 --- !u!114 &7186115718343764628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +127,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!65 &6616071293350052568
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7341567524320583052}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.09428438, y: 0.09417802, z: 0.17684671}
+  m_Center: {x: 0.01962388, y: 0.14468613, z: -0.004552603}
 --- !u!1001 &2018766904974990164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -226,12 +240,17 @@ PrefabInstance:
     - target: {fileID: 8225235418700250822, guid: 1ec686e16e6910548aed43dbd36282c6,
         type: 3}
       propertyPath: m_Radius
-      value: 0.15
+      value: 0.5113646
       objectReference: {fileID: 0}
     - target: {fileID: 8225235418700250822, guid: 1ec686e16e6910548aed43dbd36282c6,
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8225235418700250822, guid: 1ec686e16e6910548aed43dbd36282c6,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0.000000074505806
       objectReference: {fileID: 0}
     - target: {fileID: 8627856128948138380, guid: 1ec686e16e6910548aed43dbd36282c6,
         type: 3}
