@@ -163,12 +163,12 @@ public class FollowPath : MonoBehaviour
         }
 
 
-        if (isSelectedForPath && OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
+        if (triggerOn && OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
         {
             rotateCharacter(characterRotationLeft);
         }
 
-        if (isSelectedForPath && OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight))
+        if (triggerOn && OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight))
         {
             rotateCharacter(characterRotationRight);
         }

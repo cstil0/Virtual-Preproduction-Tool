@@ -129,6 +129,7 @@ public class HoverObjects : MonoBehaviour
             miniCameraAlreadySelected = true;
             currentMiniCameraCollider = other.gameObject;
             currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = true;
+            currentMiniCameraCollider.GetComponent<CameraRotationController>().followPathCamera.isMiniCameraOnTrigger = true;
         }
     }
 
@@ -312,7 +313,8 @@ public class HoverObjects : MonoBehaviour
 
             CameraRotationController cameraRotationController = currentMiniCameraCollider.GetComponent<CameraRotationController>();
             cameraRotationController.triggerOn = false;
-            
+            cameraRotationController.followPathCamera.isMiniCameraOnTrigger = false;
+
             bool isSelected = cameraRotationController.isSelected;
             // check if the parent item is selected to know which is the correct color to use
             Color notHoverColor = DefinePath.instance.defaultLineColor;

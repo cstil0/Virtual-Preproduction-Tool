@@ -26,7 +26,6 @@ public class CameraRotationController : MonoBehaviour
         // first check the trigger to inform follow path camera that mini camera to avoid instantiating new path points
         if (triggerOn)
         {
-            followPathCamera.isMiniCameraOnTrigger = true;
             if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
             {
                 if (!triggerButtonDown)
@@ -43,8 +42,6 @@ public class CameraRotationController : MonoBehaviour
             else
                 triggerButtonDown = false;
         }
-        else
-            followPathCamera.isMiniCameraOnTrigger = false;
 
 
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight) && isSelected)
