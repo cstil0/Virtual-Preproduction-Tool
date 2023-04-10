@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class CustomGrabbableCharacters : MonoBehaviour
 {
@@ -59,45 +60,44 @@ public class CustomGrabbableCharacters : MonoBehaviour
     {
         Vector3 position = new Vector3();
         Vector3 limitRot = new Vector3();
-
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
+        if (DefinePath.instance.isPlaying)
         {
-            if (!buttonDown)
+            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
             {
-                Vector3 handStartPos = currentHand.transform.position;
-                startPosDiff = gameObject.transform.position - handStartPos;
-                buttonDown = true;
+                if (!buttonDown)
+                {
+                    Vector3 handStartPos = currentHand.transform.position;
+                    startPosDiff = gameObject.transform.position - handStartPos;
+                    buttonDown = true;
+                }
+
+                Vector3 globalPosition = currentHand.transform.position + startPosDiff;
+                //position = isBehindPlayer() ? gameObject.transform.position : globalPosition;
+                position = globalPosition;
+
+                RotationScale rotScale = gameObject.GetComponent<RotationScale>();
+                Vector3 rotation = rotScale.rotation;
+                Vector3 currRot = currentHand.transform.rotation.eulerAngles;
+                limitRot = new Vector3(-rotation.x, -currRot.y + rotation.y, -rotation.z);
             }
-
-            Vector3 globalPosition = currentHand.transform.position + startPosDiff;
-            //position = isBehindPlayer() ? gameObject.transform.position : globalPosition;
-            position = globalPosition;
-
-            RotationScale rotScale = gameObject.GetComponent<RotationScale>();
-            Vector3 rotation = rotScale.rotation;
-            Vector3 currRot = currentHand.transform.rotation.eulerAngles;
-            limitRot = new Vector3(-rotation.x, - currRot.y + rotation.y, -rotation.z);
-        }
-        else
-        {
-            if (buttonDown)
+            else
             {
-                buttonDown = false;
+                if (buttonDown)
+                {
+                    buttonDown = false;
+                }
+                //alreadyTriggered = false;
+                position = gameObject.transform.position;
+
+                Vector3 rotation = gameObject.transform.rotation.eulerAngles;
+                limitRot = rotation;
             }
-            //alreadyTriggered = false;
-            position = gameObject.transform.position;
+            Transform attachPoint = gameObject.transform.GetChild(0);
 
-            Vector3 rotation = gameObject.transform.rotation.eulerAngles;
-            limitRot = rotation;
+            // make it touch always the floor
+            gameObject.transform.position = new Vector3(position.x, position.y, position.z);
+            //gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
+            gameObject.transform.rotation = Quaternion.Euler(limitRot);
         }
-        Transform attachPoint = gameObject.transform.GetChild(0);
-
-        // make it touch always the floor
-        gameObject.transform.position = new Vector3(position.x, position.y, position.z);
-        //gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
-
-
-        gameObject.transform.rotation = Quaternion.Euler(limitRot);
-
     }
 }

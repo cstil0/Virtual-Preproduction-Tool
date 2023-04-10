@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using TMPro;
+using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,13 +27,13 @@ public class FollowPath : MonoBehaviour
 
     Animator animator;
 
-    GameObject pathContainer;
+    public GameObject pathContainer;
     //int pathNum = -1;
 
-    bool isPlaying = false;
+    public bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
-    bool AButtonDown = false;
-    bool BButtonDown = false;
+    //bool AButtonDown = false;
+    //bool BButtonDown = false;
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
@@ -43,6 +44,7 @@ public class FollowPath : MonoBehaviour
 
     [SerializeField] Vector3 characterRotationLeft = new Vector3(0, -5f, 0);
     [SerializeField] Vector3 characterRotationRight = new Vector3(0, 5f, 0);
+
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -126,8 +128,10 @@ public class FollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // CONTINUOUS CASE
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        if (gameObject.name.Contains("Harry"))
+            Debug.LogError("HARRY SELECTED: " + isSelectedForPath);
+
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
             if (!secondaryIndexTriggerDown && triggerOn)
             {
@@ -135,7 +139,6 @@ public class FollowPath : MonoBehaviour
                 secondaryIndexTriggerDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
-                startPosition = gameObject.transform.position;
                 startDiffPosition = handController.transform.position - startPosition;
 
                 if(pointsCount == 0)
@@ -150,7 +153,7 @@ public class FollowPath : MonoBehaviour
                     DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor);
             }
 
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
             {
                 secondaryIndexTriggerDown = true;
                 StartCoroutine(defineNewPathPoint(handController.transform.position));
@@ -163,22 +166,27 @@ public class FollowPath : MonoBehaviour
         }
 
 
-        if (triggerOn && OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
-        {
-            rotateCharacter(characterRotationLeft);
+        if (triggerOn && !isPlaying) {
+            if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
+                rotateCharacter(characterRotationLeft);
+            if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight))
+                rotateCharacter(characterRotationRight);
+            if (gameObject.transform.position != startPosition)
+            {
+                startPosition = gameObject.transform.position;
+                startRotation = gameObject.transform.rotation;
+                pathPositions[0] = startPosition;
+                Transform firstPoint = pathContainer.transform.GetChild(0);
+                firstPoint.position = startPosition;
+            }
         }
 
-        if (triggerOn && OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight))
-        {
-            rotateCharacter(characterRotationRight);
-        }
 
-
-        if (Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.RawButton.X))
+        if (Input.GetKeyDown(KeyCode.P))// || OVRInput.Get(OVRInput.RawButton.X))
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S) || OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S))// || OVRInput.Get(OVRInput.RawButton.Y))
         {
             stopLinePath();
         }
@@ -213,41 +221,40 @@ public class FollowPath : MonoBehaviour
             if (animator != null)
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
-            isPlaying = false;
         }
         
 
         // navigate through paths and delete them
-        if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.A))
-        {
-            if (!AButtonDown)
-            {
-                AButtonDown = true;
-                currentSelectedPath += 1;
-                if (currentSelectedPath > lastCharacterPathID)
-                    currentSelectedPath = 1;
-                hoverCurrentPath();
-            }
-        }
-        else
-            AButtonDown = false;
+        //if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.A))
+        //{
+        //    if (!AButtonDown)
+        //    {
+        //        AButtonDown = true;
+        //        currentSelectedPath += 1;
+        //        if (currentSelectedPath > lastCharacterPathID)
+        //            currentSelectedPath = 1;
+        //        hoverCurrentPath();
+        //    }
+        //}
+        //else
+        //    AButtonDown = false;
         
-        if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.B))
-        {
-            if (!BButtonDown)
-            {
-                BButtonDown = true;
-                //deleteCurrentPath();
-                //relocatePathButtons();
-                currentSelectedPath = 0;
-            }
-        }
-        else
-            BButtonDown = false;
+        //if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.B))
+        //{
+        //    if (!BButtonDown)
+        //    {
+        //        BButtonDown = true;
+        //        //deleteCurrentPath();
+        //        //relocatePathButtons();
+        //        currentSelectedPath = 0;
+        //    }
+        //}
+        //else
+        //    BButtonDown = false;
 
-        // restablish current selected Path if character is not selected
-        if (currentSelectedPath != 0 && !isSelectedForPath)
-            currentSelectedPath = 0;
+        //// restablish current selected Path if character is not selected
+        //if (currentSelectedPath != 0 && !isSelectedForPath)
+        //    currentSelectedPath = 0;
     }
 
     public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
@@ -273,20 +280,14 @@ public class FollowPath : MonoBehaviour
 
     void playLinePath()
     {
-        GameObject[] lines;
-        lines = GameObject.FindGameObjectsWithTag("Line");
+        Transform pathTransform = pathContainer.transform;
+        GameObject line = pathTransform.GetChild(0).gameObject;
+        line.GetComponent<LineRenderer>().enabled = false;
 
-        for (int i = 0; i < lines.Length; i++)
+        for (int i = 1; i < pathTransform.childCount; i++)
         {
-            lines[i].GetComponent<LineRenderer>().enabled = false;
-        }
-
-        GameObject[] points;
-        points = GameObject.FindGameObjectsWithTag("PathPoint");
-
-        for (int i = 0; i < points.Length; i++)
-        {
-            points[i].GetComponent<MeshRenderer>().enabled = false;
+            GameObject currPoint = pathTransform.GetChild(i).gameObject;
+            currPoint.GetComponent<MeshRenderer>().enabled = false;
         }
 
         isPlaying = !isPlaying;
@@ -300,20 +301,14 @@ public class FollowPath : MonoBehaviour
         gameObject.transform.rotation = startRotation;
         currPoint = 0;
 
-        GameObject[] lines;
-        lines = GameObject.FindGameObjectsWithTag("Line");
+        Transform pathTransform = pathContainer.transform;
+        GameObject line = pathTransform.GetChild(0).gameObject;
+        line.GetComponent<LineRenderer>().enabled = true;
 
-        for (int i = 0; i < lines.Length; i++)
+        for (int i = 1; i < pathTransform.childCount; i++)
         {
-            lines[i].GetComponent<LineRenderer>().enabled = true;
-        }
-
-        GameObject[] points;
-        points = GameObject.FindGameObjectsWithTag("PathPoint");
-
-        for (int i = 0; i < points.Length; i++)
-        {
-            points[i].GetComponent<MeshRenderer>().enabled = true;
+            GameObject currPoint = pathTransform.GetChild(i).gameObject;
+            currPoint.GetComponent<MeshRenderer>().enabled = true;
         }
     }
 

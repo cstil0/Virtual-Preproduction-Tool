@@ -37,7 +37,7 @@ public class FollowPathCamera : MonoBehaviour
 
     //Animator animator;
 
-    GameObject pathContainer;
+    public GameObject pathContainer;
 
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
@@ -128,7 +128,7 @@ public class FollowPathCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
             if (!secondaryIndexTriggerDown && triggerOn)
             {
@@ -141,7 +141,7 @@ public class FollowPathCamera : MonoBehaviour
                     StartCoroutine(defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation));
                 }
             }
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
             {
                 secondaryIndexTriggerDown = true;
                 StartCoroutine(defineNewPathPoint(handController.transform.position, handController.transform.rotation));
@@ -152,7 +152,7 @@ public class FollowPathCamera : MonoBehaviour
             secondaryIndexTriggerDown = false;
         }
 
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && !isPlaying)
         {
             // when moving the camera reset its start position and rotation for the movement
             if (triggerOn)
@@ -162,21 +162,21 @@ public class FollowPathCamera : MonoBehaviour
             }
         }
 
-        if (OVRInput.Get(OVRInput.RawButton.X))
-        {
-            if (!XButtonDown)
-            {
-                XButtonDown = true;
-                playLinePath();
-            }
-        }
-        else
-            XButtonDown = false;
+        //if (OVRInput.Get(OVRInput.RawButton.X))
+        //{
+        //    if (!XButtonDown)
+        //    {
+        //        XButtonDown = true;
+        //        playLinePath();
+        //    }
+        //}
+        //else
+        //    XButtonDown = false;
 
-        if (OVRInput.Get(OVRInput.RawButton.Y))
-        {
-            stopLinePath();
-        }
+        //if (OVRInput.Get(OVRInput.RawButton.Y))
+        //{
+        //    stopLinePath();
+        //}
 
         if (Input.GetKeyDown(KeyCode.P))
             playLinePath();

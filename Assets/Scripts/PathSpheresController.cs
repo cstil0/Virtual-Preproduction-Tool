@@ -22,7 +22,8 @@ public class PathSpheresController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
+        bool isPlaying = DefinePath.instance.isPlaying;
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn && !isPlaying)
         {
             // once the hand has exit the trigger at least once, then the point is able to be deleted
             if (!secondaryTriggerButtonDown && !isBeingCreated)
@@ -82,7 +83,7 @@ public class PathSpheresController : MonoBehaviour
         else
             secondaryTriggerButtonDown = false;
 
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && !isPlaying)
         {
             if (!isBeingCreated && triggerOn)
             {
@@ -110,7 +111,7 @@ public class PathSpheresController : MonoBehaviour
             }
         }
 
-        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp))
+        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && !isPlaying)
         {
             secondaryTriggerButtonDown = true;
             string[] splittedName = { "" };
@@ -127,7 +128,7 @@ public class PathSpheresController : MonoBehaviour
                 followPathCamera.relocatePoint(pointNum, upVector);
         }
 
-        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown))
+        if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && !isPlaying)
         {
             string[] splittedName = { "" };
             if (followPath != null)

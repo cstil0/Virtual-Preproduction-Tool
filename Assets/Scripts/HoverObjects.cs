@@ -18,6 +18,8 @@ public class HoverObjects : MonoBehaviour
     public GameObject currentMiniCameraCollider;
     public GameObject currentSelectedForPath;
 
+    [SerializeField] GameObject itemsParent;
+
     private void Awake()
     {
         if (instance)
@@ -62,6 +64,40 @@ public class HoverObjects : MonoBehaviour
             // recursive call to check also for childs
             if (currChild.transform.childCount > 0)
                 changeColorMaterials(currChild, color);
+        }
+    }
+
+    private void deselectAllItems()
+    {
+        for (int i = 0; i < itemsParent.transform.childCount; i++)
+        {
+            GameObject currItem = itemsParent.transform.GetChild(i).gameObject;
+
+            if (currItem == currentSelectedForPath)
+                continue;
+
+            Debug.LogError("DESELECTING ITEM " + currItem.name);
+            currItem.TryGetComponent(out FollowPath followPath);
+            currItem.TryGetComponent(out FollowPathCamera followPathCamera);
+
+            if (followPath != null)
+            {
+                if (followPath.isSelectedForPath)
+                {
+                    followPath.isSelectedForPath = false;
+                    changeColorMaterials(currItem, Color.white);
+
+                }
+            }
+
+            if (followPathCamera != null)
+            {
+                if (followPathCamera)
+                {
+                    followPathCamera.isSelectedForPath = false;
+                    changeColorMaterials(currItem, Color.white);
+                }
+            }
         }
     }
 
@@ -142,19 +178,21 @@ public class HoverObjects : MonoBehaviour
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
 
-            // check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
-            if (currentSelectedForPath == null)
-                currentSelectedForPath = other.gameObject;
+            //// check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
+            //if (currentSelectedForPath == null)
+                //currentSelectedForPath = other.gameObject;
 
-            if (followPath != null && currentSelectedForPath == other.gameObject)
+            if (followPath != null)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
+                    currentSelectedForPath = other.gameObject;
                     Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.blue;
 
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPath.isSelectedForPath;
+                    deselectAllItems();
                 }
             }
         }
@@ -163,19 +201,21 @@ public class HoverObjects : MonoBehaviour
         {
             FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
 
-            // check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
-            if (currentSelectedForPath == null)
-                currentSelectedForPath = other.gameObject;
+            //// check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
+            //if (currentSelectedForPath == null)
+            //    currentSelectedForPath = other.gameObject;
 
-            if (followPath != null && currentSelectedForPath == other.gameObject)
+            if (followPath != null)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
+                    currentSelectedForPath = other.gameObject;
                     Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
 
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPath.isSelectedForPath;
+                    deselectAllItems();
                 }
             }
         }

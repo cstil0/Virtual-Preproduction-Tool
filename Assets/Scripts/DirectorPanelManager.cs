@@ -81,6 +81,7 @@ public class DirectorPanelManager : MonoBehaviour
     public void stopPath()
     {
         OnStopPath();
+        playPauseButton.GetComponent<Image>().sprite = playIcon;
         SendPlayStop("STOP");
     }
 

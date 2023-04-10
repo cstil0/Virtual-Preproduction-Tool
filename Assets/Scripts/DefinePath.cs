@@ -13,6 +13,8 @@ public class DefinePath : MonoBehaviour
 {
     public static DefinePath instance = null;
 
+    public bool isPlaying = false;
+
     public GameObject spherePrefab;
     public GameObject sphereCameraPrefab;
     [SerializeField] GameObject linePrefab;
@@ -37,6 +39,16 @@ public class DefinePath : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void OnEnable()
+    {
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
+    }
+    private void OnDisable()
+    {
+        DirectorPanelManager.instance.OnPlayPath -= playLinePath;
+        DirectorPanelManager.instance.OnStopPath -= stopLinePath;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +58,14 @@ public class DefinePath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))// || OVRInput.Get(OVRInput.RawButton.X))
+        {
+            playLinePath();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))// || OVRInput.Get(OVRInput.RawButton.Y))
+        {
+            stopLinePath();
+        }
         //if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && isThereCharacterSelected)
         //{
         //    if (!secondaryIndexTriggerDown)
@@ -57,9 +77,16 @@ public class DefinePath : MonoBehaviour
         //    secondaryIndexTriggerDown = false;
         //    currPointsCount = 0;
         //}
+    }
+    
+    void playLinePath()
+    {
+        isPlaying = !isPlaying;
+    }
 
-
-
+    void stopLinePath()
+    {
+        isPlaying = false;
     }
 
     public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, GameObject spherePrefab)

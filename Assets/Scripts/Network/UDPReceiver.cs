@@ -277,8 +277,10 @@ public class UDPReceiver : MonoBehaviour
         Vector3 newPointPosition = new Vector3(posX, posY, posZ);
 
         item.TryGetComponent(out FollowPath followPath);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
         if (followPath != null)
         {
+            followPath.pathContainer = pathContainer.gameObject;
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
             int pointsCount = followPath.pathPositions.Count;
             if (pointsCount == 1)
@@ -299,6 +301,25 @@ public class UDPReceiver : MonoBehaviour
                 lineRenderer.positionCount += 1;
             }
             lineRenderer.SetPosition(pointsCount - 1, realNewPosition);
+        }
+
+        if (followPathCamera != null)
+        {
+            followPathCamera.pathContainer = pathContainer.gameObject;
+            int pointsCount = followPathCamera.pathPositions.Count;
+            if (pointsCount == 1)
+                ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
+
+            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
+
+            Transform pointTransform = pathContainer.GetChild(pointsCount);
+            GameObject line = pathContainer.GetChild(0).gameObject;
+            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+            if (pointsCount > 1)
+            {
+                lineRenderer.positionCount += 1;
+            }
+            lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
         }
     }
 
