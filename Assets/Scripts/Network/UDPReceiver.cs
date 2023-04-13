@@ -302,25 +302,6 @@ public class UDPReceiver : MonoBehaviour
             }
             lineRenderer.SetPosition(pointsCount - 1, realNewPosition);
         }
-
-        if (followPathCamera != null)
-        {
-            followPathCamera.pathContainer = pathContainer.gameObject;
-            int pointsCount = followPathCamera.pathPositions.Count;
-            if (pointsCount == 1)
-                ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
-
-            ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
-
-            Transform pointTransform = pathContainer.GetChild(pointsCount);
-            GameObject line = pathContainer.GetChild(0).gameObject;
-            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-            if (pointsCount > 1)
-            {
-                lineRenderer.positionCount += 1;
-            }
-            lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
-        }
     }
 
     void parsePointRotation()
@@ -331,28 +312,56 @@ public class UDPReceiver : MonoBehaviour
         try
         {
             GameObject item = itemsParent.transform.Find(receivedPointName).gameObject;
+            int itemNum = int.Parse(receivedPointName.Split(" ")[1]);
+
+            Transform pathContainer;
+            try
+            {
+                pathContainer = GameObject.Find("PathParent(Clone)").transform;
+                pathContainer.name = "Path " + itemNum;
+            }
+            catch (Exception e)
+            {
+                pathContainer = GameObject.Find("Path " + itemNum).transform;
+            }
 
             string[] splittedMessage = receivedPointRotation.Split(" ");
-            float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
-            float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
-            float rotZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
-            float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
+            float rotX = float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+            float rotY = -float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+            float rotZ = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
+            float rotW = float.Parse(splittedMessage[4], CultureInfo.InvariantCulture);
             Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
 
             item.TryGetComponent(out FollowPathCamera followPathCamera);
             if (followPathCamera != null)
             {
-                StartCoroutine(followPathCamera.defineNewPathPoint(newPointPosition, newRotation, false));
-                int pointsCount = followPathCamera.pathPositions.Count;
-                if (pointsCount == 1)
-                    ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
+                if (followPathCamera != null)
+                {
+                    followPathCamera.pathContainer = pathContainer.gameObject;
+                    StartCoroutine(followPathCamera.defineNewPathPoint(newPointPosition, newRotation, false));
 
-                ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 1);
+                    int pointsCount = followPathCamera.pathPositions.Count;
+                    if (pointsCount == 2)
+                        ItemsDirectorPanelController.instance.addPointsLayout(receivedPointName);
+
+                    ItemsDirectorPanelController.instance.addNewPointButton(receivedPointName, pointsCount - 2);
+
+                    Transform pointTransform = pathContainer.GetChild(pointsCount);
+                    GameObject line = pathContainer.GetChild(0).gameObject;
+                    LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+                    if (pointsCount <= 2)
+                        lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
+                    if (pointsCount > 2)
+                    {
+                        lineRenderer.positionCount += 1;
+                        lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
+                    }
+                }
             }
         }
         catch (Exception e)
         {
-            Debug.LogError("ERROR PARSING ROTATION: " + e.Message);
+            Debug.LogError("ERROR PARSING ROTATION: " + e.ToString());
         }
     }
 

@@ -128,9 +128,6 @@ public class FollowPath : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.name.Contains("Harry"))
-            Debug.LogError("HARRY SELECTED: " + isSelectedForPath);
-
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
             if (!secondaryIndexTriggerDown && triggerOn)

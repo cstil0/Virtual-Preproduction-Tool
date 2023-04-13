@@ -280,6 +280,7 @@ public class FollowPathCamera : MonoBehaviour
             try
             {
                 UDPSender.instance.sendPointPath(gameObject, newPoint);
+                UDPSender.instance.sendRotationPath(newRot);
             }
             catch (Exception e) { }
         }

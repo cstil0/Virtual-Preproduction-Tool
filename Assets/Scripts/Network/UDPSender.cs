@@ -174,6 +174,24 @@ public class UDPSender : MonoBehaviour
         catch (System.Exception e) { }
     }
 
+    public void sendRotationPath(Quaternion pathRotation)
+    {
+        try
+        {
+            client = new UdpClient(assistantToDirectorPort);
+
+            string ipAddress = ModesManager.instance.IPAddress.text;
+            // sending data
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
+
+            byte[] message = Encoding.ASCII.GetBytes("NEW_ROTATION: " + pathRotation.x.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.y.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.z.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.w.ToString(CultureInfo.InvariantCulture));
+            client.Send(message, message.Length, target);
+
+            client.Close();
+        }
+        catch (System.Exception e) { }
+    }
+
     public void sendItemMiddle(string name, string wrongName)
     {
         //this is needed because if starting it at the menu script, it will get disabled and the coroutine will break
