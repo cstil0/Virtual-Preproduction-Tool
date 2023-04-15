@@ -20087,6 +20087,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77416542e2c69e4885cbef4b941ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlaying: 0
+  areaLight: {fileID: 2017635521}
   spherePrefab: {fileID: 5597389748885439251, guid: 1ec686e16e6910548aed43dbd36282c6,
     type: 3}
   sphereCameraPrefab: {fileID: 7341567524320583052, guid: 82c7088b50863cf48a1bc51f0993f44a,
@@ -20100,6 +20102,7 @@ MonoBehaviour:
   defaultLineColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
   hoverLineColor: {r: 0.50252867, g: 0.7075472, b: 0.4765931, a: 1}
   selectedLineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
+  playLightColor: {r: 0.8352941, g: 0.6745098, b: 1, a: 0}
   isThereCharacterSelected: 0
   itemsCount: 0
 --- !u!1001 &1662008193
@@ -22011,6 +22014,7 @@ MonoBehaviour:
   currPoint: 0
   startPosition: {x: 0, y: 0, z: 0}
   pathContainer: {fileID: 0}
+  isPlaying: 0
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0

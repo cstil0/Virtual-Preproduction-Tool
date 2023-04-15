@@ -233,17 +233,23 @@ public class ItemsDirectorPanelController : MonoBehaviour
         if (!currItemPressed.Contains("Camera"))
         {
             UDPSender.instance.sendDeleteItem(currItemPressed);
-            GameObject itemButton = panelLayout.transform.Find(currItemPressed + "Button").gameObject;
-            Destroy(itemButton);
 
-            // the item may not have any point createdn yet, so we need to handle exceptions
-            try
-            {
-                GameObject itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " LAYOUT").gameObject;
-                Destroy(itemPointsLayout);
-            }
-            catch (Exception e) { }
+            removeItemButtons(currItemPressed);
         }
+    }
+
+    public void removeItemButtons(string itemName)
+    {
+        GameObject itemButton = panelLayout.transform.Find(itemName + "Button").gameObject;
+        Destroy(itemButton);
+
+        // the item may not have any point created yet, so we need to handle exceptions
+        try
+        {
+            GameObject itemPointsLayout = pointsPanel.transform.Find(itemName + " LAYOUT").gameObject;
+            Destroy(itemPointsLayout);
+        }
+        catch (Exception e) { }
     }
 
     public void addNewItemButton(string name)

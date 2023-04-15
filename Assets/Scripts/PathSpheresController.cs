@@ -18,6 +18,8 @@ public class PathSpheresController : MonoBehaviour
     [SerializeField] Vector3 upVector = new Vector3(0.0f, 0.005f, 0.0f);
     [SerializeField] Vector3 downVector = new Vector3(0.0f, -0.005f, 0.0f);
 
+    private Vector3 lastPosition;
+
 
     // Update is called once per frame
     void Update()
@@ -95,6 +97,7 @@ public class PathSpheresController : MonoBehaviour
                 {
                     string[] pathName = transform.parent.name.Split(" ");
                     pathNum = int.Parse(pathName[1]);
+
                     followPathCamera.pathPositions[pathNum] = newPosition;
                     line = transform.parent.parent.Find("Line").gameObject;
                 }
@@ -102,7 +105,9 @@ public class PathSpheresController : MonoBehaviour
                 {
                     string[] pathName = gameObject.name.Split(" ");
                     pathNum = int.Parse(pathName[1]);
-                    followPath.pathPositions[pathNum] = newPosition;
+
+                    Vector3 distance = lastPosition - newPosition;
+                    followPath.pathPositions[pathNum] = followPath.pathPositions[pathNum] + distance;
                     line = transform.parent.Find("Line").gameObject;
                 }
                 // get the line by looking at the path container's childs
@@ -143,6 +148,8 @@ public class PathSpheresController : MonoBehaviour
             if (followPathCamera != null)
                 followPathCamera.relocatePoint(pointNum, downVector);
         }
+
+        lastPosition = gameObject.transform.position;
     }
 
     public IEnumerator deletePathPoint()

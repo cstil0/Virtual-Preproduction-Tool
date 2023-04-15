@@ -271,9 +271,9 @@ public class FollowPathCamera : MonoBehaviour
         if (instantiatePos)
         {
             if (pathLength == 0)
-                pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, DefinePath.instance.sphereCameraPrefab);
+                pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, true);
             else
-                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength - 1, gameObject, DefinePath.instance.sphereCameraPrefab);
+                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength - 1, gameObject, true);
 
             yield return new WaitForSeconds(1.0f);
 

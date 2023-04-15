@@ -34,6 +34,8 @@ public class UDPReceiver : MonoBehaviour
     bool pointPositionParsed;
     bool pointRotationParsed;
     bool newItemParsed;
+    bool deleteItemDirectorParsed;
+
     bool playParsed;
     bool speedParsed;
     bool deletePointParsed;
@@ -50,8 +52,10 @@ public class UDPReceiver : MonoBehaviour
     String newReceivedName;
     String newWrongReceivedName;
     int receivedCount;
+
     string receivedPointPosition;
     string receivedPointRotation;
+    string receivedDeleteItemDirector;
     string receivedPlay;
     string receivedSceneRotation;
 
@@ -75,7 +79,8 @@ public class UDPReceiver : MonoBehaviour
     enum assistantToDirectorMessages{
         NEW_ITEM,
         NEW_POINT,
-        NEW_ROTATION
+        NEW_ROTATION,
+        DELETE_ITEM
     }
 
     enum directorToAssistantMessages
@@ -175,6 +180,10 @@ public class UDPReceiver : MonoBehaviour
                     case assistantToDirectorMessages.NEW_ROTATION:
                         receivedPointRotation = Encoding.ASCII.GetString(receivedBytes);
                         pointRotationParsed = false;
+                        break;
+                    case assistantToDirectorMessages.DELETE_ITEM:
+                        receivedDeleteItemDirector = Encoding.ASCII.GetString(receivedBytes);
+                        deleteItemDirectorParsed = false;
                         break;
                 }
             }
@@ -365,6 +374,13 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    void parseDeleteItemDirector()
+    {
+        deleteItemDirectorParsed = true;
+
+        ItemsDirectorPanelController.instance.removeItemButtons(receivedDeleteItemDirector);
+    }
+
     void parsePlayMessage()
     {
         playParsed = true;
@@ -459,6 +475,7 @@ public class UDPReceiver : MonoBehaviour
         newItemParsed = true;
         pointPositionParsed = true;
         pointRotationParsed = true;
+        deleteItemDirectorParsed = true;
         playParsed = true;
         speedParsed = true;
         deletePointParsed = true;
@@ -521,6 +538,9 @@ public class UDPReceiver : MonoBehaviour
 
         if (!pointRotationParsed)
             parsePointRotation();
+
+        if (!deleteItemDirectorParsed)
+            parseDeleteItemDirector();
 
         if (!playParsed)
             parsePlayMessage();

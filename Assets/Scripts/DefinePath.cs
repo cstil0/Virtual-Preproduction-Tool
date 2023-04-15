@@ -14,9 +14,11 @@ public class DefinePath : MonoBehaviour
     public static DefinePath instance = null;
 
     public bool isPlaying = false;
+    [SerializeField] Light areaLight;
 
     public GameObject spherePrefab;
     public GameObject sphereCameraPrefab;
+    public GameObject circlePrefab;
     [SerializeField] GameObject linePrefab;
     [SerializeField] GameObject emptyPrefab;
     [SerializeField] GameObject handController;
@@ -25,6 +27,7 @@ public class DefinePath : MonoBehaviour
     public Color defaultLineColor;
     public Color hoverLineColor;
     public Color selectedLineColor;
+    public Color playLightColor;
 
     private UdpClient udpClient;
     public bool isThereCharacterSelected = false;
@@ -82,25 +85,45 @@ public class DefinePath : MonoBehaviour
     void playLinePath()
     {
         isPlaying = !isPlaying;
+        // change lighting to let the user know we are in play mode
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            areaLight.color = playLightColor;
     }
 
     void stopLinePath()
     {
         isPlaying = false;
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            areaLight.color = Color.white;
     }
 
-    public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, GameObject spherePrefab)
+    public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
         GameObject pathContainer = Instantiate(emptyPrefab);
         GameObject line = Instantiate(linePrefab);
 
         // can be with or without camera depending on who called this function
-        GameObject spherePoint = Instantiate(spherePrefab);
 
         pathContainer.GetComponent<NetworkObject>().Spawn();
         line.GetComponent<NetworkObject>().Spawn();
-        spherePoint.GetComponent<NetworkObject>().Spawn();
+
+        GameObject spherePoint;
+        if (isCamera)
+        {
+            spherePoint = Instantiate(sphereCameraPrefab);
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+        }
+        else
+        {
+            spherePoint = Instantiate(spherePrefab);
+            GameObject circlePoint = Instantiate(circlePrefab);
+            circlePoint.GetComponent<NetworkObject>().Spawn();
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+
+            circlePoint.transform.SetParent(spherePoint.transform);
+            circlePoint.transform.position = new Vector3(0.0f, -startDifferenceY, 0.0f);
+        }
 
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
@@ -144,17 +167,27 @@ public class DefinePath : MonoBehaviour
         return pathContainer;
     }
 
-    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, GameObject spherePointPrefab)
+    public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
-        // add a new position
-        GameObject spherePoint = null;
-
-        spherePoint = Instantiate(spherePointPrefab);
-
         GameObject line = pathContainer.transform.GetChild(0).gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
 
-        spherePoint.GetComponent<NetworkObject>().Spawn();
+        GameObject spherePoint;
+        if (isCamera)
+        {
+            spherePoint = Instantiate(sphereCameraPrefab);
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+        }
+        else
+        {
+            spherePoint = Instantiate(spherePrefab);
+            GameObject circlePoint = Instantiate(circlePrefab);
+            circlePoint.GetComponent<NetworkObject>().Spawn();
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+
+            circlePoint.transform.SetParent(spherePoint.transform);
+            circlePoint.transform.position = new Vector3(0.0f, -startDifferenceY, 0.0f);
+        }
 
         currLineRenderer.positionCount += 1;
         currLineRenderer.SetPosition(pointsCount, newPosition);

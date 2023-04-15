@@ -351,6 +351,12 @@ MonoBehaviour:
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
+      Prefab: {fileID: 5781834974586894782, guid: 08c996ef62d05724aa2716470e3576de,
+        type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
       Prefab: {fileID: 2772474358275106250, guid: 382337939062ef64db421247bb2ba993,
         type: 3}
       SourcePrefabToOverride: {fileID: 0}
@@ -1984,10 +1990,6 @@ MonoBehaviour:
   leftHand: {fileID: 488803713}
   rightHand: {fileID: 1648952534}
   OVRCameraTexture: {fileID: 8600000, guid: 70f52c0dc198a0e4480c50c0f5a7b973, type: 2}
-  rightAnimationController: {fileID: 9500000, guid: d0c255d07fd68f14b94e55d388e7e6bb,
-    type: 3}
-  leftAnimationController: {fileID: 9500000, guid: ca20b3907ff1c794cb89c1ad2cce8282,
-    type: 3}
 --- !u!1 &1403832406
 GameObject:
   m_ObjectHideFlags: 0

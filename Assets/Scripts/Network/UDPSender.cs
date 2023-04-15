@@ -215,6 +215,16 @@ public class UDPSender : MonoBehaviour
         catch(System.Exception e) { }
     }
 
+    public void sendDeleteItem()
+    {
+        client = new UdpClient(assistantToDirectorPort);
+        string ipAddress = ModesManager.instance.IPAddress.text;
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
+        byte[] message = Encoding.ASCII.GetBytes("DELETE_ITEM:" + name);
+        client.Send(message, message.Length, target);
+        client.Close();
+    }
+
     public void sendDeletePoint(int pointNum, string name)
     {
         try

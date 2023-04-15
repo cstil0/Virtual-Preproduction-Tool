@@ -136,7 +136,6 @@ public class FollowPath : MonoBehaviour
                 secondaryIndexTriggerDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
-                startDiffPosition = handController.transform.position - startPosition;
 
                 if(pointsCount == 0)
                 {
@@ -172,6 +171,8 @@ public class FollowPath : MonoBehaviour
             {
                 startPosition = gameObject.transform.position;
                 startRotation = gameObject.transform.rotation;
+                startDiffPosition = handController.transform.position - startPosition;
+
                 pathPositions[0] = startPosition;
                 Transform firstPoint = pathContainer.transform.GetChild(0);
                 firstPoint.position = startPosition;
@@ -257,15 +258,18 @@ public class FollowPath : MonoBehaviour
     public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
     {
         pointsCount++;
+        if (pointsCount == 1)
+            startDiffPosition = controllerPos - startPosition;
+
         Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
 
         pathPositions.Add(newPoint);
         if (instantiatePoint)
         {
             if (pointsCount == 1)
-                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, DefinePath.instance.spherePrefab);
+                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, startDiffPosition.y);
             else 
-                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, DefinePath.instance.spherePrefab);
+                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, startDiffPosition.y);
 
             yield return new WaitForSeconds(1.0f);
             
@@ -368,13 +372,14 @@ public class FollowPath : MonoBehaviour
         sphere.position += direction;
         Vector3 newPoint = sphere.position;
 
-        pathPositions[pointNum] = newPoint;
+        // position saved in the list has different height
+        pathPositions[pointNum] = pathPositions[pointNum] + direction;
 
         GameObject line = pathContainer.transform.Find("Line").gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         int pointsCount = currLineRenderer.positionCount;
 
-        // relocate point
+        // relocate point in line renderer
         Vector3[] pathPositionsArray = new Vector3[pathPositions.Count];
         currLineRenderer.GetPositions(pathPositionsArray);
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
