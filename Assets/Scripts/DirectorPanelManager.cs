@@ -16,8 +16,8 @@ public class DirectorPanelManager : MonoBehaviour
     public GameObject distanceText;
     public GameObject PGMView;
     public delegate void PlayPath();
-    public delegate void StopPath();
     public event PlayPath OnPlayPath;
+    public delegate void StopPath();
     public event StopPath OnStopPath;
 
     public Sprite playIcon;

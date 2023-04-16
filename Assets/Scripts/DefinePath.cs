@@ -19,8 +19,10 @@ public class DefinePath : MonoBehaviour
     public GameObject spherePrefab;
     public GameObject sphereCameraPrefab;
     public GameObject circlePrefab;
+    public GameObject miniCameraPrefab;
     [SerializeField] GameObject linePrefab;
-    [SerializeField] GameObject emptyPrefab;
+    [SerializeField] GameObject pathParentPrefab;
+    [SerializeField] GameObject circlesParentPrefab;
     [SerializeField] GameObject handController;
     [SerializeField] int pathPointsPort = 8051;
 
@@ -33,6 +35,9 @@ public class DefinePath : MonoBehaviour
     public bool isThereCharacterSelected = false;
     private bool secondaryIndexTriggerDown = false;
     public int itemsCount;
+
+    public delegate void PathPositionChanged(int pathNum, int pointNum, Vector3 distance);
+    public event PathPositionChanged OnPathPositionChanged;
 
     private void Awake()
     {
@@ -81,6 +86,11 @@ public class DefinePath : MonoBehaviour
         //    currPointsCount = 0;
         //}
     }
+
+    public void triggerPointPathChanged(int pathNum, int pointNum, Vector3 distance)
+    {
+        OnPathPositionChanged(pathNum, pointNum, distance);
+    }
     
     void playLinePath()
     {
@@ -97,10 +107,79 @@ public class DefinePath : MonoBehaviour
             areaLight.color = Color.white;
     }
 
+    private void addPointGeneric(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f, GameObject circlesContainer = null)
+    {
+        GameObject spherePoint;
+        if (isCamera)
+        {
+            spherePoint = Instantiate(sphereCameraPrefab);
+            GameObject miniCamera = Instantiate(miniCameraPrefab);
+            miniCamera.GetComponent<NetworkObject>().Spawn();
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+
+            miniCamera.transform.SetParent(spherePoint.transform);
+            miniCamera.transform.localPosition = new Vector3(0.0f, 0.15f, 0.0f);
+            miniCamera.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+        }
+        else
+        {
+            spherePoint = Instantiate(spherePrefab);
+            GameObject circlePoint = Instantiate(circlePrefab);
+            circlePoint.GetComponent<NetworkObject>().Spawn();
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+
+            // defined with trial and error
+            //float circleOffset = -9.0f;
+            if (startDifferenceY == 0.0f)
+                startDifferenceY += 0.001f;
+
+            circlePoint.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            circlePoint.transform.position = new Vector3(newPosition.x, startDifferenceY, newPosition.z);
+            circlePoint.transform.SetParent(circlesContainer.transform);
+            circlePoint.name = "Circle " + pointsCount;
+
+            PathCirclesController pathCirclesController = circlePoint.GetComponent<PathCirclesController>();
+            pathCirclesController.pathNum = itemsCount;
+            pathCirclesController.pointNum = pointsCount;
+        }
+
+        PathSpheresController pathSpheresController;
+        if (isCamera)
+        {
+            GameObject sphere = spherePoint.transform.GetChild(0).gameObject;
+            pathSpheresController = sphere.GetComponent<PathSpheresController>();
+            pathSpheresController.item = item;
+            pathSpheresController.getFollowPath();
+
+            // assign follow path camera to the camera rotation controller as it needs to access it. Try is needed if it is null
+            FollowPathCamera followPathCamera = sphere.GetComponent<PathSpheresController>().followPathCamera;
+            // get mini camera and assign the follow path camera component
+            GameObject miniCamera = spherePoint.transform.GetChild(1).gameObject;
+            miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
+            miniCamera.transform.rotation = newRotation;
+        }
+        else
+        {
+            pathSpheresController = spherePoint.GetComponent<PathSpheresController>();
+            pathSpheresController.item = item;
+            pathSpheresController.getFollowPath();
+        }
+
+        pathSpheresController.pathNum = itemsCount;
+        pathSpheresController.pointNum = pointsCount;
+
+        spherePoint.transform.name = "Point " + pointsCount;
+        spherePoint.transform.position = newPosition;
+        spherePoint.transform.rotation = Quaternion.identity;
+        spherePoint.transform.SetParent(pathContainer.transform);
+
+    }
+
     public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
-        GameObject pathContainer = Instantiate(emptyPrefab);
+        GameObject pathContainer = Instantiate(pathParentPrefab);
+
         GameObject line = Instantiate(linePrefab);
 
         // can be with or without camera depending on who called this function
@@ -108,113 +187,50 @@ public class DefinePath : MonoBehaviour
         pathContainer.GetComponent<NetworkObject>().Spawn();
         line.GetComponent<NetworkObject>().Spawn();
 
-        GameObject spherePoint;
-        if (isCamera)
+        GameObject circlesContainer = null; 
+        if (!isCamera)
         {
-            spherePoint = Instantiate(sphereCameraPrefab);
-            spherePoint.GetComponent<NetworkObject>().Spawn();
+            circlesContainer = Instantiate(circlesParentPrefab);
+            circlesContainer.GetComponent<NetworkObject>().Spawn();
+            circlesContainer.name = "Circles " + itemsCount;
+            pathContainer.transform.name = "Path " + itemsCount;
         }
         else
-        {
-            spherePoint = Instantiate(spherePrefab);
-            GameObject circlePoint = Instantiate(circlePrefab);
-            circlePoint.GetComponent<NetworkObject>().Spawn();
-            spherePoint.GetComponent<NetworkObject>().Spawn();
-
-            circlePoint.transform.SetParent(spherePoint.transform);
-            circlePoint.transform.position = new Vector3(0.0f, -startDifferenceY, 0.0f);
-        }
+            pathContainer.transform.name = "Path " + item.name;
 
         // insert sphere and linerenderer inside the path container
         line.transform.SetParent(pathContainer.transform);
-        spherePoint.transform.SetParent(pathContainer.transform);
 
         // set the new point to the line renderer in the 0 index
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         currLineRenderer.SetPosition(pointsCount, newPosition);
 
-        if (spherePoint.transform.childCount > 0)
-        {
-            GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
-            sphere.GetComponent<PathSpheresController>().item = item;
-            sphere.GetComponent<PathSpheresController>().getFollowPath();
-
-            // assign follow path camera to the camera rotation controller as it needs to access it
-            FollowPathCamera followPathCamera = sphere.GetComponent<PathSpheresController>().followPathCamera;
-            // get mini camera and assign the follow path camera component
-            GameObject miniCamera = spherePoint.transform.Find("MiniCamera").gameObject;
-            miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
-            miniCamera.transform.rotation = newRotation;
-        }
-        else
-        {
-            spherePoint.GetComponent<PathSpheresController>().item = item;
-            spherePoint.GetComponent<PathSpheresController>().getFollowPath();
-        }
-
-        // define position and rotation to the sphere
-        spherePoint.transform.position = newPosition;
-
-        // change names according to the counts so that it is easy to identify and search for each point and path
-        if (item.name.Contains("MainCamera"))
-            pathContainer.transform.name = "Path " + item.name;
-        else
-            pathContainer.transform.name = "Path " + itemsCount;
-
         line.transform.name = "Line";
-        spherePoint.transform.name = "Point " + pointsCount;
+    
+        addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
 
         return pathContainer;
     }
 
     public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
+        string pathName = pathContainer.name;
+        string[] splittedName = pathName.Split(" ");
+        int pathNum = -1;
+        if (isCamera)
+            pathNum = int.Parse(splittedName[2]);
+        else
+            pathNum = int.Parse(splittedName[1]);
+
+        GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
+
         GameObject line = pathContainer.transform.GetChild(0).gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
-
-        GameObject spherePoint;
-        if (isCamera)
-        {
-            spherePoint = Instantiate(sphereCameraPrefab);
-            spherePoint.GetComponent<NetworkObject>().Spawn();
-        }
-        else
-        {
-            spherePoint = Instantiate(spherePrefab);
-            GameObject circlePoint = Instantiate(circlePrefab);
-            circlePoint.GetComponent<NetworkObject>().Spawn();
-            spherePoint.GetComponent<NetworkObject>().Spawn();
-
-            circlePoint.transform.SetParent(spherePoint.transform);
-            circlePoint.transform.position = new Vector3(0.0f, -startDifferenceY, 0.0f);
-        }
 
         currLineRenderer.positionCount += 1;
         currLineRenderer.SetPosition(pointsCount, newPosition);
 
-        if (spherePoint.transform.childCount > 0)
-        {
-            GameObject sphere = spherePoint.transform.GetChild(1).gameObject;
-            sphere.GetComponent<PathSpheresController>().item = item;
-            sphere.GetComponent<PathSpheresController>().getFollowPath();
-
-            // assign follow path camera to the camera rotation controller as it needs to access it. Try is needed if it is null
-            FollowPathCamera followPathCamera = sphere.GetComponent<PathSpheresController>().followPathCamera;
-            // get mini camera and assign the follow path camera component
-            GameObject miniCamera = spherePoint.transform.Find("MiniCamera").gameObject;
-            miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
-            miniCamera.transform.rotation = newRotation;
-        }
-        else
-        {
-            spherePoint.GetComponent<PathSpheresController>().item = item;
-            spherePoint.GetComponent<PathSpheresController>().getFollowPath();
-        }
-
-        spherePoint.transform.name = "Point " + pointsCount;
-        spherePoint.transform.position = newPosition;
-        spherePoint.transform.rotation = Quaternion.identity;
-        spherePoint.transform.SetParent(pathContainer.transform);
+        addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
     }
 
     public void deletePointFromPath(GameObject pathContainer, int pointNum)

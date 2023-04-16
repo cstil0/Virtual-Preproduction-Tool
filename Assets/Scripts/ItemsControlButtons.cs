@@ -10,10 +10,16 @@ public class ItemsControlButtons : MonoBehaviour
     private bool triggerButtonDown = false;
 
     [SerializeField] Button button;
+    [SerializeField] Image buttonImage;
     [SerializeField] eButtonType buttonType;
+    [SerializeField] Sprite lockImage;
+    [SerializeField] Sprite unlockImage;
+
     private GameObject item;
     private CustomGrabbableCharacters customGrabbableCharacters;
     private OVRGrabbable ovrgrabbable;
+    private FollowPath followPath;
+    private FollowPath followPathCamera;
 
     enum eButtonType
     {
@@ -31,6 +37,12 @@ public class ItemsControlButtons : MonoBehaviour
             button.GetComponent<Button>().colors = colors;
 
             triggerOn = true;
+
+            if (followPath != null)
+                followPath.isSelectedForPath = false;
+
+            if (followPathCamera != null)
+                followPathCamera.isSelectedForPath = false;
         }
     }
 
@@ -44,6 +56,13 @@ public class ItemsControlButtons : MonoBehaviour
             button.GetComponent<Button>().colors = colors;
 
             triggerOn = false;
+
+            if (followPath != null)
+                followPath.isSelectedForPath = true;
+
+            if (followPathCamera != null)
+                followPathCamera.isSelectedForPath = true;
+
         }
     }
 
@@ -57,6 +76,8 @@ public class ItemsControlButtons : MonoBehaviour
         item = gameObject.transform.parent.parent.parent.gameObject;
         item.TryGetComponent(out customGrabbableCharacters);
         item.TryGetComponent(out ovrgrabbable);
+        item.TryGetComponent(out followPath);
+        item.TryGetComponent(out followPathCamera);
     }
 
     // Update is called once per frame
@@ -85,9 +106,17 @@ public class ItemsControlButtons : MonoBehaviour
         string[] splittedName = itemName.Split(" ");
         string itemNum = splittedName[1];
         GameObject pathContainer = GameObject.Find("Path " + itemNum);
+        GameObject circlesContainer = GameObject.Find("Circles " + itemNum);
+
+        for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+        {
+            Destroy(pathContainer.transform.GetChild(i).gameObject); 
+            Destroy(circlesContainer.transform.GetChild(i).gameObject);
+        }
 
         Destroy(item);
         Destroy(pathContainer);
+        Destroy(circlesContainer);
 
         UDPSender.instance.sendDeleteItem(itemName);
     }
@@ -95,6 +124,11 @@ public class ItemsControlButtons : MonoBehaviour
     public void onLockPressed()
     {
         isLocked = !isLocked;
+
+        if (isLocked)
+            buttonImage.sprite = unlockImage;
+        else
+            buttonImage.sprite = lockImage;
 
         if (customGrabbableCharacters != null)
             customGrabbableCharacters.enabled = isLocked;

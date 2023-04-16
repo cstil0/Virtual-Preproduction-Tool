@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4688277860190259413}
   - component: {fileID: 8566454688908780404}
   m_Layer: 0
-  m_Name: PathParent
+  m_Name: CirclesParent
   m_TagString: PathContainer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

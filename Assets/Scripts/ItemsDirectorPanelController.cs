@@ -145,14 +145,24 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     public void onSpeedPlusPressed()
     {
-        speedInput.text = (int.Parse(speedInput.text) + 1).ToString();
-        onSpeedChange(int.Parse(speedInput.text));
+        float speedChange = 1.0f;
+
+        if (currItemPressed.Contains("MainCamera"))
+            speedChange = 0.01f;
+
+        speedInput.text = (float.Parse(speedInput.text) + speedChange).ToString();
+        onSpeedChange(float.Parse(speedInput.text));
     }
 
     public void onSpeedMinusPressed()
     {
-        speedInput.text = (int.Parse(speedInput.text) - 1).ToString();
-        onSpeedChange(int.Parse(speedInput.text));
+        float speedChange = 1.0f;
+
+        if (currItemPressed.Contains("MainCamera"))
+            speedChange = 0.01f;
+
+        speedInput.text = (float.Parse(speedInput.text) - speedChange).ToString();
+        onSpeedChange(float.Parse(speedInput.text));
     }
 
     public void onSpeedInput()
@@ -164,7 +174,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         catch (Exception e) { }
     }
 
-    public void onSpeedChange(int speed)
+    public void onSpeedChange(float speed)
     {
         UDPSender.instance.sendChangeSpeed(speed, currItemPressed);
 

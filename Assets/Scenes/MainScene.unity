@@ -20093,9 +20093,15 @@ MonoBehaviour:
     type: 3}
   sphereCameraPrefab: {fileID: 7341567524320583052, guid: 82c7088b50863cf48a1bc51f0993f44a,
     type: 3}
+  circlePrefab: {fileID: 43567379307745639, guid: 245ad130b602c72499ec9fbc12e41e4b,
+    type: 3}
+  miniCameraPrefab: {fileID: 5781834974586894782, guid: 08c996ef62d05724aa2716470e3576de,
+    type: 3}
   linePrefab: {fileID: 2309898590541969999, guid: b670c88f17fdeaa4296d72de3a39386e,
     type: 3}
-  emptyPrefab: {fileID: 8244394605070826554, guid: 0aeae3d211d8bc648ad8c9ddae2d4945,
+  pathParentPrefab: {fileID: 8244394605070826554, guid: 0aeae3d211d8bc648ad8c9ddae2d4945,
+    type: 3}
+  circlesParentPrefab: {fileID: 8244394605070826554, guid: 0bf199ad4d4c9ac4e8c79018bd7c1329,
     type: 3}
   handController: {fileID: 861928155}
   pathPointsPort: 8051

@@ -20,7 +20,14 @@ public class PathSpheresController : MonoBehaviour
 
     private Vector3 lastPosition;
 
+    public int pathNum;
+    public int pointNum;
 
+
+    private void Start()
+    {
+        lastPosition = gameObject.transform.position;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -87,7 +94,7 @@ public class PathSpheresController : MonoBehaviour
 
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && !isPlaying)
         {
-            if (!isBeingCreated && triggerOn)
+            if (lastPosition != gameObject.transform.position)
             {
                 // change both the position in the follow camera component and the line renderer
                 Vector3 newPosition = gameObject.transform.position;
@@ -95,61 +102,45 @@ public class PathSpheresController : MonoBehaviour
                 int pathNum = -1;
                 if (followPathCamera != null)
                 {
-                    string[] pathName = transform.parent.name.Split(" ");
-                    pathNum = int.Parse(pathName[1]);
-
                     followPathCamera.pathPositions[pathNum] = newPosition;
                     line = transform.parent.parent.Find("Line").gameObject;
                 }
                 if (followPath != null)
                 {
-                    string[] pathName = gameObject.name.Split(" ");
-                    pathNum = int.Parse(pathName[1]);
-
                     Vector3 distance = lastPosition - newPosition;
-                    followPath.pathPositions[pathNum] = followPath.pathPositions[pathNum] + distance;
+                    followPath.pathPositions[pathNum] = followPath.pathPositions[pathNum] - distance;
                     line = transform.parent.Find("Line").gameObject;
+
+                    DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, distance);
                 }
                 // get the line by looking at the path container's childs
                 LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
                 lineineRenderer.SetPosition(pathNum, newPosition);
+                lastPosition = gameObject.transform.position;
             }
         }
 
         if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && !isPlaying)
         {
-            secondaryTriggerButtonDown = true;
-            string[] splittedName = { "" };
             if (followPath != null)
-                splittedName = gameObject.transform.name.Split(" ");
-            else if (followPathCamera != null)
-                splittedName = gameObject.transform.parent.name.Split(" ");
-            
-            int pointNum = int.Parse(splittedName[1]);
-
-            if (followPath != null)
+            {
                 followPath.relocatePoint(pointNum, upVector);
+                DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, downVector);
+            }
             if (followPathCamera != null)
                 followPathCamera.relocatePoint(pointNum, upVector);
         }
 
         if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && !isPlaying)
         {
-            string[] splittedName = { "" };
             if (followPath != null)
-                splittedName = gameObject.transform.name.Split(" ");
-            else if (followPathCamera != null)
-                splittedName = gameObject.transform.parent.name.Split(" ");
-            
-            int pointNum = int.Parse(splittedName[1]);
-
-            if (followPath != null)
+            {
                 followPath.relocatePoint(pointNum, downVector);
+                DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, upVector);
+            }
             if (followPathCamera != null)
                 followPathCamera.relocatePoint(pointNum, downVector);
         }
-
-        lastPosition = gameObject.transform.position;
     }
 
     public IEnumerator deletePathPoint()

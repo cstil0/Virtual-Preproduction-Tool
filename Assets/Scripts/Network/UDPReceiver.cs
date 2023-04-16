@@ -324,10 +324,13 @@ public class UDPReceiver : MonoBehaviour
             int itemNum = int.Parse(receivedPointName.Split(" ")[1]);
 
             Transform pathContainer;
+            Transform circlesContainer;
             try
             {
                 pathContainer = GameObject.Find("PathParent(Clone)").transform;
+                circlesContainer = GameObject.Find("CirclesParent(Clone)").transform;
                 pathContainer.name = "Path " + itemNum;
+                circlesContainer.name = "Circles " + itemNum;
             }
             catch (Exception e)
             {

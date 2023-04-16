@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static HoverObjects;
 
 public class HoverObjects : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class HoverObjects : MonoBehaviour
     public GameObject currentSelectedForPath;
 
     [SerializeField] GameObject itemsParent;
+
+    public delegate void PathPointHovered(int pathNum, int pointNum, Color color);
+    public event PathPointHovered OnPathPointHovered;
 
     private void Awake()
     {
@@ -76,7 +80,6 @@ public class HoverObjects : MonoBehaviour
             if (currItem == currentSelectedForPath)
                 continue;
 
-            Debug.LogError("DESELECTING ITEM " + currItem.name);
             currItem.TryGetComponent(out FollowPath followPath);
             currItem.TryGetComponent(out FollowPathCamera followPathCamera);
 
@@ -95,7 +98,7 @@ public class HoverObjects : MonoBehaviour
                 if (followPathCamera)
                 {
                     followPathCamera.isSelectedForPath = false;
-                    changeColorMaterials(currItem, Color.white);
+                    changeColorMaterials(currItem, Color.black);
                 }
             }
         }
@@ -156,7 +159,15 @@ public class HoverObjects : MonoBehaviour
             pointAlreadySelected = true;
             currentPointCollider = other.gameObject;
             changeColorMaterials(currentPointCollider, Color.blue);
-            currentPointCollider.GetComponent<PathSpheresController>().changeTriggerState(true);
+            PathSpheresController pathSpheresController = currentPointCollider.GetComponent<PathSpheresController>();
+            pathSpheresController.changeTriggerState(true);
+
+            if (pathSpheresController.followPath != null)
+            {
+                int pathNum = pathSpheresController.pathNum;
+                int pointNum = pathSpheresController.pointNum;
+                OnPathPointHovered(pathNum, pointNum, Color.blue);
+            }
         }
 
         // if mini camera
@@ -187,6 +198,9 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
+                    GameObject itemControlMenu = other.transform.Find("ItemControlMenu").gameObject;
+                    itemControlMenu.GetComponent<Canvas>().enabled = followPath.isSelectedForPath;
+
                     currentSelectedForPath = other.gameObject;
                     Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.blue;
 
@@ -199,22 +213,22 @@ public class HoverObjects : MonoBehaviour
 
         if (other.gameObject.layer == 7)
         {
-            FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
+            FollowPathCamera followPathCamera = other.gameObject.GetComponent<FollowPathCamera>();
 
             //// check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
             //if (currentSelectedForPath == null)
             //    currentSelectedForPath = other.gameObject;
 
-            if (followPath != null)
+            if (followPathCamera != null)
             {
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-                if (itemAlreadySelected != followPath.isSelectedForPath)
+                if (itemAlreadySelected != followPathCamera.isSelectedForPath)
                 {
                     currentSelectedForPath = other.gameObject;
-                    Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
+                    Color color = followPathCamera.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
 
                     changeColorMaterials(currentItemCollider, color);
-                    itemAlreadySelected = followPath.isSelectedForPath;
+                    itemAlreadySelected = followPathCamera.isSelectedForPath;
                     deselectAllItems();
                 }
             }
@@ -222,9 +236,17 @@ public class HoverObjects : MonoBehaviour
 
         if (other.gameObject.layer == 14)
         {
-            bool isSelected = currentPointCollider.GetComponent<PathSpheresController>().isSelected;
+            PathSpheresController pathSpheresController = currentPointCollider.GetComponent<PathSpheresController>();
+            bool isSelected = pathSpheresController.isSelected;
             Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
             changeColorMaterials(currentPointCollider, color);
+
+            if (pathSpheresController.followPath != null)
+            {
+                int pathNum = pathSpheresController.pathNum;
+                int pointNum = pathSpheresController.pointNum;
+                OnPathPointHovered(pathNum, pointNum, color);
+            }
         }
 
 
@@ -345,6 +367,13 @@ public class HoverObjects : MonoBehaviour
             Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
             changeColorMaterials(currentPointCollider, color);
             currentPointCollider = null;
+
+            if (spheresController.followPath != null)
+            {
+                int pathNum = spheresController.pathNum;
+                int pointNum = spheresController.pointNum;
+                OnPathPointHovered(pathNum, pointNum, color);
+            }
         }
 
         else if (other.gameObject == currentMiniCameraCollider)

@@ -261,15 +261,16 @@ public class FollowPath : MonoBehaviour
         if (pointsCount == 1)
             startDiffPosition = controllerPos - startPosition;
 
-        Vector3 newPoint = new Vector3(controllerPos.x, controllerPos.y - startDiffPosition.y, controllerPos.z);
+        float newY = controllerPos.y - startDiffPosition.y;
+        Vector3 newPoint = new Vector3(controllerPos.x, newY, controllerPos.z);
 
         pathPositions.Add(newPoint);
         if (instantiatePoint)
         {
             if (pointsCount == 1)
-                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, startDiffPosition.y);
+                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
             else 
-                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, startDiffPosition.y);
+                DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
 
             yield return new WaitForSeconds(1.0f);
             
