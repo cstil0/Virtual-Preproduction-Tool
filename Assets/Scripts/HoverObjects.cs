@@ -81,6 +81,7 @@ public class HoverObjects : MonoBehaviour
                 continue;
 
             currItem.TryGetComponent(out FollowPath followPath);
+            currItem.TryGetComponent(out ObjectsSelector objectsSelector);
             currItem.TryGetComponent(out FollowPathCamera followPathCamera);
 
             if (followPath != null)
@@ -93,9 +94,18 @@ public class HoverObjects : MonoBehaviour
                 }
             }
 
+            if (objectsSelector != null)
+            {
+                if (objectsSelector.isSelected)
+                {
+                    objectsSelector.isSelected = false;
+                    changeColorMaterials(currItem, Color.white);
+                }
+            }
+
             if (followPathCamera != null)
             {
-                if (followPathCamera)
+                if (followPathCamera.isSelectedForPath)
                 {
                     followPathCamera.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.black);
@@ -115,10 +125,17 @@ public class HoverObjects : MonoBehaviour
             if (other.gameObject.layer == 10)
             {
                 FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+                ObjectsSelector objectsSelector = other.gameObject.GetComponent<ObjectsSelector>();
                 if (followPath != null)
                 {
                     followPath.triggerOn = true;
                     isSelected = followPath.isSelectedForPath;
+                }
+
+                if (objectsSelector != null)
+                {
+                    objectsSelector.triggerOn = true;
+                    isSelected = objectsSelector.isSelected;
                 }
             }
             else if (other.gameObject.layer == 7)
@@ -188,10 +205,11 @@ public class HoverObjects : MonoBehaviour
         if (other.gameObject.layer == 10)
         {
             FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+            ObjectsSelector objectsSelector = other.gameObject.GetComponent<ObjectsSelector>();
 
             //// check if it has a follow path component and if there is no other gameObject in the scene already selected for path, to avoid defining one for several objects at same time
             //if (currentSelectedForPath == null)
-                //currentSelectedForPath = other.gameObject;
+            //currentSelectedForPath = other.gameObject;
 
             if (followPath != null)
             {
@@ -206,6 +224,18 @@ public class HoverObjects : MonoBehaviour
 
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPath.isSelectedForPath;
+                    deselectAllItems();
+                }
+            }
+
+            if (objectsSelector != null)
+            {
+                if (itemAlreadySelected != objectsSelector.isSelected)
+                {
+                    currentSelectedForPath = other.gameObject;
+                    Color color = objectsSelector.isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+                    changeColorMaterials(currentItemCollider, color);
+                    itemAlreadySelected = objectsSelector.isSelected;
                     deselectAllItems();
                 }
             }
@@ -275,6 +305,7 @@ public class HoverObjects : MonoBehaviour
             if (other.gameObject.layer == 10)
             {
                 FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
+                ObjectsSelector objectsSelector = other.gameObject.GetComponent<ObjectsSelector>();
                 // if the object has a limit rotation script mark it as selected
                 bool isSelected = false;
                 if (followPath != null)
@@ -286,6 +317,14 @@ public class HoverObjects : MonoBehaviour
                         followPath.isSelectedForPath = false;
                     isSelected = followPath.isSelectedForPath;
 
+                }
+                if (objectsSelector != null)
+                {
+                    objectsSelector.triggerOn = false;
+                    alreadyTriggered = false;
+                    if (other.gameObject != currentSelectedForPath)
+                        objectsSelector.isSelected = false;
+                    isSelected = objectsSelector.isSelected;
                 }
                 if (!isSelected)
                 {

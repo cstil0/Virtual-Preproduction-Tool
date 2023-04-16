@@ -99,23 +99,23 @@ public class PathSpheresController : MonoBehaviour
                 // change both the position in the follow camera component and the line renderer
                 Vector3 newPosition = gameObject.transform.position;
                 GameObject line = null;
-                int pathNum = -1;
+                //int pathNum = -1;
                 if (followPathCamera != null)
                 {
-                    followPathCamera.pathPositions[pathNum] = newPosition;
+                    followPathCamera.pathPositions[pointNum] = newPosition;
                     line = transform.parent.parent.Find("Line").gameObject;
                 }
                 if (followPath != null)
                 {
                     Vector3 distance = lastPosition - newPosition;
-                    followPath.pathPositions[pathNum] = followPath.pathPositions[pathNum] - distance;
+                    followPath.pathPositions[pointNum] = followPath.pathPositions[pointNum] - distance;
                     line = transform.parent.Find("Line").gameObject;
 
                     DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, distance);
                 }
                 // get the line by looking at the path container's childs
                 LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
-                lineineRenderer.SetPosition(pathNum, newPosition);
+                lineineRenderer.SetPosition(pointNum, newPosition);
                 lastPosition = gameObject.transform.position;
             }
         }

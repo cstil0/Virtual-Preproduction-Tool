@@ -20,6 +20,7 @@ public class ItemsControlButtons : MonoBehaviour
     private OVRGrabbable ovrgrabbable;
     private FollowPath followPath;
     private FollowPath followPathCamera;
+    private BoxCollider boxCollider;
 
     enum eButtonType
     {
@@ -78,6 +79,7 @@ public class ItemsControlButtons : MonoBehaviour
         item.TryGetComponent(out ovrgrabbable);
         item.TryGetComponent(out followPath);
         item.TryGetComponent(out followPathCamera);
+        item.TryGetComponent(out boxCollider);
     }
 
     // Update is called once per frame
@@ -108,32 +110,45 @@ public class ItemsControlButtons : MonoBehaviour
         GameObject pathContainer = GameObject.Find("Path " + itemNum);
         GameObject circlesContainer = GameObject.Find("Circles " + itemNum);
 
-        for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+        if (circlesContainer != null)
         {
-            Destroy(pathContainer.transform.GetChild(i).gameObject); 
-            Destroy(circlesContainer.transform.GetChild(i).gameObject);
+            for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+            {
+                Destroy(pathContainer.transform.GetChild(i).gameObject);
+                Destroy(circlesContainer.transform.GetChild(i).gameObject);
+            }
+            Destroy(pathContainer);
+            Destroy(circlesContainer);
+        }
+        else if (pathContainer != null)
+        {
+            for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+            {
+                Destroy(pathContainer.transform.GetChild(i).gameObject); 
+            }
+            Destroy(pathContainer);
         }
 
         Destroy(item);
-        Destroy(pathContainer);
-        Destroy(circlesContainer);
 
         UDPSender.instance.sendDeleteItem(itemName);
     }
 
     public void onLockPressed()
     {
-        isLocked = !isLocked;
-
         if (isLocked)
-            buttonImage.sprite = unlockImage;
-        else
             buttonImage.sprite = lockImage;
+        else
+            buttonImage.sprite = unlockImage;
 
         if (customGrabbableCharacters != null)
             customGrabbableCharacters.enabled = isLocked;
         if (ovrgrabbable != null)
+        {
             ovrgrabbable.enabled = isLocked;
+            boxCollider.enabled = isLocked;
+        }
 
+        isLocked = !isLocked;
     }
 }

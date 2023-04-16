@@ -10,8 +10,8 @@ public class CustomGrabbableCharacters : MonoBehaviour
     Vector3 startPosDiff;
     GameObject currentHand;
 
-    bool triggerOn;
-    bool buttonDown;
+    [SerializeField] bool triggerOn;
+    [SerializeField] bool buttonDown;
 
     bool isBehindPlayer()
     {
@@ -59,7 +59,7 @@ public class CustomGrabbableCharacters : MonoBehaviour
     {
         Vector3 position = new Vector3();
         Vector3 limitRot = new Vector3();
-        if (DefinePath.instance.isPlaying)
+        if (!DefinePath.instance.isPlaying)
         {
             if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
             {

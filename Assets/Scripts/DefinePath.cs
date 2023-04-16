@@ -278,6 +278,25 @@ public class DefinePath : MonoBehaviour
                 material.color = pathColor;
             }
         }
+
+        string pathName = pathContainer.name;
+        string[] splittedName = pathName.Split(" ");
+
+        try
+        {
+            int pathNum = int.Parse(splittedName[1]);
+            GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
+            for (int i = 0; i < circlesContainer.transform.childCount; i++)
+            {
+                GameObject currChild = circlesContainer.transform.GetChild(i).gameObject;
+
+                Renderer renderer = currChild.GetComponent<Renderer>();
+                Material material = renderer.material;
+                material.color = pathColor;
+            }
+                
+        }
+        catch (Exception e) { }
     }
 
     //public int getItemsCount()
