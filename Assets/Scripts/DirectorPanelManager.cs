@@ -60,9 +60,14 @@ public class DirectorPanelManager : MonoBehaviour
         aerealviewPanel.SetActive(false);
     }
 
-    public void changePGMCamera(Material cameraView)
+    public void changePGMCamera(GameObject input)
     {
+        string[] inputName = input.name.Split(" ");
+        int inputNum = int.Parse(inputName[1]);
+        Material cameraView = input.GetComponent<Image>().material;
+
         PGMView.GetComponent<Image>().material = cameraView;
+        UDPSender.instance.changeMainCamera(inputNum);
     } 
 
     public void playPath()

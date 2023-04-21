@@ -148,7 +148,7 @@ public class ModesManager : MonoBehaviour
                 OVRCamera.targetDisplay = 1;
                 //OVRCamera.targetTexture = OVRCameraTexture;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
-                GameObject.Find("UDP Sender").SetActive(false);
+                GameObject.Find("UDP Sender").SetActive(true);
                 GameObject.Find("NDI Receiver").SetActive(true);
                 GameObject.Find("UDP Receiver").SetActive(true);
 
@@ -257,13 +257,16 @@ public class ModesManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             role = eRoleType.ASSISTANT;
+            mode = eModeType.VIRTUALREALITY;
 
             canvas.GetComponent<EventSystem>().enabled = false;
             UIHelpers.SetActive(true);
             leftHand.SetActive(true);
             rightHand.SetActive(true);
 
-            IPAddress.text = "Set Screen Scene IP";
+            IPAddress.text = "192.168.0.12";
+
+            loadMainScene();
         }
     }
 }

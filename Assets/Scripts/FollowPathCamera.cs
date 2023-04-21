@@ -357,11 +357,10 @@ public class FollowPathCamera : MonoBehaviour
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-        {
-            UDPSender.instance.sendChangeCamera();
-            UDPSender.instance.SendPosRot();
-        }
+        //if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        //{
+        //    //UDPSender.instance.SendPosRot();
+        //}
 
         isPlaying = !isPlaying;
     }
@@ -394,11 +393,10 @@ public class FollowPathCamera : MonoBehaviour
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        if (udpSenderCamera.transform.name == gameObject.transform.name)
-        {
-            UDPSender.instance.sendChangeCamera();
-            UDPSender.instance.SendPosRot();
-        }
+        //if (udpSenderCamera.transform == gameObject.transform && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        //{
+        //    UDPSender.instance.SendPosRot();
+        //}
     }
 
     int getGlobalPathID(int localPathID)

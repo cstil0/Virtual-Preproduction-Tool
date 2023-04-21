@@ -41,17 +41,19 @@ public class UDPReceiver : MonoBehaviour
     bool deletePointParsed;
     bool deleteItemParsed;
     bool sceneRotationParsed;
+    bool changeCameraParsed;
 
-    String receivedMessage;
-    String receivedPointName;
-    String receivedSpeedName;
+    string receivedMessage;
+    string receivedPointName;
+    string receivedSpeedName;
     float receivedSpeedValue;
-    String receivedDeleteItemName;
-    String receivedDeletePointName;
+    string receivedDeleteItemName;
+    string receivedDeletePointName;
     int receivedDeletePointNum;
-    String newReceivedName;
-    String newWrongReceivedName;
+    string newReceivedName;
+    string newWrongReceivedName;
     int receivedCount;
+    string receivedChangeCamera;
 
     string receivedPointPosition;
     string receivedPointRotation;
@@ -88,7 +90,8 @@ public class UDPReceiver : MonoBehaviour
         CHANGE_SPEED,
         PLAY_PATH,
         DELETE_POINT,
-        DELETE_ITEM
+        DELETE_ITEM,
+        CHANGE_CAMERA
     }
 
     // main thread that listens to UDP messages through a defined port
@@ -229,6 +232,10 @@ public class UDPReceiver : MonoBehaviour
                     case directorToAssistantMessages.DELETE_ITEM:
                         deleteItemParsed = false;
                         receivedDeleteItemName = splittedMessage[1];
+                        break;
+                    case directorToAssistantMessages.CHANGE_CAMERA:
+                        changeCameraParsed = false;
+                        receivedChangeCamera = splittedMessage[1];
                         break;
                 }
             }
@@ -446,6 +453,13 @@ public class UDPReceiver : MonoBehaviour
         UDPSender.instance.rotateItemsInScene(rotationAngle);
     }
 
+    void parseChangeCamera()
+    {
+        changeCameraParsed = true;
+
+        UDPSender.instance.sendChangeCameraScreen(receivedChangeCamera);
+    }
+
     void OnDisable()
     {
         // stop thread when object is disabled
@@ -484,6 +498,7 @@ public class UDPReceiver : MonoBehaviour
         deletePointParsed = true;
         deleteItemParsed = true;
         sceneRotationParsed = true;
+        changeCameraParsed = true;
 
         // Start thread to listen UDP messages and set it as background
         //receiveThread = new Thread(UDP_ReceieveThread);
@@ -559,5 +574,8 @@ public class UDPReceiver : MonoBehaviour
 
         if (!sceneRotationParsed)
             parseSceneRotationMessage();
+
+        if (!changeCameraParsed)
+            parseChangeCamera();
     }
 }

@@ -146,6 +146,10 @@ public class HoverObjects : MonoBehaviour
                     followPath.triggerOn = true;
                     isSelected = followPath.isSelectedForPath;
                 }
+
+                if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                    UDPSender.instance.changeMainCamera(other.gameObject);
+
             }
 
 
@@ -160,13 +164,6 @@ public class HoverObjects : MonoBehaviour
                     currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, true);
                 }
                 catch (System.Exception e) { }
-
-                // if it is camera, change the one that will send UDP
-                if (other.gameObject.layer == 7)
-                {
-                    UDPSender.instance.screenCamera = other.gameObject.GetComponent<Camera>();
-                    UDPSender.instance.sendChangeCamera();
-                }
             }
         }
 

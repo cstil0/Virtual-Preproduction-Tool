@@ -19,7 +19,7 @@ public class UDPSender : MonoBehaviour
     // udpclient object
     public Camera screenCamera;
     UdpClient client;
-    public int serverPort = 8050;
+    public int assistantToScreenPort = 8050;
     public int assistantToDirectorPort = 8051;
     public int directoToAssistantPort = 8052;
     int rotateScenePort = 8053;
@@ -38,6 +38,7 @@ public class UDPSender : MonoBehaviour
 
     public GameObject OVRPlayer;
     [SerializeField] HoverObjects hoverObjects;
+    [SerializeField] GameObject itemsParent;
 
     private void Awake()
     {
@@ -55,14 +56,14 @@ public class UDPSender : MonoBehaviour
     // main thread that listens to UDP messages through a defined port
     public void SendPosRot()
     {
-        client = new UdpClient(serverPort);
+        client = new UdpClient(assistantToScreenPort);
 
         //client.Connect(IPAddress.Parse(ipAddress), serverPort);
 
         //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
 
         // sending data
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
         byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString());
         client.Send(message, message.Length, target);
 
@@ -86,9 +87,9 @@ public class UDPSender : MonoBehaviour
         try
         {
             // first send rotation to screen project
-            UdpClient clientScreen = new UdpClient(serverPort);
+            UdpClient clientScreen = new UdpClient(assistantToScreenPort);
 
-            IPEndPoint targetScreen = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+            IPEndPoint targetScreen = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
 
             Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
             Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
@@ -113,8 +114,8 @@ public class UDPSender : MonoBehaviour
         ModesManager modesManager = GameObject.Find("Modes Manager").GetComponent<ModesManager>();
         if (modesManager.role == ModesManager.eRoleType.ASSISTANT)
         {
-            client = new UdpClient(serverPort);
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+            client = new UdpClient(assistantToScreenPort);
+            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
 
             if (modesManager.mode == ModesManager.eModeType.MIXEDREALITY)
             {
@@ -130,15 +131,46 @@ public class UDPSender : MonoBehaviour
         }
     }
 
-    // ESTARIA BÉ FER UNA FUNCIÓ GENERAL QUE REBI EL MISSATGE I L'ENVII
-    public void sendChangeCamera()
+    public void changeMainCamera(GameObject currentCamera)
     {
+        string[] cameraName = currentCamera.name.Split(" ");
+        int cameraNum = int.Parse(cameraName[1]);
+
+        screenCamera = currentCamera.GetComponent<Camera>();
+
         screenCameraStartPos = screenCamera.transform.position;
         screenCameraStartRot = screenCamera.transform.rotation;
 
-        client = new UdpClient(serverPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
-        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA");
+        client = new UdpClient(assistantToScreenPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
+
+        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
+        client.Send(message, message.Length, target);
+        client.Close();
+    }
+
+    public void changeMainCamera(int cameraNum)
+    {
+        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
+        screenCamera = currentCamera.GetComponent<Camera>();
+
+        client = new UdpClient(assistantToScreenPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
+
+        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
+        client.Send(message, message.Length, target);
+        client.Close();
+    }
+
+    public void sendChangeCameraScreen(string cameraNum)
+    {
+        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
+        screenCamera = currentCamera.GetComponent<Camera>();
+
+        client = new UdpClient(assistantToScreenPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
+
+        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
         client.Send(message, message.Length, target);
         client.Close();
     }
@@ -146,8 +178,8 @@ public class UDPSender : MonoBehaviour
     public void sendResetPosRot()
     {
         SendPosRot();
-        client = new UdpClient(serverPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
+        client = new UdpClient(assistantToScreenPort);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
         byte[] message = Encoding.ASCII.GetBytes("RESET_POSROT");
         client.Send(message, message.Length, target);
         client.Close();
@@ -343,7 +375,9 @@ public class UDPSender : MonoBehaviour
         lastPos = screenCamera.transform.position;
         sceneRotation = 10;
         buttonDown = 0;
-        sendCameraType();
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
+            sendCameraType();
 
         //StartCoroutine(sendInitialParameters());
     }
@@ -360,7 +394,9 @@ public class UDPSender : MonoBehaviour
             else
                 resetStart = false;
 
-            SendPosRot();
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                SendPosRot();
+
             positionChanged = true;
             lastPos = currentPos;
             posChangedCount = 0;
