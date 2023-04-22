@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DefinePath : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class DefinePath : MonoBehaviour
     [SerializeField] GameObject linePrefab;
     [SerializeField] GameObject pathParentPrefab;
     [SerializeField] GameObject circlesParentPrefab;
+    [SerializeField] GameObject cameraCanvasPrefab;
     [SerializeField] GameObject handController;
     [SerializeField] int pathPointsPort = 8051;
 
@@ -114,12 +116,24 @@ public class DefinePath : MonoBehaviour
         {
             spherePoint = Instantiate(sphereCameraPrefab);
             GameObject miniCamera = Instantiate(miniCameraPrefab);
+            GameObject cameraCanvas = Instantiate(cameraCanvasPrefab);
+
+            // generate minicamera view
+            RenderTexture miniCameraTexture = new RenderTexture(1920, 1080, 16, RenderTextureFormat.ARGB32);
+            GameObject cameraImage = cameraCanvas.transform.GetChild(0).gameObject;
+            RawImage rawImage = cameraImage.GetComponent<RawImage>();
+            rawImage.texture = miniCameraTexture;
+
             miniCamera.GetComponent<NetworkObject>().Spawn();
             spherePoint.GetComponent<NetworkObject>().Spawn();
+            cameraCanvas.GetComponent<NetworkObject>().Spawn();
 
             miniCamera.transform.SetParent(spherePoint.transform);
+            cameraCanvas.transform.SetParent(spherePoint.transform);
+
             miniCamera.transform.localPosition = new Vector3(0.0f, 0.15f, 0.0f);
             miniCamera.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            cameraCanvas.transform.localPosition = new Vector3(0.0f, -33.0f, 0.0f);
         }
         else
         {

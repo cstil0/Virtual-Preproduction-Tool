@@ -2361,6 +2361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25a1d845c14df348a1d8f6a91dbb890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerOn: 0
+  buttonDown: 0
 --- !u!65 &1644520394033719856
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2760,6 +2762,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_CullTransparentMesh
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3391199091363452648, guid: 0090eb999a3808940a141bb7eba680e4,
+        type: 3}
+      propertyPath: m_text
+      value: 'y: 88.88'
       objectReference: {fileID: 0}
     - target: {fileID: 3897086083326329775, guid: 0090eb999a3808940a141bb7eba680e4,
         type: 3}

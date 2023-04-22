@@ -1511,6 +1511,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25a1d845c14df348a1d8f6a91dbb890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerOn: 0
+  buttonDown: 0
 --- !u!65 &6317513413407958778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1613,7 +1615,10 @@ MonoBehaviour:
   posSpeed: 3
   rotSpeed: 7
   pointsCount: 0
+  currPoint: 0
   startPosition: {x: 0, y: 0, z: 0}
+  pathContainer: {fileID: 0}
+  isPlaying: 0
   triggerOn: 0
   isSelectedForPath: 0
   isPointOnTrigger: 0
@@ -2660,6 +2665,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8411084892518880069}
     m_Modifications:
+    - target: {fileID: 4290215002297884451, guid: 0090eb999a3808940a141bb7eba680e4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5037017229657975939, guid: 0090eb999a3808940a141bb7eba680e4,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2768,7 +2778,7 @@ PrefabInstance:
     - target: {fileID: 6466146409140308244, guid: 0090eb999a3808940a141bb7eba680e4,
         type: 3}
       propertyPath: m_Name
-      value: Paths buttons
+      value: ItemControlMenu
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0090eb999a3808940a141bb7eba680e4, type: 3}

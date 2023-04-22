@@ -9,23 +9,39 @@ using System.Text;
 
 public class DirectorPanelManager : MonoBehaviour
 {
+    [Header ("GameObjects")]
     public static DirectorPanelManager instance;
     public GameObject multiviewPanel;
     public GameObject aerealviewPanel;
     public GameObject distanceSlider;
     public GameObject distanceText;
     public GameObject PGMView;
+    public GameObject grid;
+    public GameObject pointsView;
+    public GameObject aerialCameraView;
     public delegate void PlayPath();
     public event PlayPath OnPlayPath;
     public delegate void StopPath();
     public event StopPath OnStopPath;
 
+    [Header ("Icons")]
     public Sprite playIcon;
     public Sprite pauseIcon;
+    [SerializeField] Sprite gridIcon;
+    [SerializeField] Sprite gridCancelIcon;
+    [SerializeField] Sprite pointsViewIcon;
+    [SerializeField] Sprite aerialViewIcon;
+
+    [Header ("Buttons")]
     public GameObject playPauseButton;
     public GameObject stopButton;
+    [SerializeField] GameObject gridButton;
+    [SerializeField] GameObject pointsViewButton;
 
+    [Header ("States")]
     bool isPlaying = false;
+    bool isGridShown = false;
+    bool isPointsViewActive = false;
     [SerializeField] int pathPlayPort = 8052;
 
     private void Awake()
@@ -47,6 +63,12 @@ public class DirectorPanelManager : MonoBehaviour
     {
         float distance = distanceSlider.GetComponent<Slider>().value;
         distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
+
+        if (OVRInput.Get(OVRInput.RawButton.X)){
+            isGridShown = !isGridShown;
+            grid.SetActive(isGridShown);
+            UDPSender.instance.sendShowHideGridDirector(isGridShown);
+        }
     }
 
     public void goToAerialView()
@@ -112,4 +134,57 @@ public class DirectorPanelManager : MonoBehaviour
         }
     }
 
+    public void showHideGrid()
+    {
+        isGridShown = !isGridShown;
+        if (isGridShown)
+            gridButton.GetComponent<Image>().sprite = gridCancelIcon;
+        else
+            gridButton.GetComponent<Image>().sprite = gridIcon;
+
+        grid.SetActive(isGridShown);
+        UDPSender.instance.sendShowHideGridAssistant(isGridShown);
+    }
+
+    public void showHidePointsView()
+    {
+        isPointsViewActive = !isPointsViewActive;
+
+        if (isPointsViewActive)
+            pointsViewButton.GetComponent<Image>().sprite = pointsViewIcon;            
+        else
+            pointsViewButton.GetComponent<Image>().sprite = aerialViewIcon;
+
+        pointsView.SetActive(isPointsViewActive);
+        aerialCameraView.SetActive(!isPointsViewActive);
+    }
+
+    public void changePointsViewTexture(string itemPressedName, int pointNumPressed)
+    {
+        // get the camera point texture and show it in screen
+        if (itemPressedName.Contains("MainCamera"))
+        {
+            Transform currPathCamera = GameObject.Find("Path " + itemPressedName).transform;
+            Transform currPoint = currPathCamera.GetChild(pointNumPressed + 1);
+            GameObject cameraCanvas = currPoint.GetChild(2).gameObject;
+            Texture cameraTexture = cameraCanvas.GetComponentInChildren<RawImage>().texture;
+
+            pointsView.GetComponent<RawImage>().texture = cameraTexture;
+            pointsView.GetComponent<RawImage>().color = Color.white;
+            pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+
+            aerealviewPanel.SetActive(false);
+            pointsView.SetActive(true);
+        }
+
+        else
+        {
+            pointsView.GetComponent<RawImage>().texture = null;
+            pointsView.GetComponent<RawImage>().color = new Color(1.0f, 0.4352941f, 0.3686275f);
+            pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+
+            aerealviewPanel.SetActive(true);
+            pointsView.SetActive(false);
+        }
+    } 
 }

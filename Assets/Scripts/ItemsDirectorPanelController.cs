@@ -1,3 +1,4 @@
+using Klak.Ndi.Interop;
 using Microsoft.MixedReality.Toolkit;
 using System;
 using System.Collections;
@@ -11,29 +12,36 @@ public class ItemsDirectorPanelController : MonoBehaviour
 {
     public static ItemsDirectorPanelController instance = null;
 
-    [SerializeField] TMP_Text itemName;
+    [Header ("Buttons")]
     [SerializeField] Button closeButton;
     [SerializeField] Button removeButton;
     [SerializeField] Button speedMinusButton;
     [SerializeField] Button speedPlusButton;
-    [SerializeField] TMP_InputField speedInput;
     [SerializeField] Button trashButton;
 
+    [Header ("Texts")]
+    [SerializeField] TMP_Text itemName;
+    [SerializeField] TMP_InputField speedInput;
+
+    [Header ("Panels")]
     [SerializeField] GameObject panelLayout;
     [SerializeField] GameObject itemsOptionsPanel;
     [SerializeField] GameObject pointsPanel;
 
+    [Header ("UI Prefabs")]
     [SerializeField] GameObject itemButtonPrefab;
     [SerializeField] GameObject pointButtonPrefab;
     [SerializeField] GameObject pointsLayoutPrefab;
 
-    [SerializeField] GameObject itemsParent;
+    [Header ("Selected Items")]
     private int currPointPressed;
     private string currItemPressed;
     private GameObject currItemGO;
     private FollowPath currFollowPath;
     private FollowPathCamera currFollowPathCamera;
 
+    [Header ("Others")]
+    [SerializeField] GameObject itemsParent;
     [SerializeField] Color selectedColor;
     [SerializeField] Color normalColor;
 
@@ -236,13 +244,15 @@ public class ItemsDirectorPanelController : MonoBehaviour
             buttonColors.selectedColor = selectedColor;
             pointButton.GetComponent<Button>().colors = buttonColors;
         }
+
+        DirectorPanelManager.instance.changePointsViewTexture(currItemPressed, currPointPressed);
     }
 
     public void onRemoveItemPressed()
     {
         if (!currItemPressed.Contains("Camera"))
         {
-            UDPSender.instance.sendDeleteItem(currItemPressed);
+            UDPSender.instance.sendDeleteItemToAssistant(currItemPressed);
 
             removeItemButtons(currItemPressed);
         }

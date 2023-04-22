@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,7 @@ public class ItemsControlButtons : MonoBehaviour
     [SerializeField] eButtonType buttonType;
     [SerializeField] Sprite lockImage;
     [SerializeField] Sprite unlockImage;
+    [SerializeField] TextMeshProUGUI heightText;
 
     private GameObject item;
     private CustomGrabbableCharacters customGrabbableCharacters;
@@ -22,10 +24,13 @@ public class ItemsControlButtons : MonoBehaviour
     private FollowPath followPathCamera;
     private BoxCollider boxCollider;
 
+    private Vector3 lastPosition;
+
     enum eButtonType
     {
         TRASH,
-        LOCK
+        LOCK,
+        HEIGHT
     }
 
     private void OnTriggerEnter(Collider other)
@@ -80,6 +85,10 @@ public class ItemsControlButtons : MonoBehaviour
         item.TryGetComponent(out followPath);
         item.TryGetComponent(out followPathCamera);
         item.TryGetComponent(out boxCollider);
+
+        lastPosition = item.transform.position;
+        if (buttonType == eButtonType.HEIGHT)
+            heightText.text = lastPosition.y.ToString("#.00");
     }
 
     // Update is called once per frame
@@ -99,6 +108,12 @@ public class ItemsControlButtons : MonoBehaviour
         }
         else
             triggerButtonDown = false;
+
+        if (lastPosition != item.transform.position && buttonType == eButtonType.HEIGHT)
+        {
+            lastPosition = item.transform.position;
+            heightText.text = lastPosition.y.ToString("#.00");
+        }
     }
 
     public void onTrashPressed()
@@ -131,7 +146,7 @@ public class ItemsControlButtons : MonoBehaviour
 
         Destroy(item);
 
-        UDPSender.instance.sendDeleteItem(itemName);
+        UDPSender.instance.sendDeleteItemToDirector(itemName);
     }
 
     public void onLockPressed()

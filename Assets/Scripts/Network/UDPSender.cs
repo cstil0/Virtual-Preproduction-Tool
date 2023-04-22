@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using Facebook.WitAi.CallbackHandlers;
 using Microsoft.MixedReality.Toolkit.Input;
+using UnityEditor.Rendering;
 
 public class UDPSender : MonoBehaviour
 {
@@ -22,7 +23,6 @@ public class UDPSender : MonoBehaviour
     public int assistantToScreenPort = 8050;
     public int assistantToDirectorPort = 8051;
     public int directoToAssistantPort = 8052;
-    int rotateScenePort = 8053;
     public string ipAddress;
 
     bool resetStart;
@@ -53,14 +53,69 @@ public class UDPSender : MonoBehaviour
         }
     }
 
+    private void sendInfo(int port, string messageString)
+    {
+        string ipAddress = ModesManager.instance.IPAddress.text;
+        client = new UdpClient(port);
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+
+        byte[] message = Encoding.ASCII.GetBytes(messageString);
+        client.Send(message, message.Length, target);
+        client.Close();
+    }
+
+    // -- DIRECTOR TO ASSISTANT MESSAGES --
+    public void changeMainCamera(int cameraNum)
+    {
+        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
+        screenCamera = currentCamera.GetComponent<Camera>();
+
+        sendInfo(directoToAssistantPort, "CHANGE_CAMERA:" + cameraNum);
+    }
+
+    public void sendDeletePoint(int pointNum, string name)
+    {
+        try
+        {
+            sendInfo(directoToAssistantPort, "DELETE_POINT:" + name + ":" + pointNum);
+        }
+        catch (System.Exception e) { }
+    }
+
+    public void sendDeleteItemToAssistant(string name)
+    {
+        try
+        {
+            sendInfo(directoToAssistantPort, "DELETE_ITEM:" + name);
+        }
+        catch (System.Exception e) { }
+    }
+
+    public void sendChangeSpeed(float speed, string name)
+    {
+        try
+        {
+            sendInfo(directoToAssistantPort, "CHANGE_SPEED:" + name + ":" + speed);
+        }
+        catch (System.Exception e) { }
+    }
+
+    public void sendShowHideGridAssistant(bool isShowed)
+    {
+        sendInfo(directoToAssistantPort, "SHOW_HIDE_GRID:" + isShowed);
+    }
+
+    public void sendShowHideGridDirector(bool isShowed)
+    {
+        sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
+    }
+
+
+    // -- ASSISTANT TO SCREEN MESSAGES --
     // main thread that listens to UDP messages through a defined port
     public void SendPosRot()
     {
         client = new UdpClient(assistantToScreenPort);
-
-        //client.Connect(IPAddress.Parse(ipAddress), serverPort);
-
-        //IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), serverPort);
 
         // sending data
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
@@ -69,13 +124,10 @@ public class UDPSender : MonoBehaviour
 
         Vector3 cameraPos = screenCamera.transform.position;
         string specifier = "G";
-        //byte[] message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraPos.z.ToString(specifier, CultureInfo.InvariantCulture));
         message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
-        //Vector3 cameraRot = screenCamera.transform.rotation.eulerAngles;
         Quaternion cameraRot = screenCamera.transform.rotation;
-        //message = Encoding.ASCII.GetBytes(cameraRot.x.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.y.ToString(specifier, CultureInfo.InvariantCulture) + " " + cameraRot.z.ToString(specifier, CultureInfo.InvariantCulture));
         message = Encoding.ASCII.GetBytes(cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
@@ -86,27 +138,19 @@ public class UDPSender : MonoBehaviour
     {
         try
         {
-            // first send rotation to screen project
-            UdpClient clientScreen = new UdpClient(assistantToScreenPort);
-
-            IPEndPoint targetScreen = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-
             Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
             Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
-            byte[] message = Encoding.ASCII.GetBytes("SCENE_ROTATION:" + currentRotation.ToString());
-            clientScreen.Send(message, message.Length, targetScreen);
-            clientScreen.Close();
-
-            // then, send rotation to director project (the constant value)
-            UdpClient clientDir = new UdpClient(rotateScenePort);
-
-            IPEndPoint targetDir = new IPEndPoint(IPAddress.Parse(ipAddress), rotateScenePort);
-
-            message = Encoding.ASCII.GetBytes(Convert.ToString(rotationAngle));
-            clientDir.Send(message, message.Length, targetDir);
-            clientDir.Close();
+            sendInfo(assistantToScreenPort, "SCENE_ROTATION:" + currentRotation.ToString());
+            sendInfo(assistantToDirectorPort, "SCENE_ROTATION:" + currentRotation.ToString());
         }
         catch (Exception e) { }
+    }
+
+    public void sendChangeCameraScreen(string cameraNum)
+    {
+        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
+        screenCamera = currentCamera.GetComponent<Camera>();
+        sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
     }
 
     void sendCameraType()
@@ -141,85 +185,34 @@ public class UDPSender : MonoBehaviour
         screenCameraStartPos = screenCamera.transform.position;
         screenCameraStartRot = screenCamera.transform.rotation;
 
-        client = new UdpClient(assistantToScreenPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-
-        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
-        client.Send(message, message.Length, target);
-        client.Close();
-    }
-
-    public void changeMainCamera(int cameraNum)
-    {
-        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
-        screenCamera = currentCamera.GetComponent<Camera>();
-
-        client = new UdpClient(assistantToScreenPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
-
-        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
-        client.Send(message, message.Length, target);
-        client.Close();
-    }
-
-    public void sendChangeCameraScreen(string cameraNum)
-    {
-        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
-        screenCamera = currentCamera.GetComponent<Camera>();
-
-        client = new UdpClient(assistantToScreenPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-
-        byte[] message = Encoding.ASCII.GetBytes("CHANGE_CAMERA:" + cameraNum);
-        client.Send(message, message.Length, target);
-        client.Close();
+        sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
     }
 
     public void sendResetPosRot()
     {
         SendPosRot();
-        client = new UdpClient(assistantToScreenPort);
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-        byte[] message = Encoding.ASCII.GetBytes("RESET_POSROT");
-        client.Send(message, message.Length, target);
-        client.Close();
+        sendInfo(assistantToScreenPort, "RESET_POSROT");
     }
 
+    // -- ASSISTANT TO DIRECTOR PORT MESSAGES --
     public void sendPointPath(GameObject item, Vector3 pathPoint)
     {
         try
         {
-            client = new UdpClient(assistantToDirectorPort);
-
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            // sending data
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
-
-            byte[] message = Encoding.ASCII.GetBytes("NEW_POINT:" + item.transform.name);
-            client.Send(message, message.Length, target);
-
-            message = Encoding.ASCII.GetBytes(pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture));
-            client.Send(message, message.Length, target);
-
-            client.Close();
+            string message = "NEW_POINT:" + item.transform.name + ":";
+            message += pathPoint.x.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.y.ToString(CultureInfo.InvariantCulture) + " " + pathPoint.z.ToString(CultureInfo.InvariantCulture);
+            sendInfo(assistantToDirectorPort, message);
         }
         catch (System.Exception e) { }
     }
 
-    public void sendRotationPath(Quaternion pathRotation)
+    public void sendRotationPath(GameObject item, Quaternion pathRotation)
     {
         try
         {
-            client = new UdpClient(assistantToDirectorPort);
-
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            // sending data
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
-
-            byte[] message = Encoding.ASCII.GetBytes("NEW_ROTATION: " + pathRotation.x.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.y.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.z.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.w.ToString(CultureInfo.InvariantCulture));
-            client.Send(message, message.Length, target);
-
-            client.Close();
+            string message = "NEW_ROTATION:" + item.transform.name;
+            message += pathRotation.x.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.y.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.z.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.w.ToString(CultureInfo.InvariantCulture);
+            sendInfo(assistantToDirectorPort, message);
         }
         catch (System.Exception e) { }
     }
@@ -237,66 +230,14 @@ public class UDPSender : MonoBehaviour
 
         try
         {
-            client = new UdpClient(assistantToDirectorPort);
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
-            byte[] message = Encoding.ASCII.GetBytes("NEW_ITEM:" + name + ":" + wrongName);
-            client.Send(message, message.Length, target);
-            client.Close();
-        }
-        catch(System.Exception e) { }
-    }
-
-    public void sendDeleteItem()
-    {
-        client = new UdpClient(assistantToDirectorPort);
-        string ipAddress = ModesManager.instance.IPAddress.text;
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToDirectorPort);
-        byte[] message = Encoding.ASCII.GetBytes("DELETE_ITEM:" + name);
-        client.Send(message, message.Length, target);
-        client.Close();
-    }
-
-    public void sendDeletePoint(int pointNum, string name)
-    {
-        try
-        {
-            client = new UdpClient(directoToAssistantPort);
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
-            byte[] message = Encoding.ASCII.GetBytes("DELETE_POINT:" + name + ":" + pointNum);
-            client.Send(message, message.Length, target);
-            client.Close();
+            sendInfo(assistantToDirectorPort, "NEW_ITEM:" + name + ":" + wrongName);
         }
         catch (System.Exception e) { }
     }
 
-    public void sendDeleteItem(string name)
+    public void sendDeleteItemToDirector(string name)
     {
-        try
-        {
-            client = new UdpClient(directoToAssistantPort);
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
-            byte[] message = Encoding.ASCII.GetBytes("DELETE_ITEM:" + name);
-            client.Send(message, message.Length, target);
-            client.Close();
-        }
-        catch (System.Exception e) { }
-    }
-
-    public void sendChangeSpeed(float speed, string name)
-    {
-        try
-        {
-            client = new UdpClient(directoToAssistantPort);
-            string ipAddress = ModesManager.instance.IPAddress.text;
-            IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), directoToAssistantPort);
-            byte[] message = Encoding.ASCII.GetBytes("CHANGE_SPEED:" + name + ":" + speed);
-            client.Send(message, message.Length, target);
-            client.Close();
-        }
-        catch (System.Exception e) { }
+        sendInfo(assistantToDirectorPort, "DELETE_ITEM:" + name);
     }
 
     IEnumerator sendInitialParameters()
@@ -463,23 +404,5 @@ public class UDPSender : MonoBehaviour
             sendResetPosRot();
             //SendPosRot();
         }
-
-
-
-        //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
-
-        //foreach (GameObject item in sceneItems)
-        //{
-        //    Vector3 itemPos = item.transform.position;
-        //    Vector3 itemRot = item.transform.rotation.eulerAngles;
-
-        //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
-        //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y, 0.0f));
-        //    item.transform.position = item.transform.forward * (itemPos.z + OVRPlayer.transform.position.z);
-        //    item.transform.position = item.transform.right * (itemPos.x + OVRPlayer.transform.position.x);
-
-        //    item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, rotation);
-        //}
-
     }
 }
