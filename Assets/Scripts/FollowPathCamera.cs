@@ -140,6 +140,8 @@ public class FollowPathCamera : MonoBehaviour
                     startPosition = gameObject.transform.position;
                     StartCoroutine(defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation));
                 }
+
+                changePathColor();
             }
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
             {
@@ -277,12 +279,9 @@ public class FollowPathCamera : MonoBehaviour
 
             yield return new WaitForSeconds(1.0f);
 
-            try
-            {
-                UDPSender.instance.sendPointPath(gameObject, newPoint);
-                UDPSender.instance.sendRotationPath(gameObject, newRot);
-            }
-            catch (Exception e) { }
+            UDPSender.instance.sendPointPath(gameObject, newPoint);
+            yield return new WaitForSeconds(0.1f);
+            UDPSender.instance.sendRotationPath(gameObject, newRot);
         }
 
         //GameObject newMiniCamera = Instantiate(miniCamera);
@@ -438,7 +437,7 @@ public class FollowPathCamera : MonoBehaviour
             ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
             buttonColors.normalColor = pathColor;
             pathButton.GetComponent<Button>().colors = buttonColors;
-            DefinePath.instance.changePathColor(pathContainer, pathColor);
+            DefinePath.instance.changePathColor(pathContainer, pathColor, true);
         }
     }
 
@@ -485,5 +484,13 @@ public class FollowPathCamera : MonoBehaviour
     public void changeSpeed(float newSpeed)
     {
         speed = newSpeed;
+    }
+
+    public void changePathColor()
+    {
+        if (!isSelectedForPath)
+            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor, false);
+        else
+            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor, true);
     }
 }

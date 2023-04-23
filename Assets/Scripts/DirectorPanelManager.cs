@@ -19,10 +19,6 @@ public class DirectorPanelManager : MonoBehaviour
     public GameObject grid;
     public GameObject pointsView;
     public GameObject aerialCameraView;
-    public delegate void PlayPath();
-    public event PlayPath OnPlayPath;
-    public delegate void StopPath();
-    public event StopPath OnStopPath;
 
     [Header ("Icons")]
     public Sprite playIcon;
@@ -43,7 +39,15 @@ public class DirectorPanelManager : MonoBehaviour
     bool isPlaying = false;
     bool isGridShown = false;
     bool isPointsViewActive = false;
+    bool isXbuttonDown = false;
     [SerializeField] int pathPlayPort = 8052;
+
+    public delegate void PlayPath();
+    public event PlayPath OnPlayPath;
+    public delegate void StopPath();
+    public event StopPath OnStopPath;
+    public delegate void HideShowGrid(bool isGridShown);
+    public event HideShowGrid OnHideShowGrid;
 
     private void Awake()
     {
@@ -71,11 +75,19 @@ public class DirectorPanelManager : MonoBehaviour
         float distance = distanceSlider.GetComponent<Slider>().value;
         distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
 
-        if (OVRInput.Get(OVRInput.RawButton.X)){
-            isGridShown = !isGridShown;
-            grid.SetActive(isGridShown);
-            UDPSender.instance.sendShowHideGridDirector(isGridShown);
+        if (OVRInput.Get(OVRInput.RawButton.X))
+        {
+            if (!isXbuttonDown)
+            {
+                isGridShown = !isGridShown;
+                grid.SetActive(isGridShown);
+                UDPSender.instance.sendShowHideGridDirector(isGridShown);
+                OnHideShowGrid(isGridShown);
+                isXbuttonDown = true;
+            }
         }
+        else
+            isXbuttonDown = false;
     }
 
     public void goToAerialView()
@@ -168,6 +180,8 @@ public class DirectorPanelManager : MonoBehaviour
 
         grid.SetActive(isGridShown);
         UDPSender.instance.sendShowHideGridAssistant(isGridShown);
+
+        OnHideShowGrid(isGridShown);
     }
 
     public void showHidePointsView()

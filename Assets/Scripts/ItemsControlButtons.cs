@@ -33,6 +33,15 @@ public class ItemsControlButtons : MonoBehaviour
         HEIGHT
     }
 
+    private void OnEnable()
+    {
+        DirectorPanelManager.instance.OnHideShowGrid += showHideHeight;
+    }
+    private void OnDisable()
+    {
+        DirectorPanelManager.instance.OnHideShowGrid -= showHideHeight;
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == 3)
@@ -74,11 +83,7 @@ public class ItemsControlButtons : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        var colors = button.GetComponent<Button>().colors;
-        colors.normalColor = Color.white;
-        button.GetComponent<Button>().colors = colors;
-
+    {   
         item = gameObject.transform.parent.parent.parent.gameObject;
         item.TryGetComponent(out customGrabbableCharacters);
         item.TryGetComponent(out ovrgrabbable);
@@ -86,9 +91,17 @@ public class ItemsControlButtons : MonoBehaviour
         item.TryGetComponent(out followPathCamera);
         item.TryGetComponent(out boxCollider);
 
-        lastPosition = item.transform.position;
         if (buttonType == eButtonType.HEIGHT)
-            heightText.text = lastPosition.y.ToString("#.00");
+        {
+            lastPosition = item.transform.position;
+            heightText.text = lastPosition.y.ToString("#0.00");
+        }
+        else
+        {
+            var colors = button.GetComponent<Button>().colors;
+            colors.normalColor = Color.white;
+            button.GetComponent<Button>().colors = colors;
+        }
     }
 
     // Update is called once per frame
@@ -109,10 +122,13 @@ public class ItemsControlButtons : MonoBehaviour
         else
             triggerButtonDown = false;
 
-        if (lastPosition != item.transform.position && buttonType == eButtonType.HEIGHT)
+        if (buttonType == eButtonType.HEIGHT)
         {
-            lastPosition = item.transform.position;
-            heightText.text = lastPosition.y.ToString("#.00");
+            if(lastPosition != item.transform.position)
+            {
+                lastPosition = item.transform.position;
+                heightText.text = lastPosition.y.ToString("#0.00");
+            }
         }
     }
 
@@ -165,5 +181,16 @@ public class ItemsControlButtons : MonoBehaviour
         }
 
         isLocked = !isLocked;
+    }
+
+    public void showHideHeight(bool isGridShown)
+    {
+        if (buttonType == eButtonType.HEIGHT)
+        {
+            GameObject heightGO = heightText.transform.parent.gameObject;
+
+            heightText.enabled = isGridShown;
+            heightGO.GetComponent<Image>().enabled = isGridShown;
+        }
     }
 }

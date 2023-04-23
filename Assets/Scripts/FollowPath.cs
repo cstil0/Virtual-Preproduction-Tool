@@ -143,10 +143,7 @@ public class FollowPath : MonoBehaviour
                     //pathNum = DefinePath.instance.getItemsCount();
                 }
 
-                if (!isSelectedForPath)
-                    DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor);
-                else
-                    DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor);
+                changePathColor();
             }
 
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
@@ -353,7 +350,7 @@ public class FollowPath : MonoBehaviour
             ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
             buttonColors.normalColor = pathColor;
             pathButton.GetComponent<Button>().colors = buttonColors;
-            DefinePath.instance.changePathColor(pathContainer, pathColor);
+            DefinePath.instance.changePathColor(pathContainer, pathColor, true);
         }
     }
 
@@ -400,6 +397,14 @@ public class FollowPath : MonoBehaviour
     {
         posSpeed = speed;
         rotSpeed = speed * 3;
+    }
+
+    public void changePathColor()
+    {
+        if (!isSelectedForPath)
+            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor, false);
+        else
+            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor, true);
     }
 
     //void deleteCurrentPath()

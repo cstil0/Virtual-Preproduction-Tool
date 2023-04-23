@@ -35,11 +35,11 @@ public class CustomGrabbableCharacters : MonoBehaviour
         //}
     }
 
-    public void objectSelected(GameObject handCollider, bool isSelected)
+    public void objectSelected(GameObject handCollider, bool isTrigger)
     {
         // pass the current hand so that it can be used both with right and left controllers
         currentHand = handCollider;
-        triggerOn = isSelected;
+        triggerOn = isTrigger;
     }
 
     // Start is called before the first frame update
@@ -91,7 +91,6 @@ public class CustomGrabbableCharacters : MonoBehaviour
                 Vector3 rotation = gameObject.transform.rotation.eulerAngles;
                 limitRot = rotation;
             }
-            Transform attachPoint = gameObject.transform.GetChild(0);
 
             // make it touch always the floor
             gameObject.transform.position = new Vector3(position.x, position.y, position.z);

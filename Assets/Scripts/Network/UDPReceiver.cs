@@ -9,6 +9,7 @@ using System.Threading;
 using System.Globalization;
 using Unity.VisualScripting;
 using System.Security.Cryptography;
+using UnityEngine.UI;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class UDPReceiver : MonoBehaviour
     Vector3 startPos;
     Vector3 remoteStartPos;
     Vector3 currPos;
-    Vector3 newPointPosition;
+    Vector3 newCameraPosition;
 
     //Vector3 startRot;
     Quaternion startRot;
@@ -131,21 +132,15 @@ public class UDPReceiver : MonoBehaviour
     //    }
     //}
 
-    void parsePointPosition(string pointName, string pointPosition)
+    void parsePointPosition(string itemName, string pointPosition)
     {
-        GameObject item = itemsParent.transform.Find(pointName).gameObject;
-        int itemNum = int.Parse(pointName.Split(" ")[1]);
+        GameObject item = itemsParent.transform.Find(itemName).gameObject;
+        int itemNum = int.Parse(itemName.Split(" ")[1]);
+        item.TryGetComponent(out FollowPath followPath);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
 
         Transform pathContainer;
-        try
-        {
-            pathContainer = GameObject.Find("PathParent(Clone)").transform;
-            pathContainer.name = "Path " + itemNum;
-        }
-        catch (Exception e)
-        {
-            pathContainer = GameObject.Find("Path " + itemNum).transform;
-        }
+        Transform circlesContainer;
 
         string[] splittedMessage = pointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -153,17 +148,28 @@ public class UDPReceiver : MonoBehaviour
         float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
         Vector3 newPointPosition = new Vector3(posX, posY, posZ);
 
-        item.TryGetComponent(out FollowPath followPath);
-        item.TryGetComponent(out FollowPathCamera followPathCamera);
+
         if (followPath != null)
         {
+            // change name only for the first time a point from this path is received
+            try
+            {
+                pathContainer = GameObject.Find("PathParent(Clone)").transform;
+                circlesContainer = GameObject.Find("CirclesParent(Clone)").transform;
+                pathContainer.name = "Path " + itemNum;
+                circlesContainer.name = "Circles " + itemNum;
+            }
+            catch (Exception e) {
+                pathContainer = GameObject.Find("Path " + itemNum).transform;
+            }
+
             followPath.pathContainer = pathContainer.gameObject;
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
             int pointsCount = followPath.pathPositions.Count;
             if (pointsCount == 1)
-                ItemsDirectorPanelController.instance.addPointsLayout(pointName);
+                ItemsDirectorPanelController.instance.addPointsLayout(itemName);
 
-            ItemsDirectorPanelController.instance.addNewPointButton(pointName, pointsCount - 1);
+            ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 1);
 
             // add point to line renderer of the corresponding path
             Transform pointTransform = pathContainer.GetChild(pointsCount);
@@ -179,62 +185,76 @@ public class UDPReceiver : MonoBehaviour
             }
             lineRenderer.SetPosition(pointsCount - 1, realNewPosition);
         }
+
+        if (followPathCamera != null)
+        {
+            newCameraPosition = newPointPosition;
+        }
     }
 
-    void parsePointRotation(string pointName, string pointRotation)
+    void parsePointRotation(string itemName, string pointRotation)
     {
         // handle exceptions in case the item is not found
         try
         {
-            GameObject item = itemsParent.transform.Find(pointName).gameObject;
-            int itemNum = int.Parse(pointName.Split(" ")[1]);
+            GameObject item = itemsParent.transform.Find(itemName).gameObject;
+            int itemNum = int.Parse(itemName.Split(" ")[1]);
 
             Transform pathContainer;
-            Transform circlesContainer;
+            // change name only for the first time a point from this path is received
             try
             {
                 pathContainer = GameObject.Find("PathParent(Clone)").transform;
-                circlesContainer = GameObject.Find("CirclesParent(Clone)").transform;
-                pathContainer.name = "Path " + itemNum;
-                circlesContainer.name = "Circles " + itemNum;
+                pathContainer.name = "Path " + itemName;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                pathContainer = GameObject.Find("Path " + itemNum).transform;
+                pathContainer = GameObject.Find("Path " + itemName).transform;
             }
 
             string[] splittedMessage = pointRotation.Split(" ");
-            float rotX = float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
-            float rotY = -float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
-            float rotZ = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
-            float rotW = float.Parse(splittedMessage[4], CultureInfo.InvariantCulture);
+            float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
+            float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+            float rotZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+            float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
             Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
 
             item.TryGetComponent(out FollowPathCamera followPathCamera);
             if (followPathCamera != null)
             {
-                if (followPathCamera != null)
+                followPathCamera.pathContainer = pathContainer.gameObject;
+                StartCoroutine(followPathCamera.defineNewPathPoint(newCameraPosition, newRotation, false));
+
+                int pointsCount = followPathCamera.pathPositions.Count;
+                if (pointsCount == 2)
+                    ItemsDirectorPanelController.instance.addPointsLayout(itemName);
+
+                ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 2);
+
+                Transform pointTransform = pathContainer.GetChild(pointsCount - 1);
+                GameObject line = pathContainer.GetChild(0).gameObject;
+                LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+                if (pointsCount == 2)
                 {
-                    followPathCamera.pathContainer = pathContainer.gameObject;
-                    StartCoroutine(followPathCamera.defineNewPathPoint(newPointPosition, newRotation, false));
-
-                    int pointsCount = followPathCamera.pathPositions.Count;
-                    if (pointsCount == 2)
-                        ItemsDirectorPanelController.instance.addPointsLayout(pointName);
-
-                    ItemsDirectorPanelController.instance.addNewPointButton(pointName, pointsCount - 2);
-
-                    Transform pointTransform = pathContainer.GetChild(pointsCount);
-                    GameObject line = pathContainer.GetChild(0).gameObject;
-                    LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-                    if (pointsCount <= 2)
-                        lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
-                    if (pointsCount > 2)
-                    {
-                        lineRenderer.positionCount += 1;
-                        lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
-                    }
+                    lineRenderer.SetPosition(pointsCount - 2, pointTransform.position);
+                    lineRenderer.positionCount += 1;
+                    lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
                 }
+                if (pointsCount > 2)
+                {
+                    lineRenderer.positionCount += 1;
+                    lineRenderer.SetPosition(pointsCount - 2, pointTransform.position);
+                }
+
+                // set camera event from minicamera
+                Camera miniCameraComponent = pointTransform.GetChild(1).GetComponent<Camera>();
+                Canvas minicameraCanvas = pointTransform.GetChild(2).GetComponent<Canvas>();
+                RawImage minicameraImage = pointTransform.GetChild(2).GetComponentInChildren<RawImage>();
+                minicameraCanvas.worldCamera = miniCameraComponent;
+
+                RenderTexture miniCameraTexture = new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32);
+                minicameraImage.texture = miniCameraTexture;
+                miniCameraComponent.targetTexture = miniCameraTexture;
             }
         }
         catch (Exception e)
@@ -373,12 +393,14 @@ public class UDPReceiver : MonoBehaviour
                             string receivedPointPosition = splittedMessage[2];
 
                             parsePointPosition(receivedPointName, receivedPointPosition);
+                            Debug.Log("RECEIVED POSITION");
                             break;
                         case eAssistantToDirectorMessages.NEW_ROTATION:
                             receivedPointName = splittedMessage[1];
                             string receivedPointRotation = splittedMessage[2];
 
                             parsePointRotation(receivedPointName, receivedPointRotation);
+                            Debug.Log("RECEIVED ROTATION");
                             break;
                         case eAssistantToDirectorMessages.DELETE_ITEM:
                             string receivedDeleteItemDirector = splittedMessage[1];

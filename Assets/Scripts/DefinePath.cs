@@ -119,10 +119,14 @@ public class DefinePath : MonoBehaviour
             GameObject cameraCanvas = Instantiate(cameraCanvasPrefab);
 
             // generate minicamera view
-            RenderTexture miniCameraTexture = new RenderTexture(1920, 1080, 16, RenderTextureFormat.ARGB32);
+            RenderTexture miniCameraTexture = new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32);
             GameObject cameraImage = cameraCanvas.transform.GetChild(0).gameObject;
             RawImage rawImage = cameraImage.GetComponent<RawImage>();
+            // assign necessary properties
+            Camera miniCameraComponent = miniCamera.GetComponent<Camera>();
+            miniCameraComponent.targetTexture = miniCameraTexture;
             rawImage.texture = miniCameraTexture;
+            cameraCanvas.GetComponent<Canvas>().worldCamera = miniCameraComponent;
 
             miniCamera.GetComponent<NetworkObject>().Spawn();
             spherePoint.GetComponent<NetworkObject>().Spawn();
@@ -133,7 +137,8 @@ public class DefinePath : MonoBehaviour
 
             miniCamera.transform.localPosition = new Vector3(0.0f, 0.15f, 0.0f);
             miniCamera.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            cameraCanvas.transform.localPosition = new Vector3(0.0f, -33.0f, 0.0f);
+            cameraCanvas.transform.localPosition = new Vector3(0.0f, -0.17f, 0.0f);
+            cameraCanvas.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
         }
         else
         {
@@ -275,7 +280,7 @@ public class DefinePath : MonoBehaviour
     }
 
     // NEEDS DEVELOPEMENT
-    public void changePathColor(GameObject pathContainer, Color pathColor)
+    public void changePathColor(GameObject pathContainer, Color pathColor, bool isActive)
     {
         for (int i = 0; i < pathContainer.transform.childCount; i++)
         {
@@ -287,9 +292,27 @@ public class DefinePath : MonoBehaviour
             }
             else if (currChild.name.Contains("Point"))
             {
-                Renderer renderer = currChild.GetComponent<Renderer>();
-                Material material = renderer.material;
-                material.color = pathColor;
+                if (pathContainer.name.Contains("MainCamera"))
+                {
+                    Renderer renderer = currChild.transform.GetChild(0).GetComponent<Renderer>();
+                    Material material = renderer.material;
+                    material.color = pathColor;
+
+                    GameObject miniCamera = currChild.transform.GetChild(1).gameObject;
+                    HoverObjects.instance.changeColorMaterials(miniCamera, pathColor);
+                    Canvas minicameraCanvas = currChild.transform.GetChild(2).GetComponent<Canvas>();
+                    RawImage minicameraImage = currChild.transform.GetChild(2).GetComponentInChildren<RawImage>();
+
+                    currChild.transform.GetChild(2).gameObject.SetActive(isActive);
+                    //minicameraCanvas.enabled = isActive;
+                    //minicameraImage.enabled = isActive;
+                }
+                else
+                {
+                    Renderer renderer = currChild.GetComponent<Renderer>();
+                    Material material = renderer.material;
+                    material.color = pathColor;
+                }
             }
         }
 
@@ -298,6 +321,7 @@ public class DefinePath : MonoBehaviour
 
         try
         {
+            // find circles and change their color for characters
             int pathNum = int.Parse(splittedName[1]);
             GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
             for (int i = 0; i < circlesContainer.transform.childCount; i++)
@@ -310,7 +334,7 @@ public class DefinePath : MonoBehaviour
             }
                 
         }
-        catch (Exception e) { }
+        catch (Exception e) {}
     }
 
     //public int getItemsCount()

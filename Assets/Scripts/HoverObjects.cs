@@ -90,7 +90,7 @@ public class HoverObjects : MonoBehaviour
                 {
                     followPath.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.white);
-
+                    followPath.changePathColor();
                 }
             }
 
@@ -109,6 +109,7 @@ public class HoverObjects : MonoBehaviour
                 {
                     followPathCamera.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.black);
+                    followPathCamera.changePathColor();
                 }
             }
         }
@@ -157,14 +158,13 @@ public class HoverObjects : MonoBehaviour
             {
                 alreadyTriggered = true;
                 changeColorMaterials(currentItemCollider, UnityEngine.Color.blue);
-
-                // if the object has a limit rotation script mark it as selected
-                try
-                {
-                    currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, true);
-                }
-                catch (System.Exception e) { }
             }
+            // if the object has a limit rotation script mark it as selected
+            try
+            {
+                currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, true);
+            }
+            catch (System.Exception e) { }
         }
 
         // if sphere path point

@@ -210,7 +210,7 @@ public class UDPSender : MonoBehaviour
     {
         try
         {
-            string message = "NEW_ROTATION:" + item.transform.name;
+            string message = "NEW_ROTATION:" + item.transform.name + ":";
             message += pathRotation.x.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.y.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.z.ToString(CultureInfo.InvariantCulture) + " " + pathRotation.w.ToString(CultureInfo.InvariantCulture);
             sendInfo(assistantToDirectorPort, message);
         }
