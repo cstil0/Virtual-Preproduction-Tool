@@ -42,8 +42,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     [Header ("Others")]
     [SerializeField] GameObject itemsParent;
-    [SerializeField] Color selectedColor;
-    [SerializeField] Color normalColor;
+    public Color selectedColor;
+    public Color normalColor;
 
     private void Awake()
     {
@@ -241,7 +241,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         {
             currPointPressed = pointNum;
             ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
-            buttonColors.selectedColor = selectedColor;
+            buttonColors.normalColor = selectedColor;
             pointButton.GetComponent<Button>().colors = buttonColors;
         }
 

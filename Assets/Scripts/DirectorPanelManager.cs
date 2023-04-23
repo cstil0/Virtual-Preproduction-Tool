@@ -37,6 +37,7 @@ public class DirectorPanelManager : MonoBehaviour
     public GameObject stopButton;
     [SerializeField] GameObject gridButton;
     [SerializeField] GameObject pointsViewButton;
+    [SerializeField] Button[] cameraViewButtons;
 
     [Header ("States")]
     bool isPlaying = false;
@@ -55,7 +56,13 @@ public class DirectorPanelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
+        selectedColor.a = 0.15f;
+
+        Button firstInput = cameraViewButtons[0];
+        ColorBlock buttonColors = firstInput.colors;
+        buttonColors.normalColor = selectedColor;
+        firstInput.colors = buttonColors;
     }
 
     // Update is called once per frame
@@ -86,11 +93,28 @@ public class DirectorPanelManager : MonoBehaviour
     {
         string[] inputName = input.name.Split(" ");
         int inputNum = int.Parse(inputName[1]);
-        Material cameraView = input.GetComponent<Image>().material;
+        Texture cameraView = input.GetComponent<RawImage>().texture;
 
-        PGMView.GetComponent<Image>().material = cameraView;
+        PGMView.GetComponent<RawImage>().texture = cameraView;
         UDPSender.instance.changeMainCamera(inputNum);
-    } 
+        Color normalColor = ItemsDirectorPanelController.instance.normalColor;
+        normalColor.a = 0f;
+        Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
+        selectedColor.a = 0.15f;
+
+        for (int i = 0; i < cameraViewButtons.Length; i ++)
+        {
+            Button currButton = cameraViewButtons[i];
+
+            ColorBlock buttonColors = currButton.colors;
+            if (inputNum == i + 1)
+                buttonColors.normalColor = selectedColor;
+            else
+                buttonColors.normalColor = normalColor;
+
+            currButton.colors = buttonColors;
+        }
+    }
 
     public void playPath()
     {
@@ -151,9 +175,9 @@ public class DirectorPanelManager : MonoBehaviour
         isPointsViewActive = !isPointsViewActive;
 
         if (isPointsViewActive)
-            pointsViewButton.GetComponent<Image>().sprite = pointsViewIcon;            
-        else
             pointsViewButton.GetComponent<Image>().sprite = aerialViewIcon;
+        else
+            pointsViewButton.GetComponent<Image>().sprite = pointsViewIcon;
 
         pointsView.SetActive(isPointsViewActive);
         aerialCameraView.SetActive(!isPointsViewActive);
