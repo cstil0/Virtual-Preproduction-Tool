@@ -58,23 +58,7 @@ public class PathSpheresController : MonoBehaviour
 
                     if (isSelected)
                     {
-                        // iterate through all points and deselect all
-                        for (int i = 1; i < parent.childCount; i++)
-                        {
-                            if (i == pointNum + 1)
-                                continue;
-
-                            GameObject currPoint = null;
-                            if (followPath != null)
-                                currPoint = parent.GetChild(i).gameObject;
-                            if (followPathCamera != null)
-                                currPoint = parent.GetChild(i).GetChild(1).gameObject;
-
-                            currPoint.GetComponent<PathSpheresController>().isSelected = false;
-                            Renderer renderer = currPoint.GetComponent<Renderer>();
-                            Material parentMaterial = renderer.material;
-                            parentMaterial.color = DefinePath.instance.selectedLineColor;
-                        }
+                        // DESELECT ALL POINTS - BETTER FROM HOVER OBJECTS
                     }
                 }
                 catch (Exception e) { Debug.LogError(e.Message); }

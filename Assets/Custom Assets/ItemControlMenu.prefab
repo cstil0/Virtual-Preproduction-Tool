@@ -141,7 +141,6 @@ MonoBehaviour:
   buttonType: 0
   lockImage: {fileID: 21300000, guid: 25c9ce2720771134d8a2ae0c554a293f, type: 3}
   unlockImage: {fileID: 21300000, guid: 0ad5f872a8dd5644a8222e8d8e187e9c, type: 3}
-  heightGO: {fileID: 0}
   heightText: {fileID: 0}
 --- !u!65 &7748605859653962025
 BoxCollider:
@@ -325,7 +324,6 @@ MonoBehaviour:
   buttonType: 2
   lockImage: {fileID: 21300000, guid: 25c9ce2720771134d8a2ae0c554a293f, type: 3}
   unlockImage: {fileID: 21300000, guid: 0ad5f872a8dd5644a8222e8d8e187e9c, type: 3}
-  heightGO: {fileID: 2687193848727159293}
   heightText: {fileID: 3391199091363452648}
 --- !u!1 &2687193848727159293
 GameObject:
@@ -574,7 +572,6 @@ MonoBehaviour:
   buttonType: 1
   lockImage: {fileID: 21300000, guid: 25c9ce2720771134d8a2ae0c554a293f, type: 3}
   unlockImage: {fileID: 21300000, guid: 0ad5f872a8dd5644a8222e8d8e187e9c, type: 3}
-  heightGO: {fileID: 0}
   heightText: {fileID: 0}
 --- !u!1 &6466146409140308244
 GameObject:

@@ -115,6 +115,34 @@ public class HoverObjects : MonoBehaviour
         }
     }
 
+    //void deselectAllPoints(int pointNum = -1)
+    //{
+    //    // find all path containers in the scene
+    //    GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
+
+    //    foreach (GameObject pathContainer in pathContainers)
+    //    {
+    //        Transform pathContainerTrans = pathContainer.transform;
+    //        // iterate through all points and deselect all
+    //        for (int i = 1; i < pathContainerTrans.childCount; i++)
+    //        {
+    //            if (i == pointNum + 1)
+    //                continue;
+
+    //            GameObject currPoint = null;
+    //            if (followPath != null)
+    //                currPoint = pathContainerTrans.GetChild(i).gameObject;
+    //            if (followPathCamera != null)
+    //                currPoint = pathContainerTrans.GetChild(i).GetChild(1).gameObject;
+
+    //            currPoint.GetComponent<PathSpheresController>().isSelected = false;
+    //            Renderer renderer = currPoint.GetComponent<Renderer>();
+    //            Material parentMaterial = renderer.material;
+    //            parentMaterial.color = DefinePath.instance.selectedLineColor;
+    //        }
+    //    }
+    //}
+
     private void OnTriggerEnter(Collider other)
     {
         // change the color only to the first object that collided with the controller, only if it is an item
@@ -265,6 +293,11 @@ public class HoverObjects : MonoBehaviour
         {
             PathSpheresController pathSpheresController = currentPointCollider.GetComponent<PathSpheresController>();
             bool isSelected = pathSpheresController.isSelected;
+
+            GameObject pointControlButtons = other.transform.Find("PointControlButtons").gameObject;
+            pointControlButtons.GetComponent<Canvas>().enabled = isSelected;
+
+
             Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
             changeColorMaterials(currentPointCollider, color);
 
@@ -280,6 +313,10 @@ public class HoverObjects : MonoBehaviour
         if (other.gameObject.layer == 15)
         {
             bool isSelected = currentMiniCameraCollider.GetComponent<CameraRotationController>().isSelected;
+
+            GameObject cameraControlButtons = other.transform.Find("CameraControlButtons").gameObject;
+            cameraControlButtons.GetComponent<Canvas>().enabled = isSelected;
+
             Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
             changeColorMaterials(currentMiniCameraCollider, color);
         }

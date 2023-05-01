@@ -9,6 +9,7 @@ TagManager:
   - DirectorPanel
   - PathPoint
   - PathContainer
+  - PathMinicamera
   layers:
   - Default
   - TransparentFX

@@ -197,32 +197,36 @@ public class ItemsDirectorPanelController : MonoBehaviour
     {
         UDPSender.instance.sendDeletePoint(currPointPressed, currItemPressed);
 
-        currItemGO.TryGetComponent<FollowPath>(out FollowPath followPath);
-        currItemGO.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
+        deletePointButton(currItemGO, currItemPressed, currPointPressed);
+        currPointPressed = -1;
+    }
+
+    public void deletePointButton(GameObject item, string itemName, int pointNum)
+    {
+        item.TryGetComponent<FollowPath>(out FollowPath followPath);
+        item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
-            followPath.deletePathPoint(currPointPressed, false);
+            followPath.deletePathPoint(pointNum, false);
 
         if (followPathCamera != null)
-            followPathCamera.deletePathPoint(currPointPressed, false);
+            followPathCamera.deletePathPoint(pointNum, false);
 
         // eliminate point button
-        Transform itemPointsLayout = pointsPanel.transform.Find(currItemPressed + " Layout");
+        Transform itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout");
 
         for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
         {
-            if (i == currPointPressed)
+            if (i == pointNum)
                 Destroy(itemPointsLayout.transform.GetChild(i).gameObject);
             // the substraction is due to the fact we are starting at the second position
-            if (i > currPointPressed)
+            if (i > pointNum)
             {
                 Transform pointButton = itemPointsLayout.transform.GetChild(i);
                 pointButton.name = "Point " + (i - 1);
                 pointButton.GetChild(0).GetComponent<TMP_Text>().text = (i - 1).ToString();
             }
         }
-
-        currPointPressed = -1;
     }
 
     public void onPointPressed(GameObject pointButton)

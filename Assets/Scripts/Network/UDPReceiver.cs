@@ -55,7 +55,8 @@ public class UDPReceiver : MonoBehaviour
         NEW_ROTATION,
         DELETE_ITEM,
         SCENE_ROTATION,
-        SHOW_HIDE_GRID
+        SHOW_HIDE_GRID,
+        DELETE_POINT
     }
 
     enum eDirectorToAssistantMessages
@@ -268,6 +269,13 @@ public class UDPReceiver : MonoBehaviour
         ItemsDirectorPanelController.instance.removeItemButtons(itemName);
     }
 
+    void parseDeletePointDirector(int pointNum, string itemName)
+    {
+        GameObject item = itemsParent.transform.Find(itemName).gameObject;
+
+        ItemsDirectorPanelController.instance.deletePointButton(item, itemName, pointNum);
+    }
+
     void parsePlayMessage(string playStop)
     {
         if (playStop == "PLAY")
@@ -413,6 +421,11 @@ public class UDPReceiver : MonoBehaviour
                         case eAssistantToDirectorMessages.SHOW_HIDE_GRID:
                             bool isShowed = bool.Parse(splittedMessage[1]);
                             parseShowHideGrid(isShowed);
+                            break;
+                        case eAssistantToDirectorMessages.DELETE_POINT:
+                            int pointNum = int.Parse(splittedMessage[1]);
+                            string itemName = splittedMessage[2];
+                            parseDeletePointDirector(pointNum, itemName);
                             break;
                     }
                     break;

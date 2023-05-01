@@ -194,7 +194,7 @@ public class UDPSender : MonoBehaviour
         sendInfo(assistantToScreenPort, "RESET_POSROT");
     }
 
-    // -- ASSISTANT TO DIRECTOR PORT MESSAGES --
+    // -- ASSISTANT TO DIRECTOR MESSAGES --
     public void sendPointPath(GameObject item, Vector3 pathPoint)
     {
         try
@@ -238,6 +238,11 @@ public class UDPSender : MonoBehaviour
     public void sendDeleteItemToDirector(string name)
     {
         sendInfo(assistantToDirectorPort, "DELETE_ITEM:" + name);
+    }
+
+    public void sendDeletePointToDirector(int pointNum, string itemName)
+    {
+        sendInfo(assistantToDirectorPort, "DELETE_POINT:" + pointNum + ":" + itemName);
     }
 
     IEnumerator sendInitialParameters()
