@@ -47,7 +47,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127012048824916097}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -211,6 +211,7 @@ MonoBehaviour:
   triggerOn: 0
   isSelected: 0
   followPathCamera: {fileID: 0}
+  pointNum: 0
 --- !u!20 &7183706224455388167
 Camera:
   m_ObjectHideFlags: 0
@@ -626,7 +627,7 @@ BoxCollider:
   m_GameObject: {fileID: 8084454445388826225}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.1, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}

@@ -14,6 +14,8 @@ public class CameraRotationController : MonoBehaviour
 
     public FollowPathCamera followPathCamera;
 
+    public int pointNum;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,7 +68,7 @@ public class CameraRotationController : MonoBehaviour
         }
     }
 
-    void changePointRotation()
+    public void changePointRotation()
     {
         string[] pathName = transform.parent.name.Split(" ");
         int pathNum = int.Parse(pathName[1]);

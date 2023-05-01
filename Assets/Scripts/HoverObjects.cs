@@ -1,3 +1,4 @@
+using ClipperLib;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -19,7 +20,7 @@ public class HoverObjects : MonoBehaviour
     public GameObject currentMiniCameraCollider;
     public GameObject currentSelectedForPath;
 
-    [SerializeField] GameObject itemsParent;
+    public GameObject itemsParent;
 
     public delegate void PathPointHovered(int pathNum, int pointNum, Color color);
     public event PathPointHovered OnPathPointHovered;
@@ -91,6 +92,7 @@ public class HoverObjects : MonoBehaviour
                     followPath.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.white);
                     followPath.changePathColor();
+                    Debug.Log("DISABLING FROM HOVEOBJECTS");
                 }
             }
 
@@ -113,35 +115,51 @@ public class HoverObjects : MonoBehaviour
                 }
             }
         }
+
+        deselectAllPoints();
     }
 
-    //void deselectAllPoints(int pointNum = -1)
-    //{
-    //    // find all path containers in the scene
-    //    GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
+    void deselectAllPoints(int pointNum = -1)
+    {
+        // find all path containers in the scene
+        GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
 
-    //    foreach (GameObject pathContainer in pathContainers)
-    //    {
-    //        Transform pathContainerTrans = pathContainer.transform;
-    //        // iterate through all points and deselect all
-    //        for (int i = 1; i < pathContainerTrans.childCount; i++)
-    //        {
-    //            if (i == pointNum + 1)
-    //                continue;
+        foreach (GameObject pathContainer in pathContainers)
+        {
+            Transform pathContainerTrans = pathContainer.transform;
+            // iterate through all points and deselect all
+            for (int i = 1; i < pathContainerTrans.childCount; i++)
+            {
+                if (i == pointNum + 1)
+                    continue;
 
-    //            GameObject currPoint = null;
-    //            if (followPath != null)
-    //                currPoint = pathContainerTrans.GetChild(i).gameObject;
-    //            if (followPathCamera != null)
-    //                currPoint = pathContainerTrans.GetChild(i).GetChild(1).gameObject;
+                GameObject currPoint = null;
+                if (pathContainerTrans.GetChild(i).tag == "PathPoint")
+                    currPoint = pathContainerTrans.GetChild(i).gameObject;
+                else
+                {
+                    currPoint = pathContainerTrans.GetChild(i).GetChild(0).gameObject;
+                    GameObject currMiniCamera = pathContainerTrans.GetChild(i).GetChild(1).gameObject;
 
-    //            currPoint.GetComponent<PathSpheresController>().isSelected = false;
-    //            Renderer renderer = currPoint.GetComponent<Renderer>();
-    //            Material parentMaterial = renderer.material;
-    //            parentMaterial.color = DefinePath.instance.selectedLineColor;
-    //        }
-    //    }
-    //}
+                    currMiniCamera.GetComponent<CameraRotationController>().isSelected = false;
+                    Renderer cameraRenderer = currPoint.GetComponent<Renderer>();
+                    Material cameraMaterial = cameraRenderer.material;
+                    cameraMaterial.color = DefinePath.instance.selectedLineColor;
+                }
+
+                currPoint.GetComponent<PathSpheresController>().isSelected = false;
+                Renderer renderer = currPoint.GetComponent<Renderer>();
+                Material parentMaterial = renderer.material;
+                parentMaterial.color = DefinePath.instance.selectedLineColor;
+            }
+        }
+    }
+
+    void showHidePointsControl(GameObject pointControl, bool show)
+    {
+        pointControl.GetComponent<Canvas>().enabled = show;
+        pointControl.transform.GetChild(0).GetComponentInChildren<BoxCollider>().enabled = show;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -285,6 +303,7 @@ public class HoverObjects : MonoBehaviour
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPathCamera.isSelectedForPath;
                     deselectAllItems();
+                    DefinePath.instance.reassignPathCanvas();
                 }
             }
         }
@@ -295,8 +314,7 @@ public class HoverObjects : MonoBehaviour
             bool isSelected = pathSpheresController.isSelected;
 
             GameObject pointControlButtons = other.transform.Find("PointControlButtons").gameObject;
-            pointControlButtons.GetComponent<Canvas>().enabled = isSelected;
-
+            showHidePointsControl(pointControlButtons, isSelected);
 
             Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
             changeColorMaterials(currentPointCollider, color);
@@ -307,18 +325,25 @@ public class HoverObjects : MonoBehaviour
                 int pointNum = pathSpheresController.pointNum;
                 OnPathPointHovered(pathNum, pointNum, color);
             }
+
+            if (isSelected)
+                deselectAllPoints(pathSpheresController.pointNum);
         }
 
 
         if (other.gameObject.layer == 15)
         {
-            bool isSelected = currentMiniCameraCollider.GetComponent<CameraRotationController>().isSelected;
+            CameraRotationController cameraRotationController = currentMiniCameraCollider.GetComponent<CameraRotationController>();
+            bool isSelected = cameraRotationController.isSelected;
 
             GameObject cameraControlButtons = other.transform.Find("CameraControlButtons").gameObject;
-            cameraControlButtons.GetComponent<Canvas>().enabled = isSelected;
+            showHidePointsControl(cameraControlButtons, isSelected);
 
             Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
             changeColorMaterials(currentMiniCameraCollider, color);
+
+            if (isSelected)
+                deselectAllPoints(cameraRotationController.pointNum);
         }
     }
 

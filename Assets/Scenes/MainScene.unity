@@ -33504,6 +33504,8 @@ MonoBehaviour:
   playLightColor: {r: 0.8352941, g: 0.6745098, b: 1, a: 0}
   isThereCharacterSelected: 0
   itemsCount: 0
+  miniCameraTextures: []
+  maxCameraPoints: 8
 --- !u!1001 &1662008193
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -127,6 +127,11 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3937651912492986781, guid: 0090eb999a3808940a141bb7eba680e4,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4262671413827039654, guid: 0090eb999a3808940a141bb7eba680e4,
         type: 3}
       propertyPath: m_Enabled
@@ -358,7 +363,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 2800110161556509350}
+  buttonImage: {fileID: 0}
   buttonType: 1
+  lockImage: {fileID: 0}
+  unlockImage: {fileID: 0}
+  heightText: {fileID: 0}
 --- !u!114 &2317758439282643013 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1126093863630944372, guid: 0090eb999a3808940a141bb7eba680e4,
@@ -402,4 +411,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 2317758439282643013}
+  buttonImage: {fileID: 0}
   buttonType: 0
+  lockImage: {fileID: 0}
+  unlockImage: {fileID: 0}
+  heightText: {fileID: 0}

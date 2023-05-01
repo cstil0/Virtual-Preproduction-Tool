@@ -242,6 +242,16 @@ public class FollowPathCamera : MonoBehaviour
     {
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         pathLength = wayPoints.Length;
+        if (pathLength >= DefinePath.instance.maxCameraPoints)
+        {
+            // start vibration to indicate that no more points can be instantiated
+            OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.RTouch);
+            yield return new WaitForSeconds(1f);
+            // stop vibration
+            OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
+            yield break;
+        }
+        
         List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>(wayPoints);
 
         // it is necessary to separate the first point which corresponding to 0,
