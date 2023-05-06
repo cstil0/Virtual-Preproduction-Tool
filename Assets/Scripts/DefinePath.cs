@@ -201,7 +201,7 @@ public class DefinePath : MonoBehaviour
         spherePoint.transform.SetParent(pathContainer.transform);
     }
 
-    public GameObject addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
+    public List<GameObject> addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
         GameObject pathContainer = Instantiate(pathParentPrefab);
@@ -235,7 +235,12 @@ public class DefinePath : MonoBehaviour
     
         addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
 
-        return pathContainer;
+        List<GameObject> containers = new List<GameObject>();
+        containers.Add(pathContainer);
+        if (!isCamera)
+            containers.Add(circlesContainer);
+        
+        return containers;
     }
 
     public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)

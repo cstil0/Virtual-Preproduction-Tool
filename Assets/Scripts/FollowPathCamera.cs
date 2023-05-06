@@ -52,6 +52,7 @@ public class FollowPathCamera : MonoBehaviour
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
+    private float currPathgPosition;
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -191,7 +192,10 @@ public class FollowPathCamera : MonoBehaviour
 
             CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
             pathLength = wayPoints.Length;
-            float tempCurrPathPosition = currPathPosition + speed;
+
+            float step = speed * Time.deltaTime;
+
+            float tempCurrPathPosition = currPathPosition + step;
 
             if (tempCurrPathPosition < pathLength - 1)
             {
@@ -283,7 +287,10 @@ public class FollowPathCamera : MonoBehaviour
         if (instantiatePos)
         {
             if (pathLength == 0)
-                pathContainer = DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, true);
+            {
+                List<GameObject> containers= DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, true);
+                pathContainer = containers[0];
+            }
             else
                 DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength - 1, gameObject, true);
 
@@ -311,8 +318,7 @@ public class FollowPathCamera : MonoBehaviour
 
     void playLinePath()
     {
-        // cameras are moved while defining their position and rotation
-        // so we need them to go to the start location before playing their movement
+        // need them to go to the start location before playing their movement
         if (!isPlaying)
         {
             cinemachineTrackedDolly.m_PathPosition = 0;
@@ -326,43 +332,43 @@ public class FollowPathCamera : MonoBehaviour
 
             GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
 
-            foreach (GameObject path in paths)
-            {
-                if (path.name != "Path " + gameObject.name)
-                    continue;
+            //foreach (GameObject path in paths)
+            //{
+            //    if (path.name != "Path " + gameObject.name)
+            //        continue;
 
 
-                //removeCinemachinePoints();
-                CinemachineSmoothPath.Waypoint[] wayPoints = new CinemachineSmoothPath.Waypoint[0];
-                List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>();
-                CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
+            //    //removeCinemachinePoints();
+            //    CinemachineSmoothPath.Waypoint[] wayPoints = new CinemachineSmoothPath.Waypoint[0];
+            //    List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>();
+            //    CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
 
-                newWayPoint.position = new Vector3(0.0f, 0.0f, 0.0f);
-                newWayPoint.roll = 0.0f;
-                wayPointsList.Add(newWayPoint);
-                for (int i = 0; i < path.transform.childCount - 1; i++)
-                {
-                    Transform currPoint = path.transform.GetChild(i + 1);
+            //    newWayPoint.position = new Vector3(0.0f, 0.0f, 0.0f);
+            //    newWayPoint.roll = 0.0f;
+            //    wayPointsList.Add(newWayPoint);
+            //    for (int i = 0; i < path.transform.childCount - 1; i++)
+            //    {
+            //        Transform currPoint = path.transform.GetChild(i + 1);
 
-                    Vector3 currPosition = currPoint.position;
-                    Quaternion currRotation = currPoint.GetChild(0).rotation;
-                    Debug.Log("CURR POS: " + currPosition);
+            //        Vector3 currPosition = currPoint.position;
+            //        Quaternion currRotation = currPoint.GetChild(0).rotation;
+            //        Debug.Log("CURR POS: " + currPosition);
 
-                    ////Vector3 currPosition = currPoint.GetChild(1).position;
-                    pathPositions[i + 1] = currPosition;
-                    pathRotations[i + 1] = currRotation.eulerAngles;
+            //        ////Vector3 currPosition = currPoint.GetChild(1).position;
+            //        pathPositions[i + 1] = currPosition;
+            //        pathRotations[i + 1] = currRotation.eulerAngles;
 
-                    // update cinemachine points
-                    Vector3 newPointCinemachineWrong = startPosition - currPosition;
-                    Vector3 newPointCinemachine = new Vector3(newPointCinemachineWrong.x, - newPointCinemachineWrong.y, newPointCinemachineWrong.z);
-                    newWayPoint = new CinemachineSmoothPath.Waypoint();
-                    newWayPoint.position = newPointCinemachine;
-                    newWayPoint.roll = 0.0f;
-                    wayPointsList.Add(newWayPoint);
-                    wayPoints = wayPointsList.ToArray();
-                    cinemachineSmoothPath.m_Waypoints = wayPoints;
-                }
-            }
+            //        // update cinemachine points
+            //        Vector3 newPointCinemachineWrong = startPosition - currPosition;
+            //        Vector3 newPointCinemachine = new Vector3(newPointCinemachineWrong.x, - newPointCinemachineWrong.y, newPointCinemachineWrong.z);
+            //        newWayPoint = new CinemachineSmoothPath.Waypoint();
+            //        newWayPoint.position = newPointCinemachine;
+            //        newWayPoint.roll = 0.0f;
+            //        wayPointsList.Add(newWayPoint);
+            //        wayPoints = wayPointsList.ToArray();
+            //        cinemachineSmoothPath.m_Waypoints = wayPoints;
+                //}
+            //}
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
@@ -458,17 +464,25 @@ public class FollowPathCamera : MonoBehaviour
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
     }
 
-    public void relocatePoint(int pointNum, Vector3 direction)
+    public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere)
     {
-        pathPositions[pointNum] += direction;
+        pathPositions[pointNum + 1] += direction;
 
-        Vector3 newPoint = pathPositions[pointNum];
+        Vector3 newPoint = pathPositions[pointNum + 1];
 
+        // relocate cinemachine point
+        CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
+        CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
+        newWayPoint.position = cinemachinePoints[pointNum + 1].position + direction;
+
+        cinemachinePoints[pointNum + 1] = newWayPoint;
+        cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+
+        // relocate point in line renderer
         GameObject line = pathContainer.transform.Find("Line").gameObject;
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
         int pointsCount = currLineRenderer.positionCount;
 
-        // relocate point
         Vector3[] pathPositionsArray = new Vector3[pathPositions.Count];
         currLineRenderer.GetPositions(pathPositionsArray);
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
@@ -478,17 +492,12 @@ public class FollowPathCamera : MonoBehaviour
         pathPositionsArray = pathPositionsList.ToArray();
         currLineRenderer.SetPositions(pathPositionsArray);
 
-        //// relocate cinemachine point
-        //CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
-        //CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
-        //newWayPoint.position = newPoint;
-
-        //cinemachinePoints[pointNum] = newWayPoint;
-        //cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
-
-        // relocate sphere
-        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
-        sphere.position = newPoint;
+        if (moveSphere)
+        {
+            // relocate sphere
+            Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
+            sphere.position = newPoint;
+        }
     }
 
     public void changeSpeed(float newSpeed)

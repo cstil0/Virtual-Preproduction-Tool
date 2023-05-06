@@ -86,8 +86,11 @@ public class PathSpheresController : MonoBehaviour
                 //int pathNum = -1;
                 if (followPathCamera != null)
                 {
-                    followPathCamera.pathPositions[pointNum] = newPosition;
-                    line = transform.parent.parent.Find("Line").gameObject;
+                    Vector3 direction = newPosition - lastPosition;
+                    followPathCamera.relocatePoint(pointNum, direction, false);
+                    //followPathCamera.pathPositions[pointNum] = newPosition;
+                    //line = transform.parent.parent.Find("Line").gameObject;
+
                 }
                 if (followPath != null)
                 {
@@ -96,11 +99,12 @@ public class PathSpheresController : MonoBehaviour
                     line = transform.parent.Find("Line").gameObject;
 
                     DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, distance);
+
+                    // get the line by looking at the path container's childs
+                    LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
+                    lineineRenderer.SetPosition(pointNum, newPosition);
+                    lastPosition = gameObject.transform.position;
                 }
-                // get the line by looking at the path container's childs
-                LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
-                lineineRenderer.SetPosition(pointNum, newPosition);
-                lastPosition = gameObject.transform.position;
             }
         }
 
@@ -112,7 +116,7 @@ public class PathSpheresController : MonoBehaviour
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, downVector);
             }
             if (followPathCamera != null)
-                followPathCamera.relocatePoint(pointNum, upVector);
+                followPathCamera.relocatePoint(pointNum, upVector, true);
         }
 
         if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && !isPlaying)
@@ -123,7 +127,7 @@ public class PathSpheresController : MonoBehaviour
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, upVector);
             }
             if (followPathCamera != null)
-                followPathCamera.relocatePoint(pointNum, downVector);
+                followPathCamera.relocatePoint(pointNum, downVector, true);
         }
     }
 

@@ -1,3 +1,4 @@
+using Oculus.Interaction.Editor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ public class FollowPath : MonoBehaviour
     Animator animator;
 
     public GameObject pathContainer;
+    public GameObject circlesContainer;
     //int pathNum = -1;
 
     public bool isPlaying = false;
@@ -265,7 +267,11 @@ public class FollowPath : MonoBehaviour
         if (instantiatePoint)
         {
             if (pointsCount == 1)
-                pathContainer = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
+            {
+                List<GameObject> containers = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
+                pathContainer = containers[0];
+                circlesContainer = containers[1];
+            }
             else 
                 DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
 
@@ -280,6 +286,8 @@ public class FollowPath : MonoBehaviour
     void playLinePath()
     {
         Transform pathTransform = pathContainer.transform;
+        Transform circlesTransform = circlesContainer.transform;
+
         GameObject line = pathTransform.GetChild(0).gameObject;
         line.GetComponent<LineRenderer>().enabled = false;
 
@@ -287,6 +295,12 @@ public class FollowPath : MonoBehaviour
         {
             GameObject currPoint = pathTransform.GetChild(i).gameObject;
             currPoint.GetComponent<MeshRenderer>().enabled = false;
+        }
+
+        for (int i = 0; i < circlesTransform.childCount; i++)
+        {
+            GameObject currCircle = circlesTransform.GetChild(i).gameObject;
+            currCircle.GetComponent<SpriteRenderer>().enabled = false;
         }
 
         isPlaying = !isPlaying;
@@ -301,6 +315,7 @@ public class FollowPath : MonoBehaviour
         currPoint = 0;
 
         Transform pathTransform = pathContainer.transform;
+        Transform circlesTransform = circlesContainer.transform;
         GameObject line = pathTransform.GetChild(0).gameObject;
         line.GetComponent<LineRenderer>().enabled = true;
 
@@ -308,6 +323,12 @@ public class FollowPath : MonoBehaviour
         {
             GameObject currPoint = pathTransform.GetChild(i).gameObject;
             currPoint.GetComponent<MeshRenderer>().enabled = true;
+        }
+
+        for (int i = 0; i < circlesTransform.childCount; i++)
+        {
+            GameObject currCircle = circlesTransform.GetChild(i).gameObject;
+            currCircle.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 
