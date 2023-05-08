@@ -244,6 +244,18 @@ public class FollowPathCamera : MonoBehaviour
 
     public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
+        // avoid having negative angles at it is easier to work with positive ones
+        Vector3 newRotVec = newRot.eulerAngles;
+        if (newRotVec.x < 0)
+            newRotVec.x = newRotVec.x + 360.0f;
+
+        if (newRotVec.y < 0)
+            newRotVec.y = newRotVec.x + 360.0f;
+
+        if (newRotVec.z < 0)
+            newRotVec.z = newRotVec.z + 360.0f;
+
+
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         pathLength = wayPoints.Length;
         if (pathLength >= DefinePath.instance.maxCameraPoints)
@@ -268,7 +280,7 @@ public class FollowPathCamera : MonoBehaviour
             wayPointsList.Add(firstWayPoint);
 
             pathPositions.Add(newPoint);
-            pathRotations.Add(newRot.eulerAngles);
+            pathRotations.Add(newRotVec);
         }
 
         Vector3 newPointCinemachineWrong = startPosition - newPoint;
@@ -282,23 +294,23 @@ public class FollowPathCamera : MonoBehaviour
         cinemachineSmoothPath.m_Waypoints = wayPoints;
 
         pathPositions.Add(newPoint);
-        pathRotations.Add(newRot.eulerAngles);
+        pathRotations.Add(newRotVec);
 
         if (instantiatePos)
         {
             if (pathLength == 0)
             {
-                List<GameObject> containers= DefinePath.instance.addPointToNewPath(newPoint, newRot, (int)pathLength, gameObject, true);
+                List<GameObject> containers= DefinePath.instance.addPointToNewPath(newPoint, Quaternion.Euler(newRotVec), (int)pathLength, gameObject, true);
                 pathContainer = containers[0];
             }
             else
-                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, newRot, (int)pathLength - 1, gameObject, true);
+                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
 
             yield return new WaitForSeconds(1.0f);
 
             UDPSender.instance.sendPointPath(gameObject, newPoint);
             yield return new WaitForSeconds(0.1f);
-            UDPSender.instance.sendRotationPath(gameObject, newRot);
+            UDPSender.instance.sendRotationPath(gameObject, Quaternion.Euler(newRotVec));
         }
 
         //GameObject newMiniCamera = Instantiate(miniCamera);
