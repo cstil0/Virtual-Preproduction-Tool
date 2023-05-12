@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using Unity.VisualScripting;
 
 public class DirectorPanelManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class DirectorPanelManager : MonoBehaviour
     public GameObject grid;
     public GameObject pointsView;
     public GameObject aerialCameraView;
+    [SerializeField] GameObject customRightHand;
+    [SerializeField] GameObject customLeftHand;
 
     [Header ("Icons")]
     public Sprite playIcon;
@@ -182,6 +185,10 @@ public class DirectorPanelManager : MonoBehaviour
         UDPSender.instance.sendShowHideGridAssistant(isGridShown);
 
         OnHideShowGrid(isGridShown);
+
+        customRightHand.GetComponent<OVRGrabber>().enabled = isGridShown;
+        customLeftHand.GetComponent<OVRGrabber>().enabled = isGridShown;
+        customRightHand.transform.parent.parent.GetComponent<HoverObjects>().enabled = isGridShown;
     }
 
     public void showHidePointsView()

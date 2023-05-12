@@ -12954,6 +12954,8 @@ MonoBehaviour:
   grid: {fileID: 219495085}
   pointsView: {fileID: 1474057068}
   aerialCameraView: {fileID: 707975125}
+  customRightHand: {fileID: 0}
+  customLeftHand: {fileID: 0}
   playIcon: {fileID: 21300000, guid: ebfc1250f77af1a4585b2c0c307ef10e, type: 3}
   pauseIcon: {fileID: 21300000, guid: 103e4383ecf6ea64ca0bec0fb3672303, type: 3}
   gridIcon: {fileID: 21300000, guid: 5d55f4495a6aeb54f95320c3e3d1c762, type: 3}
