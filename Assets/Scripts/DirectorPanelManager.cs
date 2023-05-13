@@ -40,7 +40,7 @@ public class DirectorPanelManager : MonoBehaviour
 
     [Header ("States")]
     bool isPlaying = false;
-    bool isGridShown = false;
+    public bool isGridShown = false;
     bool isPointsViewActive = false;
     bool isXbuttonDown = false;
     [SerializeField] int pathPlayPort = 8052;
@@ -90,7 +90,9 @@ public class DirectorPanelManager : MonoBehaviour
             }
         }
         else
+        {
             isXbuttonDown = false;
+        }
     }
 
     public void goToAerialView()

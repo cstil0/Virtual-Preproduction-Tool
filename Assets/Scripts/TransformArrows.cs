@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class TransformArrows : MonoBehaviour
 {
@@ -14,7 +15,6 @@ public class TransformArrows : MonoBehaviour
 
     private void OnEnable()
     {
-        DirectorPanelManager.instance.OnHideShowGrid += showHideArrows;
     }
 
     private void OnDisable()
@@ -24,26 +24,35 @@ public class TransformArrows : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        isTrigger = true;
         if (other.gameObject.layer == 3)
+        {
+            isTrigger = true;
             handCollider = other.gameObject;
+            Renderer renderer = gameObject.GetComponent<Renderer>();
+            Material material = renderer.material;
+            material.color = Color.blue;
+        }
 
-        Renderer renderer = gameObject.GetComponent<Renderer>();
-        Material material = renderer.material;
-        material.color = Color.blue;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        isTrigger = false;
+        if (other.gameObject.layer == 3) 
+        {
+            isTrigger = false;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        DirectorPanelManager.instance.OnHideShowGrid += showHideArrows;
+
         Renderer renderer = gameObject.GetComponent<Renderer>();
         Material material = renderer.material;
         originalColor = material.color;
+
+        showHideArrows(DirectorPanelManager.instance.isGridShown);
     }
 
     // Update is called once per frame
@@ -70,10 +79,19 @@ public class TransformArrows : MonoBehaviour
 
         if (isMoving)
         {
-            Vector3 difference = handCollider.transform.position - lastHandPosition;
+            Vector3 difference = handCollider.transform.position - lastHandPosition;            
             // only the axis with value 1 in arrowDirection will remain
             Vector3 movementDirection = new Vector3(difference.x * arrowDirection.x, difference.y * arrowDirection.y, difference.z * arrowDirection.z);
-            gameObject.transform.parent.position += movementDirection;
+
+            Transform parent = gameObject.transform.parent.parent;
+            if (parent.name.Contains("Camera")){
+                FollowPathCamera followPathCamera = parent.gameObject.GetComponent<FollowPathCamera>();
+                followPathCamera.cinemachineSmoothPath.transform.position += movementDirection;
+            }
+            else
+                parent.position += movementDirection;
+            
+            lastHandPosition = handCollider.transform.position;
         }
     }
 

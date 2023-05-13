@@ -102,6 +102,8 @@ public class ItemsControlButtons : MonoBehaviour
             colors.normalColor = Color.white;
             button.GetComponent<Button>().colors = colors;
         }
+
+        showHideHeight(DirectorPanelManager.instance.isGridShown);
     }
 
     // Update is called once per frame
