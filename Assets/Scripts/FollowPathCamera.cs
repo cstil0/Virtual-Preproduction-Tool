@@ -53,7 +53,7 @@ public class FollowPathCamera : MonoBehaviour
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
-    private float currPathgPosition;
+    private float currPathgPosition = 0;
 
     //private void OnTriggerEnter(Collider other)
     //{
@@ -110,6 +110,28 @@ public class FollowPathCamera : MonoBehaviour
     //    Quaternion newRot = Quaternion.RotateTowards(currentRot, targetRot, rotSpeed);
     //    gameObject.transform.rotation = newRot;
     //}
+
+    public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
+    {
+        float num = target.x - current.x;
+        float num2 = target.y - current.y;
+        float num3 = target.z - current.z;
+        float num4 = num * num + num2 * num2 + num3 * num3;
+        if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
+        {
+            return target;
+        }
+
+        float num5 = (float)Math.Sqrt(num4);
+        return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
+    }
+
+    public static float InverseLerp(Vector3 pointA, Vector3 pointB, Vector3 middlePoint)
+    {
+        Vector3 distanceAB = pointB - pointA;
+        Vector3 distanceAM = middlePoint - pointA;
+        return Vector3.Dot(distanceAM, distanceAB) / Vector3.Dot(distanceAB, distanceAB);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -192,23 +214,33 @@ public class FollowPathCamera : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S))
             stopLinePath();
 
-        if (isPlaying)
+        if (isPlaying && pathPositions.Count >= 2)
         {
             cinemachineSmoothPath.m_Appearance.width = 0.2f;
 
             CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
             pathLength = wayPoints.Length;
 
+
+            float floorPathPos = Mathf.Floor(currPathPosition);
+            Vector3 currTargetPos = pathPositions[(int)floorPathPos + 1];
+            //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
+            Vector3 lastTargetPos = pathPositions[(int)floorPathPos];
+            float distance = Vector3.Distance(currTargetPos, lastTargetPos);
+
             float step = speed * Time.deltaTime;
 
-            float tempCurrPathPosition = currPathPosition + step;
+            // first compute the real position that we want to reach
+            Vector3 currRealPos = MoveTowardsCustom(lastTargetPos, currTargetPos, step);
+            // then compute the interpolation factor that we need to get to that real position
+            float tempCurrPathPosition = currPathPosition + InverseLerp(lastTargetPos, currTargetPos, currRealPos);
 
             if (tempCurrPathPosition < pathLength - 1)
             {
                 currPathPosition = tempCurrPathPosition;
                 cinemachineTrackedDolly.m_PathPosition = currPathPosition;
 
-                float floorPathPos = Mathf.Floor(currPathPosition);
+                floorPathPos = Mathf.Floor(currPathPosition);
                 float factor = currPathPosition - floorPathPos;
 
                 Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
@@ -335,10 +367,14 @@ public class FollowPathCamera : MonoBehaviour
             if (currPathPosition == 0)
             {
                 // if first and second point are the same pass directly to second one
-                if (pathPositions[0] == pathPositions[1])
-                    currPathPosition = 1;
-                else
-                    currPathPosition = 0;
+                try
+                {
+                    if (pathPositions[0] == pathPositions[1])
+                        currPathPosition = 1;
+                    else
+                        currPathPosition = 0;
+                }
+                catch (Exception e) { currPathPosition = 0;  }
             }
             
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
