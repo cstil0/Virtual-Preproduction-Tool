@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -350,7 +351,7 @@ public class DefinePath : MonoBehaviour
                     material.color = pathColor;
 
                     GameObject miniCamera = currChild.transform.GetChild(1).gameObject;
-                    HoverObjects.instance.changeColorMaterials(miniCamera, pathColor);
+                    HoverObjects.instance.changeColorMaterials(miniCamera, pathColor, false);
                     Canvas minicameraCanvas = currChild.transform.GetChild(2).GetComponent<Canvas>();
                     RawImage minicameraImage = currChild.transform.GetChild(2).GetComponentInChildren<RawImage>();
 

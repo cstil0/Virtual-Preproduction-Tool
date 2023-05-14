@@ -39,6 +39,6 @@ public class PathCirclesController : MonoBehaviour
     void changeColor(int currPathNum, int currPointNum, Color color)
     {
         if (pointNum == currPointNum && pathNum == currPathNum)
-            HoverObjects.instance.changeColorMaterials(gameObject, color);
+            HoverObjects.instance.changeColorMaterials(gameObject, color, false);
     }
 }

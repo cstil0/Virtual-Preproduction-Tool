@@ -48,9 +48,7 @@ public class UDPSender : MonoBehaviour
                 Destroy(gameObject);
         }
         else
-        {
             instance = this;
-        }
     }
 
     private void sendInfo(int port, string messageString)
@@ -243,6 +241,23 @@ public class UDPSender : MonoBehaviour
     public void sendDeletePointToDirector(int pointNum, string itemName)
     {
         sendInfo(assistantToDirectorPort, "DELETE_POINT:" + pointNum + ":" + itemName);
+    }
+
+    public void sendChangeItemColor(string itemName, string colorHex)
+    {
+        Debug.Log("SENDING CHANGE COLOR ITEM: " + itemName + " " + colorHex);
+        sendInfo(assistantToDirectorPort, "CHANGE_ITEM_COLOR:" + itemName + ":" + colorHex);
+    }
+
+    public void sendChangePathColor(string itemName, string colorHex)
+    {
+        Debug.Log("SENDING CHANGE COLOR PATH: " + itemName + " " + colorHex);
+        sendInfo(assistantToDirectorPort, "CHANGE_PATH_COLOR:" + itemName + ":" + colorHex);
+    }
+
+    public void sendChangePointColor(string itemName, string pointName, string colorHex)
+    {
+        sendInfo(assistantToDirectorPort, "CHANGE_POINT_COLOR:" + itemName + ":" + pointName + ":" + colorHex);
     }
 
     IEnumerator sendInitialParameters()

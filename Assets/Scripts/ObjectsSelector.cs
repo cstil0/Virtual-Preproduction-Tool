@@ -14,11 +14,13 @@ public class ObjectsSelector : MonoBehaviour
     {
         DirectorPanelManager.instance.OnPlayPath += playLinePath;
         DirectorPanelManager.instance.OnStopPath += stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
     }
     private void OnDisable()
     {
         DirectorPanelManager.instance.OnPlayPath -= playLinePath;
         DirectorPanelManager.instance.OnStopPath -= stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor -= changeItemColorDirector;
     }
 
     // Start is called before the first frame update
@@ -52,5 +54,11 @@ public class ObjectsSelector : MonoBehaviour
         }
         else
             secondaryIndexTriggerDown = false;
+    }
+
+    private void changeItemColorDirector(string itemName, Color color)
+    {
+        if (itemName == gameObject.name)
+            HoverObjects.instance.changeColorMaterials(gameObject, color, false);
     }
 }

@@ -13197,6 +13197,7 @@ MonoBehaviour:
   - {fileID: 310567947}
   - {fileID: 1350182165}
   - {fileID: 1235193632}
+  isGridShown: 0
   pathPlayPort: 8052
 --- !u!114 &602565771
 MonoBehaviour:
@@ -24161,9 +24162,6 @@ MonoBehaviour:
   directoToAssistantPort: 8052
   itemsParent: {fileID: 1959356655}
   ScreenCamera: {fileID: 1825172517}
-  hermione: {fileID: 3026986607555950962, guid: 0f4c5d46b7114804482e1a1809d8e501,
-    type: 3}
-  harry: {fileID: 7970038613266330054, guid: fef33f2c76b51ec41a4bbc14c6e78ff2, type: 3}
 --- !u!1 &1178942739
 GameObject:
   m_ObjectHideFlags: 0
@@ -33728,7 +33726,7 @@ MonoBehaviour:
   handController: {fileID: 861928155}
   pathPointsPort: 8051
   defaultLineColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
-  hoverLineColor: {r: 0.50252867, g: 0.7075472, b: 0.4765931, a: 1}
+  hoverLineColor: {r: 0.5019608, g: 0.7058824, b: 0.47843137, a: 1}
   selectedLineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
   playLightColor: {r: 0.8352941, g: 0.6745098, b: 1, a: 0}
   isThereCharacterSelected: 0

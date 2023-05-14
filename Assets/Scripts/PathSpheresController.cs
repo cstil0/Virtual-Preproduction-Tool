@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Xml.XPath;
 using UnityEngine;
-using static DirectorPanelManager;
 
 public class PathSpheresController : MonoBehaviour
 {
@@ -23,6 +21,15 @@ public class PathSpheresController : MonoBehaviour
     public int pathNum;
     public int pointNum;
 
+    private void OnEnable()
+    {
+        UDPReceiver.instance.OnChangePointColor += changePointColor;
+    }
+
+    private void OnDisable()
+    {
+        UDPReceiver.instance.OnChangePointColor -= changePointColor;
+    }
 
     private void Start()
     {
@@ -177,5 +184,22 @@ public class PathSpheresController : MonoBehaviour
     {
         item.TryGetComponent<FollowPath>(out followPath);
         item.TryGetComponent<FollowPathCamera>(out followPathCamera);
+    }
+
+    void changePointColor(string itemName, string pointName, Color color)
+    {
+        StartCoroutine(waitItemAssigned(itemName, pointName, color));
+    }
+
+    IEnumerator waitItemAssigned(string itemName, string pointName, Color color)
+    {
+        while (item == null) yield return null;
+
+        if (itemName == item.name && gameObject.name == pointName)
+        {
+            Renderer renderer = gameObject.GetComponent<Renderer>();
+            Material material = renderer.material;
+            material.color = color;
+        }
     }
 }

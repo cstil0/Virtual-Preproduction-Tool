@@ -7,6 +7,7 @@ using System.Linq;
 using System.Transactions;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,11 +70,16 @@ public class FollowPathCamera : MonoBehaviour
     {
         DirectorPanelManager.instance.OnPlayPath += playLinePath;
         DirectorPanelManager.instance.OnStopPath += stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
+        UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
     }
     private void OnDisable()
     {
         DirectorPanelManager.instance.OnPlayPath -= playLinePath;
         DirectorPanelManager.instance.OnStopPath -= stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor -= changeItemColorDirector;
+        UDPReceiver.instance.OnChangePathColor -= changePathColorDirector;
+
     }
 
     //public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
@@ -519,9 +525,33 @@ public class FollowPathCamera : MonoBehaviour
 
     public void changePathColor()
     {
-        if (!isSelectedForPath)
-            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor, false);
-        else
-            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor, true);
+        Color color = DefinePath.instance.defaultLineColor;
+        if (isSelectedForPath)
+            color = DefinePath.instance.selectedLineColor;
+
+        DefinePath.instance.changePathColor(pathContainer, color, isSelectedForPath);
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            UDPSender.instance.sendChangePathColor(gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+    }
+
+    private void changeItemColorDirector(string itemName, Color color)
+    {
+        if (itemName == gameObject.name)
+            HoverObjects.instance.changeColorMaterials(gameObject, color, false);
+    }
+
+    private void changePathColorDirector(string itemName, Color color)
+    {
+        if (itemName == gameObject.name)
+            StartCoroutine(changeColorWaitPathContainer(color));
+    }
+
+    IEnumerator changeColorWaitPathContainer(Color color)
+    {
+        while (pathContainer == null) yield return null;
+
+        DefinePath.instance.changePathColor(pathContainer, color, false);
+        Debug.Log("CHANGING PATH COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 }

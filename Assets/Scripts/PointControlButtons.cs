@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using static UnityEditor.Progress;
 using Microsoft.MixedReality.Toolkit;
 
 public class PointControlButtons : MonoBehaviour
@@ -88,9 +87,22 @@ public class PointControlButtons : MonoBehaviour
         colors.normalColor = Color.white;
         button.GetComponent<Button>().colors = colors;
 
-        item.TryGetComponent(out followPath);
-        item.TryGetComponent(out followPathCamera);
+        //StartCoroutine(assignFollowPath());
+
+        if (item != null)
+        {
+            item.TryGetComponent(out followPath);
+            item.TryGetComponent(out followPathCamera);
+        }
     }
+
+    //IEnumerator assignFollowPath()
+    //{
+    //    while (item == null) yield return null;
+
+    //    item.TryGetComponent(out followPath);
+    //    item.TryGetComponent(out followPathCamera);
+    //}
 
     // Update is called once per frame
     void Update()

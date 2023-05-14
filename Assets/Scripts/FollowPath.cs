@@ -1,4 +1,3 @@
-using Oculus.Interaction.Editor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using TMPro;
-using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,11 +61,15 @@ public class FollowPath : MonoBehaviour
     {
         DirectorPanelManager.instance.OnPlayPath += playLinePath;
         DirectorPanelManager.instance.OnStopPath += stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
+        UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
     }
     private void OnDisable()
     {
         DirectorPanelManager.instance.OnPlayPath -= playLinePath;
         DirectorPanelManager.instance.OnStopPath -= stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor -= changeItemColorDirector;
+        UDPReceiver.instance.OnChangePathColor -= changePathColorDirector;
     }
 
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
@@ -422,123 +424,38 @@ public class FollowPath : MonoBehaviour
 
     public void changePathColor()
     {
-        if (!isSelectedForPath)
-            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.defaultLineColor, false);
-        else
-            DefinePath.instance.changePathColor(pathContainer, DefinePath.instance.selectedLineColor, true);
+        Color color = DefinePath.instance.defaultLineColor;
+        if (isSelectedForPath)
+            color = DefinePath.instance.selectedLineColor;
+
+        DefinePath.instance.changePathColor(pathContainer, color, isSelectedForPath);
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            UDPSender.instance.sendChangePathColor(gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 
-    //void deleteCurrentPath()
-    //{
-    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
-    //    Transform panel = pathButtons.GetChild(0);
+    private void changeItemColorDirector(string itemName, Color color)
+    {
+        if (itemName == gameObject.name)
+        {
+            HoverObjects.instance.changeColorMaterials(gameObject, color, false);
+            Debug.Log("CHANGING ITEM COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+        }
+    }
 
-    //    for (int i = 0; i < panel.childCount; i++)
-    //    {
-    //        GameObject pathButton = panel.GetChild(i).gameObject;
-    //        if (!pathButton.GetComponent<Image>().enabled)
-    //            continue;
+    private void changePathColorDirector(string itemName, Color color)
+    {
+        if (itemName == gameObject.name)
+        {
+            StartCoroutine(changeColorWaitPathContainer(color));
+        }
+    }
 
-    //        // get path ID
-    //        GameObject text = pathButton.transform.GetChild(0).gameObject;
-    //        string pathName = text.GetComponent<TextMeshProUGUI>().text;
-    //        int pathID = int.Parse(pathName.Split(" ")[1]);
-    //        if (i != currentSelectedPath - 1)
-    //            continue;
+    IEnumerator changeColorWaitPathContainer(Color color)
+    {
+        while (pathContainer == null) yield return null;
 
-    //        text.GetComponent<TextMeshProUGUI>().enabled = false;
-    //        pathButton.GetComponent<Image>().enabled = false;
-    //        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
-
-    //        foreach (GameObject line in lines)
-    //        {
-    //            if (!line.name.Contains("Path " + pathID))
-    //                continue; 
-
-    //            Destroy(line.gameObject);
-    //            break;
-    //        }
-
-    //        //int globalSelectedID = getGlobalPathID(currentSelectedPath);
-    //        int[] startEnd = pathStartEnd[currentSelectedPath];
-    //        int startPos = startEnd[0];
-    //        int endPos = startEnd[1];
-    //        // delete path points in the character
-    //        List<int> removePositions = new List<int>();
-    //        for (int j = 0; j < pathPositions.Count; j++)
-    //        {
-    //            if (j >= startPos && j <= endPos)
-    //                removePositions.Add(j);
-    //        }
-
-    //        // this is needed since it is not possible to remove items while iterating the same array
-    //        // ESTARIA BÉ TORNAR-HO A PROVAR AMB LO DE BAIX
-    //        for (int j = removePositions.Count - 1; j >= 0 ; j--)
-    //            pathPositions.RemoveAt(j);
-
-    //        // update start and end positions of each following path
-    //        pathStartEnd.Remove(currentSelectedPath);
-    //        int removedPathSize = endPos - startPos + 1;
-    //        int removeStartEnd = -1;
-    //        foreach (KeyValuePair<int, int[]> startEndPos in pathStartEnd)
-    //        {
-    //            if (startEndPos.Key <= currentSelectedPath)
-    //                continue;
-
-    //            removeStartEnd = startEndPos.Key;
-    //        }
-
-    //        if (removedPathSize != -1)
-    //            pathStartEnd.Remove(removeStartEnd);
-
-    //        break;
-    //    }
-    //}
-
-    //void relocatePathButtons()
-    //{
-    //    Transform pathButtons = gameObject.transform.Find("Paths buttons");
-    //    Transform panel = pathButtons.GetChild(0);
-
-    //    for (int i = 0; i < panel.childCount; i++)
-    //    {
-    //        if (i <= currentSelectedPath - 1)
-    //            continue;
-
-    //        GameObject currentPathButton = panel.GetChild(i).gameObject;
-    //        if (!currentPathButton.GetComponent<Image>().enabled)
-    //            continue;
-
-    //        try
-    //        {
-    //            // first, get current ID and colors
-    //            GameObject currentText = currentPathButton.transform.GetChild(0).gameObject;
-    //            string currentPathName = currentText.GetComponent<TextMeshProUGUI>().text;
-    //            int currentPathID = int.Parse(currentPathName.Split(" ")[1]);
-    //            ColorBlock currentButtonColors = currentPathButton.GetComponent<Button>().colors;
-    //            if (i == currentSelectedPath - 1)
-    //                currentButtonColors.normalColor = DefinePath.instance.hoverLineColor;
-
-    //            // then, assign them to the previous one
-    //            GameObject previousPathButton = panel.GetChild(i - 1).gameObject;
-    //            GameObject previousText = previousPathButton.transform.GetChild(0).gameObject;
-    //            string previousPathName = "Path " + currentPathID;
-    //            previousText.GetComponent<TextMeshProUGUI>().text = previousPathName;
-    //            previousPathButton.GetComponent<Button>().colors = currentButtonColors;
-
-    //            previousText.GetComponent<TextMeshProUGUI>().enabled = true;
-    //            previousPathButton.GetComponent<Image>().enabled = true;
-
-    //            if (i == lastCharacterPathID - 1)
-    //            {
-    //                currentText.GetComponent<TextMeshProUGUI>().enabled = false;
-    //                currentPathButton.GetComponent<Image>().enabled = false;
-    //            }
-
-    //        }
-    //        catch (Exception e) {}
-
-    //    }
-    //    lastCharacterPathID -= 1;
-    //}
+        DefinePath.instance.changePathColor(pathContainer, color, false);
+        Debug.Log("CHANGING PATH COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+    }
 }

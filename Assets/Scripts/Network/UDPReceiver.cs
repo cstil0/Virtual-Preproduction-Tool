@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text;
@@ -8,11 +6,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Globalization;
 using Unity.VisualScripting;
-using System.Security.Cryptography;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UDPReceiver : MonoBehaviour
 {
+    public static UDPReceiver instance = null;
+
     // udpclient object
     //UdpClient client;
     UdpClient clientPath;
@@ -45,9 +45,12 @@ public class UDPReceiver : MonoBehaviour
     //Vector3 currRot;
     Quaternion currRot;
 
-
-    public GameObject hermione;
-    public GameObject harry;
+    public delegate void ChangeItemColor(string itemName, Color color);
+    public event ChangeItemColor OnChangeItemColor;
+    public delegate void ChangePathColor(string itemName, Color color);
+    public event ChangePathColor OnChangePathColor;
+    public delegate void ChangePointColor(string itemName, string pointName, Color color);
+    public event ChangePointColor OnChangePointColor;
 
     enum eAssistantToDirectorMessages{
         NEW_ITEM,
@@ -56,7 +59,10 @@ public class UDPReceiver : MonoBehaviour
         DELETE_ITEM,
         SCENE_ROTATION,
         SHOW_HIDE_GRID,
-        DELETE_POINT
+        DELETE_POINT,
+        CHANGE_ITEM_COLOR,
+        CHANGE_PATH_COLOR,
+        CHANGE_POINT_COLOR,
     }
 
     enum eDirectorToAssistantMessages
@@ -67,6 +73,17 @@ public class UDPReceiver : MonoBehaviour
         DELETE_ITEM,
         CHANGE_CAMERA,
         SHOW_HIDE_GRID
+    }
+
+    private void Awake()
+    {
+        if (instance)
+        {
+            if (instance != this)
+                Destroy(gameObject);
+        }
+        else
+            instance = this;
     }
 
     void UDP_assistantToDirectorReceive()
@@ -164,7 +181,14 @@ public class UDPReceiver : MonoBehaviour
                 pathContainer = GameObject.Find("Path " + itemNum).transform;
             }
 
+            // find the corresponding path sphere to change its name and assign the corresponding item
+            GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
+            pathSphere.name = "Point " + (pathContainer.childCount - 2);
+            PathSpheresController spheresController = pathSphere.GetComponent<PathSpheresController>();
+            spheresController.item = item;
+
             followPath.pathContainer = pathContainer.gameObject;
+
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
             int pointsCount = followPath.pathPositions.Count;
             if (pointsCount == 1)
@@ -274,6 +298,35 @@ public class UDPReceiver : MonoBehaviour
         GameObject item = itemsParent.transform.Find(itemName).gameObject;
 
         ItemsDirectorPanelController.instance.deletePointButton(item, itemName, pointNum);
+    }
+
+    void parseItemChangeColor(string itemName, string colorHex)
+    {
+        colorHex = "#" + colorHex;
+        UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        OnChangeItemColor(itemName, color);
+        Debug.Log("ITEM COLOR: " + itemName + " " + color.ToHexString());
+    }
+
+    void parsePathChangeColor(string itemName, string colorHex)
+    {
+        colorHex = "#" + colorHex;
+
+        UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        OnChangePathColor(itemName, color);
+        Debug.Log("PATH COLOR: " + itemName + " " + color.ToHexString());
+    }
+
+    IEnumerator parsePointChangeColor(string itemName, string pointName, string colorHex)
+    {
+        // wait to ensure that the point is created yet
+        yield return new WaitForSeconds(0.2f);
+
+        colorHex = "#" + colorHex;
+
+        UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        OnChangePointColor(itemName, pointName, color);
+        Debug.Log("POINT COLOR: " + itemName + " " + color.ToHexString() + ", POINT: " + pointName);
     }
 
     void parsePlayMessage(string playStop)
@@ -426,6 +479,22 @@ public class UDPReceiver : MonoBehaviour
                             int pointNum = int.Parse(splittedMessage[1]);
                             string itemName = splittedMessage[2];
                             parseDeletePointDirector(pointNum, itemName);
+                            break;
+                        case eAssistantToDirectorMessages.CHANGE_ITEM_COLOR:
+                            itemName = splittedMessage[1];
+                            string colorHex = splittedMessage[2];
+                            parseItemChangeColor(itemName, colorHex);
+                            break;
+                        case eAssistantToDirectorMessages.CHANGE_PATH_COLOR:
+                            itemName = splittedMessage[1];
+                            colorHex = splittedMessage[2];
+                            parsePathChangeColor(itemName, colorHex);
+                            break;
+                        case eAssistantToDirectorMessages.CHANGE_POINT_COLOR:
+                            itemName = splittedMessage[1];
+                            string pointName = splittedMessage[2];
+                            colorHex = splittedMessage[3];
+                            StartCoroutine(parsePointChangeColor(itemName, pointName, colorHex));
                             break;
                     }
                     break;
