@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CameraRotationController : MonoBehaviour
 {
-    public Transform currentSelectedMiniCamera;
+    //public Transform currentSelectedMiniCamera;
     //public GameObject currentSelectedCamera;
     public bool triggerOn = false;
     private bool triggerButtonDown = false;
@@ -13,13 +14,13 @@ public class CameraRotationController : MonoBehaviour
     private Vector3 rotationTilt = new Vector3(20.0f, 0.0f, 0.0f);
 
     public FollowPathCamera followPathCamera;
-
+    private Quaternion lastRotation;
     public int pointNum;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        lastRotation = gameObject.transform.rotation;
     }
 
     // Update is called once per frame
@@ -34,10 +35,9 @@ public class CameraRotationController : MonoBehaviour
                 {
                     isSelected = !isSelected;
                     triggerButtonDown = true;
-                    if (isSelected)
-                        currentSelectedMiniCamera = transform;
-                    else
-                        currentSelectedMiniCamera = null;
+                    //    currentSelectedMiniCamera = transform;
+                    //else
+                    //    currentSelectedMiniCamera = null;
 
                 }
             }
@@ -45,26 +45,31 @@ public class CameraRotationController : MonoBehaviour
                 triggerButtonDown = false;
         }
 
-
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight) && isSelected)
         {
-            currentSelectedMiniCamera.Rotate(rotationPan * Time.deltaTime);
-            changePointRotation();
+            gameObject.transform.Rotate(rotationPan * Time.deltaTime);
+            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft) && isSelected)
         {
-            currentSelectedMiniCamera.Rotate(-rotationPan * Time.deltaTime);
-            changePointRotation();
+            gameObject.transform.Rotate(-rotationPan * Time.deltaTime);
+            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && isSelected)
         {
-            currentSelectedMiniCamera.Rotate(rotationTilt * Time.deltaTime);
-            changePointRotation();
+            gameObject.transform.Rotate(rotationTilt * Time.deltaTime);
+            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && isSelected)
         {
-            currentSelectedMiniCamera.Rotate (-rotationTilt * Time.deltaTime);
+            gameObject.transform.Rotate (-rotationTilt * Time.deltaTime);
+            //changePointRotation();
+        }
+
+        if (lastRotation != gameObject.transform.rotation)
+        {
             changePointRotation();
+            lastRotation = gameObject.transform.rotation;
         }
     }
 
@@ -73,7 +78,11 @@ public class CameraRotationController : MonoBehaviour
         string[] pathName = transform.parent.name.Split(" ");
         int pathNum = int.Parse(pathName[1]);
         //followPathCamera.pathRotations[pathNum] = currentSelectedMiniCamera.rotation.eulerAngles;
-        GameObject dollyTracker = followPathCamera.cinemachineSmoothPath.gameObject;
-        dollyTracker.transform.rotation = currentSelectedMiniCamera.rotation;
+        //GameObject dollyTracker = followPathCamera.cinemachineSmoothPath.gameObject;
+        //dollyTracker.transform.rotation = currentSelectedMiniCamera.rotation;
+
+        followPathCamera.pathRotations[pathNum + 1] = gameObject.transform.rotation.eulerAngles;
     }
+
+
 }

@@ -10863,7 +10863,7 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 893955598}
   cinemachineSmoothPath: {fileID: 1793905922}
   rotationController: {fileID: 91735870}
-  speed: 2
+  speed: 0.5
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
@@ -36565,7 +36565,7 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 863538880}
   cinemachineSmoothPath: {fileID: 650033263}
   rotationController: {fileID: 1820964237}
-  speed: 2
+  speed: 0.5
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
@@ -37748,7 +37748,7 @@ MonoBehaviour:
   cinemachineVirtualCamera: {fileID: 589624330}
   cinemachineSmoothPath: {fileID: 1283584885}
   rotationController: {fileID: 672654596}
-  speed: 2
+  speed: 0.5
   handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []

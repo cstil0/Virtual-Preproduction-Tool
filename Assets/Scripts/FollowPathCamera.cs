@@ -251,15 +251,7 @@ public class FollowPathCamera : MonoBehaviour
     public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
         // avoid having negative angles at it is easier to work with positive ones
-        Vector3 newRotVec = newRot.eulerAngles;
-        if (newRotVec.x < 0)
-            newRotVec.x = newRotVec.x + 360.0f;
-
-        if (newRotVec.y < 0)
-            newRotVec.y = newRotVec.x + 360.0f;
-
-        if (newRotVec.z < 0)
-            newRotVec.z = newRotVec.z + 360.0f;
+        Vector3 newRotVec = getPositiveRotation(newRot);
 
 
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
@@ -482,9 +474,13 @@ public class FollowPathCamera : MonoBehaviour
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
     }
 
-    public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere)
+    public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)
     {
-        pathPositions[pointNum + 1] += direction;
+        // inverted direction is needed for the way at which cinemachine points are saved
+        if (directionInv == new Vector3(0.0f,0.0f,0.0f))
+            pathPositions[pointNum + 1] += direction;
+        else
+            pathPositions[pointNum + 1] += directionInv;
 
         Vector3 newPoint = pathPositions[pointNum + 1];
 
@@ -553,5 +549,20 @@ public class FollowPathCamera : MonoBehaviour
 
         DefinePath.instance.changePathColor(pathContainer, color, false);
         Debug.Log("CHANGING PATH COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+    }
+
+    Vector3 getPositiveRotation(Quaternion rot)
+    {
+        Vector3 newRot = rot.eulerAngles;
+        if (newRot.x < 0)
+            newRot.x = newRot.x + 360.0f;
+
+        if (newRot.y < 0)
+            newRot.y = newRot.x + 360.0f;
+
+        if (newRot.z < 0)
+            newRot.z = newRot.z + 360.0f;
+
+        return newRot;
     }
 }

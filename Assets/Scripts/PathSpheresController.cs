@@ -93,8 +93,10 @@ public class PathSpheresController : MonoBehaviour
                 //int pathNum = -1;
                 if (followPathCamera != null)
                 {
-                    Vector3 direction = newPosition - lastPosition;
-                    followPathCamera.relocatePoint(pointNum, direction, false);
+                    Vector3 direction = lastPosition - newPosition;
+                    Vector3 directionInv = newPosition - lastPosition;
+                    Vector3 directionCorrected = new Vector3(direction.x, -direction.y, direction.z);
+                    followPathCamera.relocatePoint(pointNum, directionCorrected, false, directionInv);
                     //followPathCamera.pathPositions[pointNum] = newPosition;
                     //line = transform.parent.parent.Find("Line").gameObject;
 
@@ -110,8 +112,8 @@ public class PathSpheresController : MonoBehaviour
                     // get the line by looking at the path container's childs
                     LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
                     lineineRenderer.SetPosition(pointNum, newPosition);
-                    lastPosition = gameObject.transform.position;
                 }
+                lastPosition = gameObject.transform.position;
             }
         }
 
@@ -123,7 +125,7 @@ public class PathSpheresController : MonoBehaviour
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, downVector);
             }
             if (followPathCamera != null)
-                followPathCamera.relocatePoint(pointNum, upVector, true);
+                followPathCamera.relocatePoint(pointNum, upVector, true, new Vector3(0.0f, 0.0f, 0.0f));
         }
 
         if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && !isPlaying)
@@ -134,7 +136,7 @@ public class PathSpheresController : MonoBehaviour
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, upVector);
             }
             if (followPathCamera != null)
-                followPathCamera.relocatePoint(pointNum, downVector, true);
+                followPathCamera.relocatePoint(pointNum, downVector, true, new Vector3(0.0f, 0.0f, 0.0f));
         }
     }
 
