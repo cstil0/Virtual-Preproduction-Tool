@@ -331,7 +331,18 @@ public class FollowPathCamera : MonoBehaviour
         // need them to go to the start location before playing their movement
         if (!isPlaying)
         {
-            cinemachineTrackedDolly.m_PathPosition = 0;
+            // check if we are comming from stop
+            if (currPathPosition == 0)
+            {
+                // if first and second point are the same pass directly to second one
+                if (pathPositions[0] == pathPositions[1])
+                    currPathPosition = 1;
+                else
+                    currPathPosition = 0;
+            }
+            
+            cinemachineTrackedDolly.m_PathPosition = currPathPosition;
+
             rotationController.transform.rotation = startRotation;
             //gameObject.transform.position = startPosition;
             //gameObject.transform.rotation = startRotation;
