@@ -66,13 +66,13 @@ public class FollowPathCamera : MonoBehaviour
     //    if (other.gameObject.layer == 3)
     //        triggerOn = false;
     //}
-    private void OnEnable()
-    {
-        DirectorPanelManager.instance.OnPlayPath += playLinePath;
-        DirectorPanelManager.instance.OnStopPath += stopLinePath;
-        UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
-        UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
-    }
+    //private void OnEnable()
+    //{
+    //    DirectorPanelManager.instance.OnPlayPath += playLinePath;
+    //    DirectorPanelManager.instance.OnStopPath += stopLinePath;
+    //    UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
+    //    UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
+    //}
     private void OnDisable()
     {
         DirectorPanelManager.instance.OnPlayPath -= playLinePath;
@@ -136,6 +136,11 @@ public class FollowPathCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DirectorPanelManager.instance.OnPlayPath += playLinePath;
+        DirectorPanelManager.instance.OnStopPath += stopLinePath;
+        UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
+        UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
+
         cinemachineTrackedDolly = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTrackedDolly>();
         currPathPosition = 0.0f;
         pathLength = cinemachineTrackedDolly.m_Path.MaxPos;

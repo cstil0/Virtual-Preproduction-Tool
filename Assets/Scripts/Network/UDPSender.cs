@@ -108,6 +108,11 @@ public class UDPSender : MonoBehaviour
         sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
     }
 
+    public void sendChangeLightColor(string focusName, Color color, bool isAccepted)
+    {
+        string colorHex = UnityEngine.ColorUtility.ToHtmlStringRGBA(color);
+        sendInfo(assistantToDirectorPort, "CHANGE_LIGHT_COLOR:" + focusName + ":" + colorHex + ":" + isAccepted);
+    }
 
     // -- ASSISTANT TO SCREEN MESSAGES --
     // main thread that listens to UDP messages through a defined port

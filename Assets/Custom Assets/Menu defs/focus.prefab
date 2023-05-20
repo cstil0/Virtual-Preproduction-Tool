@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 4906168821470507416}
   - component: {fileID: 7201801296925480852}
   m_Layer: 10
-  m_Name: Spot Light
+  m_Name: SpotLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,6 +238,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8222964633034632316}
+  - component: {fileID: 8119062085035510714}
   - component: {fileID: 6868282353231632454}
   - component: {fileID: 7764781319982832626}
   - component: {fileID: -6671130861011722788}
@@ -270,6 +271,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8119062085035510714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8743182773991339718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b72a1217becd3342a0a3b727447831d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  light: {fileID: 4906168821470507416}
 --- !u!65 &6868282353231632454
 BoxCollider:
   m_ObjectHideFlags: 0

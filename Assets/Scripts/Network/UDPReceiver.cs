@@ -62,7 +62,7 @@ public class UDPReceiver : MonoBehaviour
         DELETE_POINT,
         CHANGE_ITEM_COLOR,
         CHANGE_PATH_COLOR,
-        CHANGE_POINT_COLOR,
+        CHANGE_POINT_COLOR
     }
 
     enum eDirectorToAssistantMessages
@@ -72,7 +72,8 @@ public class UDPReceiver : MonoBehaviour
         DELETE_POINT,
         DELETE_ITEM,
         CHANGE_CAMERA,
-        SHOW_HIDE_GRID
+        SHOW_HIDE_GRID,
+        CHANGE_LIGHT_COLOR
     }
 
     private void Awake()
@@ -391,6 +392,16 @@ public class UDPReceiver : MonoBehaviour
         DirectorPanelManager.instance.grid.SetActive(isShowed);
     }
 
+    void parseChangeLightColor(string focusName, string colorHex, bool isAccepted)
+    {
+        GameObject focus = itemsParent.transform.Find(focusName).gameObject;
+        LightController lightController = focus.GetComponent<LightController>();
+
+        colorHex = "#" + colorHex;
+        UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        lightController.changeLightColor(color, isAccepted);
+    }
+
     void OnDisable()
     {
         if (assistantToDirectorThread != null)
@@ -527,6 +538,12 @@ public class UDPReceiver : MonoBehaviour
                         case eDirectorToAssistantMessages.SHOW_HIDE_GRID:
                             bool isShowed = bool.Parse(splittedMessage[1]);
                             parseShowHideGrid(isShowed);
+                            break;
+                        case eDirectorToAssistantMessages.CHANGE_LIGHT_COLOR:
+                            string focusName = splittedMessage[1];
+                            string colorHex = splittedMessage[2];
+                            bool isAccepted = bool.Parse(splittedMessage[3]);
+                            parseChangeLightColor(focusName, colorHex, isAccepted);
                             break;
                     }
                     break;

@@ -18,15 +18,22 @@ public class ItemsDirectorPanelController : MonoBehaviour
     [SerializeField] Button speedMinusButton;
     [SerializeField] Button speedPlusButton;
     [SerializeField] Button trashButton;
+    [SerializeField] Slider intensitySlider;
+    [SerializeField] Button changeColorButton;
+    [SerializeField] Button acceptColorButton;
+    [SerializeField] Button cancelColorButton;
 
     [Header ("Texts")]
     [SerializeField] TMP_Text itemName;
     [SerializeField] TMP_InputField speedInput;
+    [SerializeField] TMP_Text speedText;
+    [SerializeField] TMP_Text intensityText;
 
     [Header ("Panels")]
     [SerializeField] GameObject panelLayout;
     [SerializeField] GameObject itemsOptionsPanel;
     [SerializeField] GameObject pointsPanel;
+    [SerializeField] GameObject flexibleColorPicker;
 
     [Header ("UI Prefabs")]
     [SerializeField] GameObject itemButtonPrefab;
@@ -44,6 +51,9 @@ public class ItemsDirectorPanelController : MonoBehaviour
     [SerializeField] GameObject itemsParent;
     public Color selectedColor;
     public Color normalColor;
+    public Color normalBlueColor;
+    [SerializeField] FlexibleColorPicker colorPicker;
+    private Color lastPickedColor;
 
     private void Awake()
     {
@@ -59,13 +69,17 @@ public class ItemsDirectorPanelController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        lastPickedColor = colorPicker.color;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (colorPicker.color != lastPickedColor)
+        {
+            onColorChanged();
+            lastPickedColor = colorPicker.color;
+        }
     }
 
     public void onItemsButtonPressed(GameObject itemButtonGO)
@@ -85,11 +99,9 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
 
         itemName.text = buttonText.text;
-        if (buttonText.transform.parent.name.Contains("Camera"))
-            removeButton.gameObject.SetActive(false);
-        else
-            // if it is already selected, we want to hide the remove button. Otherwise, show it
-            removeButton.gameObject.SetActive(!isAlreadySelected);
+        showHideElements(buttonText, isAlreadySelected);
+        // common property
+        flexibleColorPicker.gameObject.SetActive(false);
 
         itemsOptionsPanel.SetActive(!isAlreadySelected);
 
@@ -128,7 +140,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
                 else
                 {
                     ColorBlock lastButtonColors = currButton.GetComponent<Button>().colors;
-                    lastButtonColors.normalColor = normalColor;
+                    lastButtonColors.normalColor = normalBlueColor;
                     currButton.GetComponent<Button>().colors = lastButtonColors;
                 }
             }
@@ -136,11 +148,112 @@ public class ItemsDirectorPanelController : MonoBehaviour
         else
         {
             ColorBlock buttonColors = itemButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = normalColor;
+            buttonColors.normalColor = normalBlueColor;
             itemButton.GetComponent<Button>().colors = buttonColors;
 
             currItemPressed = "";
         }
+    }
+
+    private void showHideElements(TMP_Text buttonText, bool isAlreadySelected)
+    {
+        if (buttonText.transform.parent.name.Contains("Camera"))
+        {
+            pointsPanel.SetActive(!isAlreadySelected);
+            removeButton.gameObject.SetActive(false);
+            speedInput.gameObject.SetActive(!isAlreadySelected);
+            speedText.gameObject.SetActive(!isAlreadySelected);
+            speedMinusButton.gameObject.SetActive(!isAlreadySelected);
+            speedPlusButton.gameObject.SetActive(!isAlreadySelected);
+            trashButton.gameObject.SetActive(!isAlreadySelected);
+            intensitySlider.gameObject.SetActive(false);
+            changeColorButton.gameObject.SetActive(false);
+            acceptColorButton.gameObject.SetActive(false);
+            cancelColorButton.gameObject.SetActive(false);
+        }
+        else if (buttonText.transform.parent.name.Contains("Focus"))
+        {
+            pointsPanel.SetActive(false);
+            removeButton.gameObject.SetActive(!isAlreadySelected);
+            speedInput.gameObject.SetActive(false);
+            speedText.gameObject.SetActive(!isAlreadySelected);
+            speedMinusButton.gameObject.SetActive(false);
+            speedPlusButton.gameObject.SetActive(false);
+            trashButton.gameObject.SetActive(false);
+            intensitySlider.gameObject.SetActive(!isAlreadySelected);
+            changeColorButton.gameObject.SetActive(!isAlreadySelected);
+            acceptColorButton.gameObject.SetActive(!isAlreadySelected);
+            cancelColorButton.gameObject.SetActive(!isAlreadySelected);
+        }
+        else
+        {
+            // if it is already selected, we want to hide the remove button. Otherwise, show it
+            pointsPanel.SetActive(!isAlreadySelected);
+            removeButton.gameObject.SetActive(!isAlreadySelected);
+            speedInput.gameObject.SetActive(!isAlreadySelected);
+            speedText.gameObject.SetActive(!isAlreadySelected);
+            speedMinusButton.gameObject.SetActive(!isAlreadySelected);
+            speedPlusButton.gameObject.SetActive(!isAlreadySelected);
+            trashButton.gameObject.SetActive(!isAlreadySelected);
+            intensitySlider.gameObject.SetActive(false);
+            changeColorButton.gameObject.SetActive(false);
+            acceptColorButton.gameObject.SetActive(false);
+            cancelColorButton.gameObject.SetActive(false);
+        }
+    }
+
+    public void onChangeColorButtonPressed()
+    {
+        colorPicker.color = currItemGO.GetComponent<LightController>().getLightColor();
+
+        removeButton.gameObject.SetActive(false);
+        speedInput.gameObject.SetActive(false);
+        speedText.gameObject.SetActive(false);
+        speedMinusButton.gameObject.SetActive(false);
+        speedPlusButton.gameObject.SetActive(false);
+        trashButton.gameObject.SetActive(false);
+        intensitySlider.gameObject.SetActive(false);
+        changeColorButton.gameObject.SetActive(false);
+
+        acceptColorButton.gameObject.SetActive(true);
+        cancelColorButton.gameObject.SetActive(true);
+        flexibleColorPicker.gameObject.SetActive(true);
+    }
+
+
+    public void onColorChanged()
+    {
+        UDPSender.instance.sendChangeLightColor(currItemPressed, colorPicker.color, false);
+
+        currItemGO.GetComponent<LightController>().changeLightColor(colorPicker.color, false);
+    }
+    public void onAcceptColorButtonPressed()
+    {
+        UDPSender.instance.sendChangeLightColor(currItemPressed, colorPicker.color, true);
+        currItemGO.GetComponent<LightController>().changeLightColor(colorPicker.color, true);
+
+        removeButton.gameObject.SetActive(true);
+        intensitySlider.gameObject.SetActive(true);
+        changeColorButton.gameObject.SetActive(true);
+        acceptColorButton.gameObject.SetActive(true);
+        cancelColorButton.gameObject.SetActive(true);
+        flexibleColorPicker.gameObject.SetActive(false);
+    }
+
+    public void onCancelColorButtonPressed()
+    {
+        LightController lightController = currItemGO.GetComponent<LightController>();
+        Color originalColor = lightController.getOriginalLightColor();
+        colorPicker.color = originalColor; 
+        lightController.changeLightColor(originalColor, true);
+        UDPSender.instance.sendChangeLightColor(currItemPressed, originalColor, true);
+
+        removeButton.gameObject.SetActive(true);
+        intensitySlider.gameObject.SetActive(true);
+        changeColorButton.gameObject.SetActive(true);
+        acceptColorButton.gameObject.SetActive(true);
+        cancelColorButton.gameObject.SetActive(true);
+        flexibleColorPicker.gameObject.SetActive(false);
     }
 
     public void onCloseButtonPressed()
@@ -238,7 +351,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         {
             currPointPressed = -1;
             ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = normalColor;
+            buttonColors.normalColor = normalBlueColor;
             pointButton.GetComponent<Button>().colors = buttonColors;
         }
         else

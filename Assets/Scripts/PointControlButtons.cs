@@ -40,7 +40,6 @@ public class PointControlButtons : MonoBehaviour
 
             if (followPathCamera != null)
                 followPathCamera.isSelectedForPath = false;
-            Debug.Log("DISABLING FROM POINTCONTROLBUTTONS");
         }
     }
 
@@ -61,8 +60,6 @@ public class PointControlButtons : MonoBehaviour
             if (followPathCamera != null)
                 followPathCamera.isSelectedForPath = true;
         }
-
-        Debug.Log("ENABLING FROM POINTCONTROLBUTTONS");
     }
 
     // Start is called before the first frame update
