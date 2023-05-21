@@ -211,17 +211,28 @@ public class DirectorPanelManager : MonoBehaviour
         // get the camera point texture and show it in screen
         if (itemPressedName.Contains("MainCamera"))
         {
-            Transform currPathCamera = GameObject.Find("Path " + itemPressedName).transform;
-            Transform currPoint = currPathCamera.GetChild(pointNumPressed + 1);
-            GameObject cameraCanvas = currPoint.GetChild(2).gameObject;
-            Texture cameraTexture = cameraCanvas.GetComponentInChildren<RawImage>().texture;
+            if (pointNumPressed == -1)
+            {
+                pointsView.GetComponent<RawImage>().texture = null;
+                pointsView.GetComponent<RawImage>().color = new Color(1.0f, 0.4352941f, 0.3686275f);
+                pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+            }
+            else
+            {
+                Transform currPathCamera = GameObject.Find("Path " + itemPressedName).transform;
+                Debug.Log("CHANGING POINT VIEW: " + pointNumPressed);
+                Debug.Log("CURRENT POINT PATH: " + currPathCamera.name);
+                Transform currPoint = currPathCamera.GetChild(pointNumPressed + 1);
+                GameObject cameraCanvas = currPoint.GetChild(2).gameObject;
+                Texture cameraTexture = cameraCanvas.GetComponentInChildren<RawImage>().texture;
 
-            pointsView.GetComponent<RawImage>().texture = cameraTexture;
-            pointsView.GetComponent<RawImage>().color = Color.white;
-            pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+                pointsView.GetComponent<RawImage>().texture = cameraTexture;
+                pointsView.GetComponent<RawImage>().color = Color.white;
+                pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
 
-            aerealviewPanel.SetActive(false);
-            pointsView.SetActive(true);
+                //aerealviewPanel.SetActive(false);
+                //pointsView.SetActive(true);
+            }
         }
 
         else
@@ -230,8 +241,8 @@ public class DirectorPanelManager : MonoBehaviour
             pointsView.GetComponent<RawImage>().color = new Color(1.0f, 0.4352941f, 0.3686275f);
             pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
 
-            aerealviewPanel.SetActive(true);
-            pointsView.SetActive(false);
+            //aerealviewPanel.SetActive(true);
+            //pointsView.SetActive(false);
         }
     } 
 }

@@ -249,10 +249,21 @@ public class UDPReceiver : MonoBehaviour
             item.TryGetComponent(out FollowPathCamera followPathCamera);
             if (followPathCamera != null)
             {
+
                 followPathCamera.pathContainer = pathContainer.gameObject;
                 StartCoroutine(followPathCamera.defineNewPathPoint(newCameraPosition, newRotation, false));
-
                 int pointsCount = followPathCamera.pathPositions.Count;
+
+                // find the corresponding path sphere to change its name and assign the corresponding item
+                GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
+                pathSphere.name = "Point " + (pathContainer.childCount - 2);
+                PathSpheresController spheresController = pathSphere.GetComponentInChildren<PathSpheresController>();
+                CameraRotationController cameraRotationController = pathSphere.GetComponentInChildren<CameraRotationController>();
+                spheresController.item = item;
+                spheresController.followPathCamera = followPathCamera;
+                cameraRotationController.followPathCamera = followPathCamera;
+                cameraRotationController.pointNum = pointsCount -2;
+
                 if (pointsCount == 2)
                     ItemsDirectorPanelController.instance.addPointsLayout(itemName);
 
@@ -270,7 +281,7 @@ public class UDPReceiver : MonoBehaviour
                 if (pointsCount > 2)
                 {
                     lineRenderer.positionCount += 1;
-                    lineRenderer.SetPosition(pointsCount - 2, pointTransform.position);
+                    lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
                 }
 
                 // set camera event from minicamera

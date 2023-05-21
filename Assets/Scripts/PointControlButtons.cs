@@ -122,19 +122,20 @@ public class PointControlButtons : MonoBehaviour
 
     void onTrashPressed()
     {
-        string[] splittedName = point.name.Split(" ");
-        // if normal point
-        if (cameraRotationController == null)
-            pointNum = int.Parse(splittedName[1]);
-        // if point from camera
-        else
-            pointNum = int.Parse(splittedName[2]);
-
+        string[] splittedName = null;
         if (followPath != null)
+        {
+            splittedName = point.name.Split(" ");
+            int pointNum = int.Parse(splittedName[1]);
             followPath.deletePathPoint(pointNum);
-
-        if (followPathCamera != null)
+        }
+        else if (followPathCamera != null)
+        {
+            splittedName = point.transform.parent.name.Split(" ");
+            int pointNum = int.Parse(splittedName[1]);
             followPathCamera.deletePathPoint(pointNum);
+        }
+
     }
 
     void onLevelPressed()

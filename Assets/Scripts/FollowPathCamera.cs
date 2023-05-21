@@ -524,6 +524,13 @@ public class FollowPathCamera : MonoBehaviour
         pathPositions.RemoveAt(pointNum);
         if (deleteLine)
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+
+        CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
+
+        List<CinemachineSmoothPath.Waypoint> cinemachinePointsList = cinemachinePoints.ToList();
+        cinemachinePointsList.RemoveAt(pointNum + 1);
+        cinemachinePoints = cinemachinePointsList.ToArray();
+        cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
     }
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)

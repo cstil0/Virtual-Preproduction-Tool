@@ -9301,7 +9301,7 @@ PrefabInstance:
     - target: {fileID: 5868563464203099476, guid: 6cd5a830ed0f8b643b65f2ad47c603d8,
         type: 3}
       propertyPath: m_Name
-      value: MainCamera 1 Layout
+      value: Test Layout
       objectReference: {fileID: 0}
     - target: {fileID: 5868563464203099479, guid: 6cd5a830ed0f8b643b65f2ad47c603d8,
         type: 3}
@@ -28347,7 +28347,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 0
-    m_MaxSize: 4
+    m_MaxSize: 3
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -44497,7 +44497,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 0
-    m_MaxSize: 4
+    m_MaxSize: 3
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -44650,13 +44650,13 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1000
+  m_Intensity: 450
   m_Range: 39.95856
-  m_SpotAngle: 106.12006
+  m_SpotAngle: 100.0003
   m_InnerSpotAngle: 0
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -44708,7 +44708,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017635519}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -2.2729392, y: 20.36924, z: -8.245315}
+  m_LocalPosition: {x: -2.2729392, y: 18.42, z: -7.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

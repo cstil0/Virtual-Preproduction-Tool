@@ -145,6 +145,7 @@ public class DefinePath : MonoBehaviour
             miniCamera.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             cameraCanvas.transform.localPosition = new Vector3(0.0f, -0.17f, 0.0f);
             cameraCanvas.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
+            cameraCanvas.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 180f, 0.0f));
         }
         else
         {
@@ -181,6 +182,7 @@ public class DefinePath : MonoBehaviour
             // get mini camera and assign the follow path camera component
             GameObject miniCamera = spherePoint.transform.GetChild(1).gameObject;
             miniCamera.GetComponent<CameraRotationController>().followPathCamera = followPathCamera;
+            miniCamera.GetComponent<CameraRotationController>().pointNum = pointsCount;
             miniCamera.transform.rotation = newRotation;
 
             miniCamera.transform.name = "MiniCamera " + pointsCount;
@@ -280,14 +282,21 @@ public class DefinePath : MonoBehaviour
         currLineRenderer.SetPositions(pathPositionsArray);
         currLineRenderer.positionCount = pointsCount - 1;
 
+        string minicameraName = "";
         // change following points name
         // start in second child since first one corresponds to the line renderer
         for (int i = 1; i < pathContainer.transform.childCount; i++)
         {
             if (i - 1 == pointNum)
+            {
+                // destroy minicamera
+                if (pathContainer.transform.GetChild(i).tag != "PathPoint")
+                    minicameraName = pathContainer.transform.GetChild(i).GetChild(1).name;
+
                 Destroy(pathContainer.transform.GetChild(i).gameObject);
+            }
             // the substraction is due to the fact we are starting at the second position
-            if (i >= pointNum)
+            else if (i - 1 > pointNum)
             {
                 if (pathContainer.transform.GetChild(i).tag == "PathPoint")
                 {
@@ -297,7 +306,7 @@ public class DefinePath : MonoBehaviour
                 }
                 else
                 {
-                    GameObject pathSphere = pathContainer.transform.GetChild(i).GetChild(0).gameObject;
+                    GameObject pathSphere = pathContainer.transform.GetChild(i).gameObject;
                     GameObject pathMiniCamera = pathContainer.transform.GetChild(i).GetChild(1).gameObject;
                     Transform pathCameraCanvas = pathContainer.transform.GetChild(i).GetChild(2);
                     GameObject rawImage = pathCameraCanvas.GetChild(0).gameObject;
@@ -310,23 +319,41 @@ public class DefinePath : MonoBehaviour
                 }
             }
         }
+
+        HoverObjects.instance.currentPointCollider = null;
+        HoverObjects.instance.currentMiniCameraCollider = null;
+        HoverObjects.instance.pointAlreadySelected = false;
+        HoverObjects.instance.miniCameraAlreadySelected = false;
+
+        if (minicameraName != "")
+            Destroy(GameObject.Find(minicameraName));
     }
 
-    public void reassignPathCanvas()
+    public void reassignPathCanvas(int cameraNum)
     {
         GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
 
         foreach (GameObject pathContainer in pathContainers)
         {
+            string[] splittedName = pathContainer.name.Split(" ");
+            int pathNum = int.Parse(splittedName[2]);
             for (int i = 1; i < pathContainer.transform.childCount; i++)
             {
                 GameObject pathMiniCamera = pathContainer.transform.GetChild(i).GetChild(1).gameObject;
                 Transform pathCameraCanvas = pathContainer.transform.GetChild(i).GetChild(2);
                 GameObject rawImage = pathCameraCanvas.GetChild(0).gameObject;
 
-                // reassign camera texture
-                pathMiniCamera.GetComponent<Camera>().targetTexture = miniCameraTextures[i - 1];
-                rawImage.GetComponent<RawImage>().texture = miniCameraTextures[i - 1];
+                if (pathNum == cameraNum)
+                {
+                    // reassign camera texture
+                    pathMiniCamera.GetComponent<Camera>().targetTexture = miniCameraTextures[i - 1];
+                    rawImage.GetComponent<RawImage>().texture = miniCameraTextures[i - 1];
+                }
+                else
+                {
+                    pathMiniCamera.GetComponent<Camera>().targetTexture = null;
+                    rawImage.GetComponent<RawImage>().texture = null;
+                }
             }
         }
     }

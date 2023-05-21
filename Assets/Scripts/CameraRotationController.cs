@@ -15,7 +15,7 @@ public class CameraRotationController : MonoBehaviour
 
     public FollowPathCamera followPathCamera;
     private Quaternion lastRotation;
-    public int pointNum;
+    public int pointNum = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -66,7 +66,8 @@ public class CameraRotationController : MonoBehaviour
             //changePointRotation();
         }
 
-        if (lastRotation != gameObject.transform.rotation)
+        // ensure that pointNum was already assigned before changing its rotation
+        if (lastRotation != gameObject.transform.rotation && pointNum != -1)
         {
             changePointRotation();
             lastRotation = gameObject.transform.rotation;

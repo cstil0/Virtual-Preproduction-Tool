@@ -310,7 +310,10 @@ public class HoverObjects : MonoBehaviour
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPathCamera.isSelectedForPath;
                     deselectAllItems();
-                    DefinePath.instance.reassignPathCanvas();
+
+                    string[] splittedName = currentSelectedForPath.name.Split(" ");
+                    int cameraNum = int.Parse(splittedName[1]);
+                    DefinePath.instance.reassignPathCanvas(cameraNum);
                 }
             }
         }
