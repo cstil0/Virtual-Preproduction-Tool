@@ -73,7 +73,8 @@ public class UDPReceiver : MonoBehaviour
         DELETE_ITEM,
         CHANGE_CAMERA,
         SHOW_HIDE_GRID,
-        CHANGE_LIGHT_COLOR
+        CHANGE_LIGHT_COLOR,
+        CHANGE_LIGHT_INTENSITY
     }
 
     private void Awake()
@@ -402,6 +403,14 @@ public class UDPReceiver : MonoBehaviour
         lightController.changeLightColor(color, isAccepted);
     }
 
+    void parseChangeLightIntensity(string focusName, float intensity)
+    {
+        GameObject focus = itemsParent.transform.Find(focusName).gameObject;
+        LightController lightController = focus.GetComponent<LightController>();
+
+        lightController.changeLightIntensity(intensity);
+    }
+
     void OnDisable()
     {
         if (assistantToDirectorThread != null)
@@ -544,6 +553,11 @@ public class UDPReceiver : MonoBehaviour
                             string colorHex = splittedMessage[2];
                             bool isAccepted = bool.Parse(splittedMessage[3]);
                             parseChangeLightColor(focusName, colorHex, isAccepted);
+                            break;
+                        case eDirectorToAssistantMessages.CHANGE_LIGHT_INTENSITY:
+                            focusName = splittedMessage[1];
+                            float intensity = float.Parse(splittedMessage[2]);
+                            parseChangeLightIntensity(focusName, intensity);
                             break;
                     }
                     break;

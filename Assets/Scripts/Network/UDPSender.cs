@@ -103,15 +103,15 @@ public class UDPSender : MonoBehaviour
         sendInfo(directoToAssistantPort, "SHOW_HIDE_GRID:" + isShowed);
     }
 
-    public void sendShowHideGridDirector(bool isShowed)
-    {
-        sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
-    }
-
     public void sendChangeLightColor(string focusName, Color color, bool isAccepted)
     {
         string colorHex = UnityEngine.ColorUtility.ToHtmlStringRGBA(color);
-        sendInfo(assistantToDirectorPort, "CHANGE_LIGHT_COLOR:" + focusName + ":" + colorHex + ":" + isAccepted);
+        sendInfo(directoToAssistantPort, "CHANGE_LIGHT_COLOR:" + focusName + ":" + colorHex + ":" + isAccepted);
+    }
+
+    public void sendChangeLightIntensity(string focusName, float intensity)
+    {
+        sendInfo(directoToAssistantPort, "CHANGE_LIGHT_INTENSITY:" + focusName + ":" + intensity);
     }
 
     // -- ASSISTANT TO SCREEN MESSAGES --
@@ -263,6 +263,11 @@ public class UDPSender : MonoBehaviour
     public void sendChangePointColor(string itemName, string pointName, string colorHex)
     {
         sendInfo(assistantToDirectorPort, "CHANGE_POINT_COLOR:" + itemName + ":" + pointName + ":" + colorHex);
+    }
+
+    public void sendShowHideGridDirector(bool isShowed)
+    {
+        sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
     }
 
     IEnumerator sendInitialParameters()

@@ -77,8 +77,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
     {
         if (colorPicker.color != lastPickedColor)
         {
-            onColorChanged();
             lastPickedColor = colorPicker.color;
+            onColorChanged();
         }
     }
 
@@ -166,6 +166,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
             speedMinusButton.gameObject.SetActive(!isAlreadySelected);
             speedPlusButton.gameObject.SetActive(!isAlreadySelected);
             trashButton.gameObject.SetActive(!isAlreadySelected);
+            intensityText.gameObject.SetActive(false);
             intensitySlider.gameObject.SetActive(false);
             changeColorButton.gameObject.SetActive(false);
             acceptColorButton.gameObject.SetActive(false);
@@ -176,14 +177,15 @@ public class ItemsDirectorPanelController : MonoBehaviour
             pointsPanel.SetActive(false);
             removeButton.gameObject.SetActive(!isAlreadySelected);
             speedInput.gameObject.SetActive(false);
-            speedText.gameObject.SetActive(!isAlreadySelected);
+            speedText.gameObject.SetActive(false);
             speedMinusButton.gameObject.SetActive(false);
             speedPlusButton.gameObject.SetActive(false);
             trashButton.gameObject.SetActive(false);
+            intensityText.gameObject.SetActive(!isAlreadySelected);
             intensitySlider.gameObject.SetActive(!isAlreadySelected);
             changeColorButton.gameObject.SetActive(!isAlreadySelected);
-            acceptColorButton.gameObject.SetActive(!isAlreadySelected);
-            cancelColorButton.gameObject.SetActive(!isAlreadySelected);
+            acceptColorButton.gameObject.SetActive(false);
+            cancelColorButton.gameObject.SetActive(false);
         }
         else
         {
@@ -195,6 +197,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
             speedMinusButton.gameObject.SetActive(!isAlreadySelected);
             speedPlusButton.gameObject.SetActive(!isAlreadySelected);
             trashButton.gameObject.SetActive(!isAlreadySelected);
+            intensityText.gameObject.SetActive(false);
             intensitySlider.gameObject.SetActive(false);
             changeColorButton.gameObject.SetActive(false);
             acceptColorButton.gameObject.SetActive(false);
@@ -212,6 +215,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         speedMinusButton.gameObject.SetActive(false);
         speedPlusButton.gameObject.SetActive(false);
         trashButton.gameObject.SetActive(false);
+        intensityText.gameObject.SetActive(false);
         intensitySlider.gameObject.SetActive(false);
         changeColorButton.gameObject.SetActive(false);
 
@@ -227,16 +231,26 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         currItemGO.GetComponent<LightController>().changeLightColor(colorPicker.color, false);
     }
+
+    public void onIntensityChanged()
+    {
+        float intensity = intensitySlider.value;
+        UDPSender.instance.sendChangeLightIntensity(currItemPressed, intensity);
+
+        currItemGO.GetComponent<LightController>().changeLightIntensity(intensity);
+    }
+
     public void onAcceptColorButtonPressed()
     {
         UDPSender.instance.sendChangeLightColor(currItemPressed, colorPicker.color, true);
         currItemGO.GetComponent<LightController>().changeLightColor(colorPicker.color, true);
 
         removeButton.gameObject.SetActive(true);
+        intensityText.gameObject.SetActive(true);
         intensitySlider.gameObject.SetActive(true);
         changeColorButton.gameObject.SetActive(true);
-        acceptColorButton.gameObject.SetActive(true);
-        cancelColorButton.gameObject.SetActive(true);
+        acceptColorButton.gameObject.SetActive(false);
+        cancelColorButton.gameObject.SetActive(false);
         flexibleColorPicker.gameObject.SetActive(false);
     }
 
@@ -251,8 +265,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
         removeButton.gameObject.SetActive(true);
         intensitySlider.gameObject.SetActive(true);
         changeColorButton.gameObject.SetActive(true);
-        acceptColorButton.gameObject.SetActive(true);
-        cancelColorButton.gameObject.SetActive(true);
+        acceptColorButton.gameObject.SetActive(false);
+        cancelColorButton.gameObject.SetActive(false);
         flexibleColorPicker.gameObject.SetActive(false);
     }
 

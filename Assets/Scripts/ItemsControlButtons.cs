@@ -145,10 +145,12 @@ public class ItemsControlButtons : MonoBehaviour
 
         if (circlesContainer != null)
         {
-            for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+            for (int i = pathContainer.transform.childCount - 1; i >= 0; i--)
             {
                 Destroy(pathContainer.transform.GetChild(i).gameObject);
-                Destroy(circlesContainer.transform.GetChild(i).gameObject);
+                // circles have one less child
+                if (i < pathContainer.transform.childCount - 1)
+                    Destroy(circlesContainer.transform.GetChild(i).gameObject);
             }
             Destroy(pathContainer);
             Destroy(circlesContainer);

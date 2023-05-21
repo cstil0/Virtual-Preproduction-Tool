@@ -64,7 +64,7 @@ public class SubmenusNavigate : MonoBehaviour
     void Update()
     {
         // MIRAR COM ES POT ESCURÇAR
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
         {
             // do it only once when the button is pressed and after button was released at least once
             if (!buttonDown)

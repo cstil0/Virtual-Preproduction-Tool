@@ -174,9 +174,13 @@ public class FollowPath : MonoBehaviour
                 startRotation = gameObject.transform.rotation;
                 startDiffPosition = handController.transform.position - startPosition;
 
-                pathPositions[0] = startPosition;
-                Transform firstPoint = pathContainer.transform.GetChild(0);
-                firstPoint.position = startPosition;
+                // relocate first path point according to the character's new position
+                if (pathPositions.Count > 0)
+                {
+                    pathPositions[0] = startPosition;
+                    Transform firstPoint = pathContainer.transform.GetChild(0);
+                    firstPoint.position = startPosition;
+                }
             }
         }
 
