@@ -44,46 +44,6 @@ public class ItemsMenuController : MonoBehaviour
         triggerOn = true;
     }
 
-    //// S'HA DE PROVAR SI FUNCIONA
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    OVRInput.Update();
-    //    // if button is pressed while hand is touching the menu, instantiate the object
-    //    if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
-    //    {
-    //        // do it only once when the button is pressed and after button was released at least once
-    //        if (!buttonDown && buttonReleasedOnce)
-    //        {
-    //buttonDown = true;
-    //// if button type is category, change menu to the corresponding one
-    //if (typeOfButton == eTypeOfButton.Category)
-    //{
-    //    ItemsMenu itemsMenu = canvas.GetComponent<ItemsMenu>();
-    //    itemsMenu.change_MenuButton(currMenuPanel, newMenuPanel);
-
-    //    // HO HE POSAT A L'ENABLE PER TANT JA NO HAURIA DE FER FALTA
-    //    //// change color to avoid having the hover one when comming back
-    //    //var colors = button.GetComponent<Button>().colors;
-    //    //colors.normalColor = Color.white;
-    //    //button.GetComponent<Button>().colors = colors;
-    //}
-
-    //// if button type is objet, spawn the corresponding item
-    //else if (typeOfButton == eTypeOfButton.Object)
-    //{
-    //    //isFirstTime = false;
-    //    ItemsMenu itemsMenu = canvas.GetComponent<ItemsMenu>();
-    //    itemsMenu.SpawnObject(itemPrefab, handController);
-    //}
-    //        }
-    //    }
-    //    else
-    //    {
-    //        buttonDown = false;
-    //        buttonReleasedOnce = true;
-    //    }
-    //}
-
     private void OnTriggerExit(Collider other)
     {
         var colors = button.GetComponent<Button>().colors;
@@ -115,64 +75,23 @@ public class ItemsMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // CREC QUE ESTARIA BÉ POSAR LES DUES ACCIONS EN AQUEST MATEIX SCRIPT, PERÒ NO M'HE ATREVIT A CANVIAR-HO PER ARA JA QUE HE FET MOLTS CANVIS
-        // TAMBÉ S'HA DE FER ENCARA EL CANVI DE MENUBUTTONACTION A AQUEST
         // if button is pressed and hand is touching the menu do an action
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
         {
-            //    // do it only once when the button is pressed and after button was released at least once
-            //    if (!buttonDown && buttonReleasedOnce)
-            //    {
-            //        buttonDown = true;
-            //        // if button type is category, change menu to the corresponding one
-            //        if (typeOfButton == eTypeOfButton.Category)
-            //        {
-            //            ChangeMenu();
-
-            //            // HO HE POSAT A L'ENABLE PER TANT JA NO HAURIA DE FER FALTA
-            //            //// change color to avoid having the hover one when comming back
-            //            //var colors = button.GetComponent<Button>().colors;
-            //            //colors.normalColor = Color.white;
-            //            //button.GetComponent<Button>().colors = colors;
-            //        }
-
-            //        // if button type is objet, spawn the corresponding item
-            //        else if (typeOfButton == eTypeOfButton.Object)
-            //        {
-            //            //isFirstTime = false;
-            //            SpawnObject();
-            //        }
-
-            //        // AIXÒ POTSER NO CAL
-            //        buttonReleasedOnce = false;
-            //    }
-            //}
-            //else
-            //{
-            //    buttonDown  = false;
-            //    buttonReleasedOnce = true;
-            //}
             // do it only once when the button is pressed and after button was released at least once
             if (!buttonDown)
-            {
                 buttonDown = true;
-            }
         }
         else
         {
+            if (!triggerOn)
+                buttonReleasedOnce = true;
+
             if (buttonDown && triggerOn && buttonReleasedOnce)
             {
                 // if button type is category, change menu to the corresponding one
                 if (typeOfButton == eTypeOfButton.Category)
-                {
                     ChangeMenu();
-
-                    // HO HE POSAT A L'ENABLE PER TANT JA NO HAURIA DE FER FALTA
-                    //// change color to avoid having the hover one when comming back
-                    //var colors = button.GetComponent<Button>().colors;
-                    //colors.normalColor = Color.white;
-                    //button.GetComponent<Button>().colors = colors;
-                }
 
                 // if button type is objet, spawn the corresponding item
                 else if (typeOfButton == eTypeOfButton.Object)
@@ -190,9 +109,6 @@ public class ItemsMenuController : MonoBehaviour
             }
             buttonDown = false;
         }
-        buttonReleasedOnce = true;
-
-
     }
     public void ChangeMenu()
     {

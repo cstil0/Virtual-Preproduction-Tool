@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Reflection;
 using System.Transactions;
 using TMPro;
 using Unity.Netcode;
@@ -531,6 +532,14 @@ public class FollowPathCamera : MonoBehaviour
         cinemachinePointsList.RemoveAt(pointNum + 1);
         cinemachinePoints = cinemachinePointsList.ToArray();
         cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+
+        //GameObject virtualCamera = cinemachineVirtualCamera.gameObject;
+        //CinemachineSmoothPath path = typeof(CinemachineDollyCart)
+        //.GetField("m_Path", BindingFlags.NonPublic | BindingFlags.Instance)
+        //.GetValue(cinemachineVirtualCamera.GetCinemachineComponent<CinemachineDollyCart>()) as CinemachineSmoothPath;
+        //Vector3[] bezierPoints = path.m_Waypoints;
+
+        //Vector3[] pathPoints = cinemachineSmoothPath.m_Path.Path;
     }
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)

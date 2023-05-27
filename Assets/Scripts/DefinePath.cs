@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -151,8 +152,6 @@ public class DefinePath : MonoBehaviour
         {
             spherePoint = Instantiate(spherePrefab);
             GameObject circlePoint = Instantiate(circlePrefab);
-            circlePoint.GetComponent<NetworkObject>().Spawn();
-            spherePoint.GetComponent<NetworkObject>().Spawn();
 
             // defined with trial and error
             //float circleOffset = -9.0f;
@@ -167,6 +166,7 @@ public class DefinePath : MonoBehaviour
             PathCirclesController pathCirclesController = circlePoint.GetComponent<PathCirclesController>();
             pathCirclesController.pathNum = itemsCount;
             pathCirclesController.pointNum = pointsCount;
+            circlePoint.GetComponent<NetworkObject>().Spawn();
         }
 
         PathSpheresController pathSpheresController;
@@ -201,6 +201,7 @@ public class DefinePath : MonoBehaviour
         spherePoint.transform.name = "Point " + pointsCount;
         spherePoint.transform.position = newPosition;
         spherePoint.transform.rotation = Quaternion.identity;
+        spherePoint.GetComponent<NetworkObject>().Spawn();
         spherePoint.transform.SetParent(pathContainer.transform);
     }
 
@@ -282,7 +283,6 @@ public class DefinePath : MonoBehaviour
         currLineRenderer.SetPositions(pathPositionsArray);
         currLineRenderer.positionCount = pointsCount - 1;
 
-        string minicameraName = "";
         // change following points name
         // start in second child since first one corresponds to the line renderer
         for (int i = 1; i < pathContainer.transform.childCount; i++)
@@ -291,7 +291,7 @@ public class DefinePath : MonoBehaviour
             {
                 // destroy minicamera
                 if (pathContainer.transform.GetChild(i).tag != "PathPoint")
-                    minicameraName = pathContainer.transform.GetChild(i).GetChild(1).name;
+                    Destroy(pathContainer.transform.GetChild(i).GetChild(1).gameObject);
 
                 Destroy(pathContainer.transform.GetChild(i).gameObject);
             }
@@ -324,9 +324,6 @@ public class DefinePath : MonoBehaviour
         HoverObjects.instance.currentMiniCameraCollider = null;
         HoverObjects.instance.pointAlreadySelected = false;
         HoverObjects.instance.miniCameraAlreadySelected = false;
-
-        if (minicameraName != "")
-            Destroy(GameObject.Find(minicameraName));
     }
 
     public void reassignPathCanvas(int cameraNum)
@@ -358,7 +355,6 @@ public class DefinePath : MonoBehaviour
         }
     }
 
-    // NEEDS DEVELOPEMENT
     public void changePathColor(GameObject pathContainer, Color pathColor, bool isActive)
     {
         for (int i = 0; i < pathContainer.transform.childCount; i++)
@@ -391,29 +387,15 @@ public class DefinePath : MonoBehaviour
                     Renderer renderer = currChild.GetComponent<Renderer>();
                     Material material = renderer.material;
                     material.color = pathColor;
+
+                    // find circles and change their color for characters
+                    string pathName = pathContainer.name;
+                    string[] splittedName = pathName.Split(" ");
+                    int pathNum = int.Parse(splittedName[1]);
+                    HoverObjects.instance.callHoverPointEvent(pathNum, i - 1, pathColor);
                 }
             }
         }
-
-        string pathName = pathContainer.name;
-        string[] splittedName = pathName.Split(" ");
-
-        try
-        {
-            // find circles and change their color for characters
-            int pathNum = int.Parse(splittedName[1]);
-            GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
-            for (int i = 0; i < circlesContainer.transform.childCount; i++)
-            {
-                GameObject currChild = circlesContainer.transform.GetChild(i).gameObject;
-
-                Renderer renderer = currChild.GetComponent<Renderer>();
-                Material material = renderer.material;
-                material.color = pathColor;
-            }
-                
-        }
-        catch (Exception e) {}
     }
 
     //public int getItemsCount()

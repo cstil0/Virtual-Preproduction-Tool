@@ -16357,6 +16357,10 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
+  previousButton: {fileID: 0}
+  nextButton: {fileID: 0}
+  disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  activeColor: {r: 0, g: 0, b: 0, a: 0}
   buttonType: 1
 --- !u!54 &750011089
 Rigidbody:
@@ -21567,6 +21571,10 @@ MonoBehaviour:
   adp: {fileID: 908388039}
   buttonsPerPage: 3
   currentMenu: {fileID: 908388035}
+  previousButton: {fileID: 993649104}
+  nextButton: {fileID: 1635278469}
+  disabledColor: {r: 1, g: 1, b: 1, a: 0.29803923}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   buttonType: 0
 --- !u!1 &1002512648
 GameObject:
@@ -21865,6 +21873,10 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
+  previousButton: {fileID: 0}
+  nextButton: {fileID: 0}
+  disabledColor: {r: 0, g: 0, b: 0, a: 0}
+  activeColor: {r: 0, g: 0, b: 0, a: 0}
   buttonType: 0
 --- !u!54 &1010913933
 Rigidbody:
@@ -34923,6 +34935,10 @@ MonoBehaviour:
   adp: {fileID: 908388039}
   buttonsPerPage: 3
   currentMenu: {fileID: 908388035}
+  previousButton: {fileID: 993649104}
+  nextButton: {fileID: 1635278469}
+  disabledColor: {r: 1, g: 1, b: 1, a: 0.29803923}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
   buttonType: 1
 --- !u!1 &1635773782
 GameObject:

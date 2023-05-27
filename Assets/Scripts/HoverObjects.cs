@@ -141,6 +141,8 @@ public class HoverObjects : MonoBehaviour
                     continue;
 
                 GameObject currPoint = null;
+                FollowPath followPath = null;
+                FollowPathCamera followPathCamera = null;
                 if (pathContainerTrans.GetChild(i).tag == "PathPoint")
                     currPoint = pathContainerTrans.GetChild(i).gameObject;
                 else
@@ -148,16 +150,43 @@ public class HoverObjects : MonoBehaviour
                     currPoint = pathContainerTrans.GetChild(i).GetChild(0).gameObject;
                     GameObject currMiniCamera = pathContainerTrans.GetChild(i).GetChild(1).gameObject;
 
-                    currMiniCamera.GetComponent<CameraRotationController>().isSelected = false;
+                    CameraRotationController cameraRotationController = currMiniCamera.GetComponent<CameraRotationController>();
+                    cameraRotationController.isSelected = false;
+                    followPathCamera = cameraRotationController.followPathCamera;
                     Renderer cameraRenderer = currPoint.GetComponent<Renderer>();
                     Material cameraMaterial = cameraRenderer.material;
-                    cameraMaterial.color = DefinePath.instance.defaultLineColor;
+
+                    if (followPathCamera.isSelectedForPath)
+                        cameraMaterial.color = DefinePath.instance.selectedLineColor;
+                    else
+                        cameraMaterial.color = DefinePath.instance.defaultLineColor;
                 }
 
-                currPoint.GetComponent<PathSpheresController>().isSelected = false;
+                PathSpheresController pathSpheresController = currPoint.GetComponent<PathSpheresController>();
+                pathSpheresController.isSelected = false;
+                followPath = pathSpheresController.followPath;
                 Renderer renderer = currPoint.GetComponent<Renderer>();
                 Material parentMaterial = renderer.material;
-                parentMaterial.color = DefinePath.instance.defaultLineColor;
+
+                if (followPath != null)
+                {
+                    Color color = DefinePath.instance.defaultLineColor;
+                    if (followPath.isSelectedForPath)
+                        color = DefinePath.instance.selectedLineColor;
+
+                    parentMaterial.color = color;
+
+                    int pathNum = pathSpheresController.pathNum;
+                    int pathPointNum = pathSpheresController.pointNum;
+                    OnPathPointHovered(pathNum, pointNum, color);
+                }
+                if (followPathCamera != null)
+                {
+                    if (followPathCamera.isSelectedForPath)
+                        parentMaterial.color = DefinePath.instance.selectedLineColor;
+                    else
+                        parentMaterial.color = DefinePath.instance.defaultLineColor;
+                }
             }
         }
     }
@@ -266,15 +295,18 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != followPath.isSelectedForPath)
                 {
+                    bool isSelected = followPath.isSelectedForPath;
                     GameObject itemControlMenu = other.transform.Find("ItemControlMenu").gameObject;
-                    itemControlMenu.GetComponent<Canvas>().enabled = followPath.isSelectedForPath;
+                    itemControlMenu.GetComponent<Canvas>().enabled = isSelected;
 
                     currentSelectedForPath = other.gameObject;
-                    Color color = followPath.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.blue;
+                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
 
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = followPath.isSelectedForPath;
-                    deselectAllItems();
+
+                    if (isSelected)
+                        deselectAllItems();
                 }
             }
 
@@ -282,11 +314,14 @@ public class HoverObjects : MonoBehaviour
             {
                 if (itemAlreadySelected != objectsSelector.isSelected)
                 {
+                    bool isSelected = objectsSelector.isSelected;
                     currentSelectedForPath = other.gameObject;
-                    Color color = objectsSelector.isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
                     changeColorMaterials(currentItemCollider, color);
                     itemAlreadySelected = objectsSelector.isSelected;
-                    deselectAllItems();
+
+                    if (isSelected) 
+                        deselectAllItems();                    
                 }
             }
         }
@@ -304,12 +339,15 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != followPathCamera.isSelectedForPath)
                 {
+                    bool isSelected = followPathCamera.isSelectedForPath;
                     currentSelectedForPath = other.gameObject;
-                    Color color = followPathCamera.isSelectedForPath ? DefinePath.instance.selectedLineColor : Color.black;
+                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.black;
 
                     changeColorMaterials(currentItemCollider, color);
-                    itemAlreadySelected = followPathCamera.isSelectedForPath;
-                    deselectAllItems();
+                    itemAlreadySelected = isSelected;
+
+                    if (isSelected)
+                        deselectAllItems();
 
                     string[] splittedName = currentSelectedForPath.name.Split(" ");
                     int cameraNum = int.Parse(splittedName[1]);
@@ -532,6 +570,11 @@ public class HoverObjects : MonoBehaviour
 
             currentMiniCameraCollider = null;
         }
+    }
+
+    public void callHoverPointEvent(int pathNum, int pointNum, Color color)
+    {
+        OnPathPointHovered(pathNum, pointNum, color);
     }
 
     // Start is called before the first frame update
