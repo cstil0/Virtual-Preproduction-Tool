@@ -16359,8 +16359,7 @@ MonoBehaviour:
   currentMenu: {fileID: 818087570}
   previousButton: {fileID: 0}
   nextButton: {fileID: 0}
-  disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  activeColor: {r: 0, g: 0, b: 0, a: 0}
+  isEnabled: 0
   buttonType: 1
 --- !u!54 &750011089
 Rigidbody:
@@ -21354,13 +21353,13 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1351307110}
-        m_TargetAssemblyTypeName: PipeSender, Assembly-CSharp
-        m_MethodName: sendDist
+      - m_Target: {fileID: 602565770}
+        m_TargetAssemblyTypeName: DirectorPanelManager, Assembly-CSharp
+        m_MethodName: onScreenDistanceChange
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 992434894}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 992434896}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Slider, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -21573,8 +21572,7 @@ MonoBehaviour:
   currentMenu: {fileID: 908388035}
   previousButton: {fileID: 993649104}
   nextButton: {fileID: 1635278469}
-  disabledColor: {r: 1, g: 1, b: 1, a: 0.29803923}
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  isEnabled: 0
   buttonType: 0
 --- !u!1 &1002512648
 GameObject:
@@ -21875,8 +21873,7 @@ MonoBehaviour:
   currentMenu: {fileID: 818087570}
   previousButton: {fileID: 0}
   nextButton: {fileID: 0}
-  disabledColor: {r: 0, g: 0, b: 0, a: 0}
-  activeColor: {r: 0, g: 0, b: 0, a: 0}
+  isEnabled: 0
   buttonType: 0
 --- !u!54 &1010913933
 Rigidbody:
@@ -29235,7 +29232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1351307109
 Transform:
   m_ObjectHideFlags: 0
@@ -34937,8 +34934,7 @@ MonoBehaviour:
   currentMenu: {fileID: 908388035}
   previousButton: {fileID: 993649104}
   nextButton: {fileID: 1635278469}
-  disabledColor: {r: 1, g: 1, b: 1, a: 0.29803923}
-  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  isEnabled: 0
   buttonType: 1
 --- !u!1 &1635773782
 GameObject:
