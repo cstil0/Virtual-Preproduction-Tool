@@ -77,7 +77,6 @@ public class ItemsControlButtons : MonoBehaviour
 
             if (followPathCamera != null)
                 followPathCamera.isSelectedForPath = true;
-
         }
     }
 
@@ -112,17 +111,20 @@ public class ItemsControlButtons : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
         {
             if (triggerButtonDown == false)
+                triggerButtonDown = true;
+        }
+        else
+        {
+            if (triggerButtonDown && triggerOn)
             {
                 if (buttonType == eButtonType.TRASH)
                     onTrashPressed();
                 if (buttonType == eButtonType.LOCK)
                     onLockPressed();
-
-                triggerButtonDown = true;
             }
-        }
-        else
+
             triggerButtonDown = false;
+        }
 
         if (buttonType == eButtonType.HEIGHT)
         {
@@ -165,6 +167,15 @@ public class ItemsControlButtons : MonoBehaviour
         }
 
         Destroy(item);
+
+        if (followPath != null)
+            followPath.isSelectedForPath = true;
+
+        if (followPathCamera != null)
+            followPathCamera.isSelectedForPath = true;
+
+        HoverObjects.instance.currentItemCollider = null;
+        HoverObjects.instance.itemAlreadySelected = false;
 
         UDPSender.instance.sendDeleteItemToDirector(itemName);
     }

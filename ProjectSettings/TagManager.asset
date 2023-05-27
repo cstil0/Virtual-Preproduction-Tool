@@ -10,6 +10,7 @@ TagManager:
   - PathPoint
   - PathContainer
   - PathMinicamera
+  - CirclesContainer
   layers:
   - Default
   - TransparentFX

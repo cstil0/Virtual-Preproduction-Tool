@@ -9,6 +9,7 @@ using System.Transactions;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -340,9 +341,15 @@ public class FollowPathCamera : MonoBehaviour
                 pathContainer = containers[0];
             }
             else
-                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
+            {
+                // add bezier points to show the interpolated path to the user
+                LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+                addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
 
-            yield return new WaitForSeconds(1.0f);
+                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
+            }
+
+            yield return new WaitForSeconds(0.2f);
 
             UDPSender.instance.sendPointPath(gameObject, newPoint);
             yield return new WaitForSeconds(0.1f);
@@ -352,15 +359,52 @@ public class FollowPathCamera : MonoBehaviour
         //GameObject newMiniCamera = Instantiate(miniCamera);
     }
 
-    void removeCinemachinePoints()
+    void addBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, float pathLength)
     {
-        CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
-        List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>(wayPoints);
+        float count = pathLength - 1;
+        for (int i = 1; i < cinemachineSmoothPath.m_Resolution + 1; i++)
+        {
+            float step = 1.0f / (float)cinemachineSmoothPath.m_Resolution;
+            Vector3 bezierPosition = cinemachineSmoothPath.EvaluatePosition(count);
+            lineRenderer.positionCount += 1;
+            lineRenderer.SetPosition(lineRenderer.positionCount - 1, bezierPosition);
 
-        while (wayPointsList.Count > 0) {
-            wayPointsList.RemoveAt(0);
-            wayPoints = wayPointsList.ToArray();
-            cinemachineSmoothPath.m_Waypoints = wayPoints;
+            count += step;
+        }
+    }
+
+    void removeBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, int pointNum)
+    {
+        int pointsCount = lineRenderer.positionCount;
+        Vector3[] pathPositionsArray = new Vector3[pointsCount];
+        lineRenderer.GetPositions(pathPositionsArray);
+        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
+        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
+
+        int resolution = cinemachineSmoothPath.m_Resolution;
+
+        int count = (pointNum + 1) * resolution;
+        for (int i = resolution - 1; i >= 0 ; i--)
+        {
+            pathPositionsList.RemoveAt(count);
+            count -= 1;
+        }
+
+        pathPositionsArray = pathPositionsList.ToArray();
+        lineRenderer.SetPositions(pathPositionsArray);
+        lineRenderer.positionCount = pathPositionsArray.Length;
+
+        if (pointNum < (int)cinemachineSmoothPath.PathLength)
+        {
+            float countFloat = pointNum + 1;
+            for (int i = 1; i < cinemachineSmoothPath.m_Resolution + 1; i++)
+            {
+                float step = 1.0f / (float)cinemachineSmoothPath.m_Resolution;
+                Vector3 bezierPosition = cinemachineSmoothPath.EvaluatePosition(countFloat);
+                lineRenderer.SetPosition(pointNum * resolution + i, bezierPosition);
+
+                countFloat += step;
+            }
         }
     }
 
@@ -386,59 +430,15 @@ public class FollowPathCamera : MonoBehaviour
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
 
             rotationController.transform.rotation = startRotation;
-            //gameObject.transform.position = startPosition;
-            //gameObject.transform.rotation = startRotation;
 
             GameObject dollyTracker = cinemachineSmoothPath.gameObject;
             dollyTracker.transform.rotation = startRotation;
             //startPosition = dollyTracker.transform.position;
 
             GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
-
-            //foreach (GameObject path in paths)
-            //{
-            //    if (path.name != "Path " + gameObject.name)
-            //        continue;
-
-
-            //    //removeCinemachinePoints();
-            //    CinemachineSmoothPath.Waypoint[] wayPoints = new CinemachineSmoothPath.Waypoint[0];
-            //    List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>();
-            //    CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
-
-            //    newWayPoint.position = new Vector3(0.0f, 0.0f, 0.0f);
-            //    newWayPoint.roll = 0.0f;
-            //    wayPointsList.Add(newWayPoint);
-            //    for (int i = 0; i < path.transform.childCount - 1; i++)
-            //    {
-            //        Transform currPoint = path.transform.GetChild(i + 1);
-
-            //        Vector3 currPosition = currPoint.position;
-            //        Quaternion currRotation = currPoint.GetChild(0).rotation;
-            //        Debug.Log("CURR POS: " + currPosition);
-
-            //        ////Vector3 currPosition = currPoint.GetChild(1).position;
-            //        pathPositions[i + 1] = currPosition;
-            //        pathRotations[i + 1] = currRotation.eulerAngles;
-
-            //        // update cinemachine points
-            //        Vector3 newPointCinemachineWrong = startPosition - currPosition;
-            //        Vector3 newPointCinemachine = new Vector3(newPointCinemachineWrong.x, - newPointCinemachineWrong.y, newPointCinemachineWrong.z);
-            //        newWayPoint = new CinemachineSmoothPath.Waypoint();
-            //        newWayPoint.position = newPointCinemachine;
-            //        newWayPoint.roll = 0.0f;
-            //        wayPointsList.Add(newWayPoint);
-            //        wayPoints = wayPointsList.ToArray();
-            //        cinemachineSmoothPath.m_Waypoints = wayPoints;
-                //}
-            //}
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        //if (udpSenderCamera.transform.name == gameObject.transform.name && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-        //{
-        //    //UDPSender.instance.SendPosRot();
-        //}
 
         isPlaying = !isPlaying;
     }
@@ -448,8 +448,6 @@ public class FollowPathCamera : MonoBehaviour
         isPlaying = false;
         cinemachineTrackedDolly.m_PathPosition = 0;
         rotationController.transform.rotation = startRotation;
-        //gameObject.transform.position = startPosition;
-        //gameObject.transform.rotation = startRotation;
         currPathPosition = 0;
 
         GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
@@ -471,10 +469,6 @@ public class FollowPathCamera : MonoBehaviour
         }
 
         Camera udpSenderCamera = UDPSender.instance.screenCamera;
-        //if (udpSenderCamera.transform == gameObject.transform && ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-        //{
-        //    UDPSender.instance.SendPosRot();
-        //}
     }
 
     int getGlobalPathID(int localPathID)
@@ -522,7 +516,8 @@ public class FollowPathCamera : MonoBehaviour
 
     public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
-        pathPositions.RemoveAt(pointNum);
+        pathPositions.RemoveAt(pointNum - 1);
+
         if (deleteLine)
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
 
@@ -533,13 +528,8 @@ public class FollowPathCamera : MonoBehaviour
         cinemachinePoints = cinemachinePointsList.ToArray();
         cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
 
-        //GameObject virtualCamera = cinemachineVirtualCamera.gameObject;
-        //CinemachineSmoothPath path = typeof(CinemachineDollyCart)
-        //.GetField("m_Path", BindingFlags.NonPublic | BindingFlags.Instance)
-        //.GetValue(cinemachineVirtualCamera.GetCinemachineComponent<CinemachineDollyCart>()) as CinemachineSmoothPath;
-        //Vector3[] bezierPoints = path.m_Waypoints;
-
-        //Vector3[] pathPoints = cinemachineSmoothPath.m_Path.Path;
+        LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+        removeBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pointNum - 1);
     }
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)

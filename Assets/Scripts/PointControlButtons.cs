@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
+using UnityEngine.Tilemaps;
 
 public class PointControlButtons : MonoBehaviour
 {
@@ -107,17 +108,20 @@ public class PointControlButtons : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
         {
             if (triggerButtonDown == false)
+                triggerButtonDown = true;
+        }
+        else
+        {
+            if (triggerButtonDown && triggerOn)
             {
                 if (buttonType == eButtonType.TRASH)
                     onTrashPressed();
                 if (buttonType == eButtonType.LEVEL)
                     onLevelPressed();
-
-                triggerButtonDown = true;
             }
-        }
-        else
+
             triggerButtonDown = false;
+        }
     }
 
     void onTrashPressed()
@@ -128,12 +132,14 @@ public class PointControlButtons : MonoBehaviour
             splittedName = point.name.Split(" ");
             int pointNum = int.Parse(splittedName[1]);
             followPath.deletePathPoint(pointNum);
+            followPath.isSelectedForPath = true;
         }
         else if (followPathCamera != null)
         {
             splittedName = point.transform.parent.name.Split(" ");
             int pointNum = int.Parse(splittedName[1]);
             followPathCamera.deletePathPoint(pointNum);
+            followPathCamera.isSelectedForPath = true;
         }
 
     }

@@ -127,6 +127,9 @@ public class DefinePath : MonoBehaviour
             GameObject miniCamera = Instantiate(miniCameraPrefab);
             GameObject cameraCanvas = Instantiate(cameraCanvasPrefab);
 
+            spherePoint.transform.position = newPosition;
+            spherePoint.transform.rotation = Quaternion.identity;
+
             GameObject cameraImage = cameraCanvas.transform.GetChild(0).gameObject;
             RawImage rawImage = cameraImage.GetComponent<RawImage>();
             // assign necessary properties
@@ -135,8 +138,8 @@ public class DefinePath : MonoBehaviour
             rawImage.texture = miniCameraTextures[pointsCount];
             cameraCanvas.GetComponent<Canvas>().worldCamera = miniCameraComponent;
 
-            miniCamera.GetComponent<NetworkObject>().Spawn();
             spherePoint.GetComponent<NetworkObject>().Spawn();
+            miniCamera.GetComponent<NetworkObject>().Spawn();
             cameraCanvas.GetComponent<NetworkObject>().Spawn();
 
             miniCamera.transform.SetParent(spherePoint.transform);
@@ -153,6 +156,12 @@ public class DefinePath : MonoBehaviour
             spherePoint = Instantiate(spherePrefab);
             GameObject circlePoint = Instantiate(circlePrefab);
 
+            spherePoint.transform.position = newPosition;
+            spherePoint.transform.rotation = Quaternion.identity;
+
+            spherePoint.GetComponent<NetworkObject>().Spawn();
+            circlePoint.GetComponent<NetworkObject>().Spawn();
+
             // defined with trial and error
             //float circleOffset = -9.0f;
             if (startDifferenceY == 0.0f)
@@ -166,7 +175,6 @@ public class DefinePath : MonoBehaviour
             PathCirclesController pathCirclesController = circlePoint.GetComponent<PathCirclesController>();
             pathCirclesController.pathNum = itemsCount;
             pathCirclesController.pointNum = pointsCount;
-            circlePoint.GetComponent<NetworkObject>().Spawn();
         }
 
         PathSpheresController pathSpheresController;
@@ -199,9 +207,6 @@ public class DefinePath : MonoBehaviour
         pathSpheresController.pointNum = pointsCount;
 
         spherePoint.transform.name = "Point " + pointsCount;
-        spherePoint.transform.position = newPosition;
-        spherePoint.transform.rotation = Quaternion.identity;
-        spherePoint.GetComponent<NetworkObject>().Spawn();
         spherePoint.transform.SetParent(pathContainer.transform);
     }
 
@@ -259,29 +264,12 @@ public class DefinePath : MonoBehaviour
 
         GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
 
-        GameObject line = pathContainer.transform.GetChild(0).gameObject;
-        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
-
-        currLineRenderer.positionCount += 1;
-        currLineRenderer.SetPosition(pointsCount, newPosition);
-
         addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
     }
 
-    public void deletePointFromPath(GameObject pathContainer, int pointNum)
+    public void deletePointFromPath(GameObject pathContainer, int pointNum, GameObject circlesContainer = null)
     {
         GameObject line = pathContainer.transform.Find("Line").gameObject;
-        LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
-        int pointsCount = currLineRenderer.positionCount;
-        Vector3[] pathPositionsArray = new Vector3[pointsCount];
-        currLineRenderer.GetPositions(pathPositionsArray);
-        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
-        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
-        pathPositionsList.RemoveAt(pointNum);
-
-        pathPositionsArray = pathPositionsList.ToArray();
-        currLineRenderer.SetPositions(pathPositionsArray);
-        currLineRenderer.positionCount = pointsCount - 1;
 
         // change following points name
         // start in second child since first one corresponds to the line renderer
@@ -294,6 +282,9 @@ public class DefinePath : MonoBehaviour
                     Destroy(pathContainer.transform.GetChild(i).GetChild(1).gameObject);
 
                 Destroy(pathContainer.transform.GetChild(i).gameObject);
+
+                if (circlesContainer != null)
+                    Destroy(circlesContainer.transform.GetChild(i - 1).gameObject);
             }
             // the substraction is due to the fact we are starting at the second position
             else if (i - 1 > pointNum)
@@ -303,6 +294,10 @@ public class DefinePath : MonoBehaviour
                     GameObject pathSphere = pathContainer.transform.GetChild(i).gameObject;
                     pathSphere.name = "Point " + (i - 2);
                     pathSphere.GetComponent<PathSpheresController>().pointNum = i - 2;
+
+                    GameObject circle = circlesContainer.transform.GetChild(i - 1).gameObject;
+                    circle.name = "Circle " + (i - 2);
+                    circle.GetComponent<PathCirclesController>().pointNum = i - 2;
                 }
                 else
                 {

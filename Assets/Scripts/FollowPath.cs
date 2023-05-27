@@ -1,3 +1,4 @@
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -144,7 +145,6 @@ public class FollowPath : MonoBehaviour
                 if(pointsCount == 0)
                 {
                     StartCoroutine(defineNewPathPoint(handController.transform.position));
-                    //pathNum = DefinePath.instance.getItemsCount();
                 }
 
                 changePathColor();
@@ -225,39 +225,6 @@ public class FollowPath : MonoBehaviour
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
         }
-        
-
-        // navigate through paths and delete them
-        //if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.A))
-        //{
-        //    if (!AButtonDown)
-        //    {
-        //        AButtonDown = true;
-        //        currentSelectedPath += 1;
-        //        if (currentSelectedPath > lastCharacterPathID)
-        //            currentSelectedPath = 1;
-        //        hoverCurrentPath();
-        //    }
-        //}
-        //else
-        //    AButtonDown = false;
-        
-        //if (isSelectedForPath && OVRInput.Get(OVRInput.RawButton.B))
-        //{
-        //    if (!BButtonDown)
-        //    {
-        //        BButtonDown = true;
-        //        //deleteCurrentPath();
-        //        //relocatePathButtons();
-        //        currentSelectedPath = 0;
-        //    }
-        //}
-        //else
-        //    BButtonDown = false;
-
-        //// restablish current selected Path if character is not selected
-        //if (currentSelectedPath != 0 && !isSelectedForPath)
-        //    currentSelectedPath = 0;
     }
 
     public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
@@ -278,10 +245,14 @@ public class FollowPath : MonoBehaviour
                 pathContainer = containers[0];
                 circlesContainer = containers[1];
             }
-            else 
+            else
+            {
+                LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+                addLineRendererPoint(lineRenderer, controllerPos, pointsCount - 1);
                 DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
+            }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.2f);
             
             // send new path point from assistant to director so that he can also play and visualize paths
             UDPSender.instance.sendPointPath(gameObject, newPoint);
@@ -338,55 +309,35 @@ public class FollowPath : MonoBehaviour
         }
     }
 
-    int getGlobalPathID(int localPathID)
+    void addLineRendererPoint(LineRenderer lineRenderer, Vector3 newPosition, int pointsCount)
     {
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        Transform panel = pathButtons.GetChild(0);
-        for (int i = 0; i < panel.transform.childCount; i++)
-        {
-            GameObject currentChild = panel.transform.GetChild(i).gameObject;
-            GameObject text = currentChild.transform.GetChild(0).gameObject;
-            string pathName = text.GetComponent<TextMeshProUGUI>().text;
-            return int.Parse(pathName.Split(" ")[1]); 
-        }
-
-        return 0;
+        lineRenderer.positionCount += 1;
+        lineRenderer.SetPosition(pointsCount, newPosition);
     }
 
-    void hoverCurrentPath()
+    void removeLineRendererPoint(LineRenderer lineRenderer, int pointNum) 
     {
-        Transform pathButtons = gameObject.transform.Find("Paths buttons");
-        Transform panel = pathButtons.GetChild(0);
+        int pointsCount = lineRenderer.positionCount;
+        Vector3[] pathPositionsArray = new Vector3[pointsCount];
+        lineRenderer.GetPositions(pathPositionsArray);
+        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
+        List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
+        pathPositionsList.RemoveAt(pointNum);
 
-        for (int i = 0; i < panel.childCount; i++)
-        {
-            GameObject pathButton = panel.GetChild(i).gameObject;
-            if (!pathButton.GetComponent<Image>().enabled)
-                continue;
-
-            // get path ID
-            GameObject text = pathButton.transform.GetChild(0).gameObject;
-            string pathName = text.GetComponent<TextMeshProUGUI>().text;
-            int pathID = int.Parse(pathName.Split(" ")[1]);
-            Color pathColor = new Color();
-            if (i == currentSelectedPath - 1)
-                pathColor = DefinePath.instance.hoverLineColor;
-            else
-                pathColor = DefinePath.instance.selectedLineColor;
-
-            ColorBlock buttonColors = pathButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = pathColor;
-            pathButton.GetComponent<Button>().colors = buttonColors;
-            DefinePath.instance.changePathColor(pathContainer, pathColor, true);
-        }
+        pathPositionsArray = pathPositionsList.ToArray();
+        lineRenderer.SetPositions(pathPositionsArray);
+        lineRenderer.positionCount = pointsCount - 1;
     }
+
 
     public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
         pathPositions.RemoveAt(pointNum);
+        LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+        removeLineRendererPoint(lineRenderer, pointNum);
 
         if (deleteLine)
-            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+            DefinePath.instance.deletePointFromPath(pathContainer, pointNum, circlesContainer);
         pointsCount--;
     }
 
