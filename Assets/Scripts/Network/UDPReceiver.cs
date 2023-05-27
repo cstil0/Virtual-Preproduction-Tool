@@ -72,6 +72,7 @@ public class UDPReceiver : MonoBehaviour
         DELETE_POINT,
         DELETE_ITEM,
         CHANGE_CAMERA,
+        CHANGE_SCREEN_DISTANCE,
         SHOW_HIDE_GRID,
         CHANGE_LIGHT_COLOR,
         CHANGE_LIGHT_INTENSITY
@@ -399,6 +400,11 @@ public class UDPReceiver : MonoBehaviour
         UDPSender.instance.sendChangeCameraScreen(changeCameraMessage);
     }
 
+    void parseChangeScreenDistance(string changeDistanceMessage)
+    {
+        UDPSender.instance.sendChangeScreenDistanceAssistant(changeDistanceMessage);
+    }
+
     void parseShowHideGrid(bool isShowed)
     {
         DirectorPanelManager.instance.grid.SetActive(isShowed);
@@ -554,6 +560,9 @@ public class UDPReceiver : MonoBehaviour
                         case eDirectorToAssistantMessages.CHANGE_CAMERA:
                             string receivedChangeCamera = splittedMessage[1];
                             parseChangeCamera(receivedChangeCamera);
+                            break;
+                        case eDirectorToAssistantMessages.CHANGE_SCREEN_DISTANCE:
+                            parseChangeScreenDistance(splittedMessage[1]);
                             break;
                         case eDirectorToAssistantMessages.SHOW_HIDE_GRID:
                             bool isShowed = bool.Parse(splittedMessage[1]);

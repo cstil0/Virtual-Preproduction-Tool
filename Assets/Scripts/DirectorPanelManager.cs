@@ -70,14 +70,14 @@ public class DirectorPanelManager : MonoBehaviour
         ColorBlock buttonColors = firstInput.colors;
         buttonColors.normalColor = selectedColor;
         firstInput.colors = buttonColors;
+
+        float distance = distanceSlider.GetComponent<Slider>().value;
+        distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float distance = distanceSlider.GetComponent<Slider>().value;
-        distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
-
         if (OVRInput.Get(OVRInput.RawButton.X))
         {
             if (!isXbuttonDown)
@@ -245,4 +245,12 @@ public class DirectorPanelManager : MonoBehaviour
             //pointsView.SetActive(false);
         }
     } 
+
+    public void onScreenDistanceChange(Slider distanceSlider)
+    {
+        float distance = distanceSlider.GetComponent<Slider>().value;
+        distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
+
+        UDPSender.instance.sendChangeScreenDistance(distance);
+    }
 }

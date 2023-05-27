@@ -71,6 +71,11 @@ public class UDPSender : MonoBehaviour
         sendInfo(directoToAssistantPort, "CHANGE_CAMERA:" + cameraNum);
     }
 
+    public void sendChangeScreenDistance(float distance)
+    {
+        sendInfo(directoToAssistantPort, "CHANGE_SCREEN_DISTANCE:" + distance);
+    }
+
     public void sendDeletePoint(int pointNum, string name)
     {
         try
@@ -154,6 +159,11 @@ public class UDPSender : MonoBehaviour
         GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
         screenCamera = currentCamera.GetComponent<Camera>();
         sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
+    }
+
+    public void sendChangeScreenDistanceAssistant(string changeDistanceMessage)
+    {
+        sendInfo(assistantToScreenPort, "CHANGE_SCREEN_DISTANCE:" + changeDistanceMessage);
     }
 
     void sendCameraType()
