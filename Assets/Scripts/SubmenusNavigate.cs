@@ -35,10 +35,19 @@ public class SubmenusNavigate : MonoBehaviour
         buttonDown = false;
         buttonReleasedOnce = false;
 
+        StartCoroutine(init());
+    }
+
+    IEnumerator init()
+    {
+        while(adp.buttonsCount == 0) { yield return null; }
+
         if (buttonType == ebuttonType.PREVIOUS)
             isEnabled = false;
-        else
+        else if (adp.currentPage + 1 < adp.buttonsCount / buttonsPerPage)
             isEnabled = true;
+        else
+            isEnabled = false;
 
         changeButtonColor(gameObject.GetComponent<Button>(), Color.white, isEnabled);
     }
@@ -94,14 +103,25 @@ public class SubmenusNavigate : MonoBehaviour
                         changeButtonColor(nextButton, Color.white, true);
                         nextButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
-                        int startButton = adp.currentPage * 3;
+                        if (adp.currentPage - 1 < 0)
+                        {
+                            isEnabled = false;
+                            changeButtonColor(previousButton, Color.white, isEnabled);
+                        }
+                        else
+                        {
+                            isEnabled = true;
+                            changeButtonColor(previousButton, Color.white, isEnabled);
+                        }
+
+                        int startButton = adp.currentPage * buttonsPerPage;
                         for (int i = startButton; i < startButton + 3; i++)
                         {
                             if (i < adp.buttonsCount)
                                 currentMenu.transform.GetChild(i).gameObject.SetActive(true);
                         }
 
-                        for (int i = startButton + 3; i < startButton + 6; i++)
+                        for (int i = startButton + buttonsPerPage; i < startButton + buttonsPerPage * 2; i++)
                         {
                             if (i < adp.buttonsCount)
                                 currentMenu.transform.GetChild(i).gameObject.SetActive(false);
@@ -115,7 +135,7 @@ public class SubmenusNavigate : MonoBehaviour
                 }
                 else if (buttonType == ebuttonType.NEXT)
                 {
-                    if (adp.currentPage + 1 < adp.buttonsCount / 3)
+                    if (adp.currentPage + 1 < adp.buttonsCount / buttonsPerPage)
                     {
                         adp.currentPage++;
 
@@ -123,10 +143,21 @@ public class SubmenusNavigate : MonoBehaviour
                         changeButtonColor(previousButton, Color.white, true);
                         previousButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
-                        int startButton = adp.currentPage * 3;
+                        if (adp.currentPage + 1 >= adp.buttonsCount / buttonsPerPage)
+                        {
+                            isEnabled = false;
+                            changeButtonColor(nextButton, Color.white, isEnabled);
+                        }
+                        else
+                        {
+                            isEnabled = true;
+                            changeButtonColor(nextButton, Color.white, isEnabled);
+                        }
+
+                        int startButton = adp.currentPage * buttonsPerPage;
                         if (adp.currentPage - 1 >= 0)
                         {
-                            for (int i = startButton - 3; i < startButton; i++)
+                            for (int i = startButton - buttonsPerPage; i < startButton; i++)
                             {
                                 if (i < adp.buttonsCount)
                                     currentMenu.transform.GetChild(i).gameObject.SetActive(false);
@@ -135,7 +166,7 @@ public class SubmenusNavigate : MonoBehaviour
 
                         if (startButton < adp.buttonsCount)
                         {
-                            for (int i = startButton; i < startButton + 3; i++)
+                            for (int i = startButton; i < startButton + buttonsPerPage; i++)
                             {
                                 if (i < adp.buttonsCount)
                                     currentMenu.transform.GetChild(i).gameObject.SetActive(true);

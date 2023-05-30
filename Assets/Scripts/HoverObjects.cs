@@ -100,6 +100,9 @@ public class HoverObjects : MonoBehaviour
                     followPath.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.white);
                     followPath.changePathColor();
+
+                    GameObject itemControlMenu = currItem.transform.Find("ItemControlMenu").gameObject;
+                    itemControlMenu.GetComponent<Canvas>().enabled = false;
                 }
             }
 
@@ -153,13 +156,14 @@ public class HoverObjects : MonoBehaviour
                     CameraRotationController cameraRotationController = currMiniCamera.GetComponent<CameraRotationController>();
                     cameraRotationController.isSelected = false;
                     followPathCamera = cameraRotationController.followPathCamera;
-                    Renderer cameraRenderer = currPoint.GetComponent<Renderer>();
-                    Material cameraMaterial = cameraRenderer.material;
 
                     if (followPathCamera.isSelectedForPath)
-                        cameraMaterial.color = DefinePath.instance.selectedLineColor;
+                        changeColorMaterials(currMiniCamera, DefinePath.instance.selectedLineColor);
                     else
-                        cameraMaterial.color = DefinePath.instance.defaultLineColor;
+                        changeColorMaterials(currMiniCamera, DefinePath.instance.defaultLineColor);
+
+                    GameObject cameraControlButtons = currMiniCamera.transform.Find("CameraControlButtons").gameObject;
+                    showHidePointsControl(cameraControlButtons, false);
                 }
 
                 PathSpheresController pathSpheresController = currPoint.GetComponent<PathSpheresController>();
@@ -167,6 +171,9 @@ public class HoverObjects : MonoBehaviour
                 followPath = pathSpheresController.followPath;
                 Renderer renderer = currPoint.GetComponent<Renderer>();
                 Material parentMaterial = renderer.material;
+
+                GameObject pointControlButtons = currPoint.transform.Find("PointControlButtons").gameObject;
+                showHidePointsControl(pointControlButtons, false);
 
                 if (followPath != null)
                 {
@@ -178,7 +185,7 @@ public class HoverObjects : MonoBehaviour
 
                     int pathNum = pathSpheresController.pathNum;
                     int pathPointNum = pathSpheresController.pointNum;
-                    OnPathPointHovered(pathNum, pointNum, color);
+                    OnPathPointHovered(pathNum, pathPointNum, color);
                 }
                 if (followPathCamera != null)
                 {

@@ -75,11 +75,11 @@ public class ItemsDirectorPanelController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (colorPicker.color != lastPickedColor)
-        {
-            lastPickedColor = colorPicker.color;
-            onColorChanged();
-        }
+        //if (colorPicker.color != lastPickedColor)
+        //{
+        //    lastPickedColor = colorPicker.color;
+        //    onColorChanged();
+        //}
     }
 
     public void onItemsButtonPressed(GameObject itemButtonGO)
@@ -99,7 +99,6 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
 
         itemName.text = buttonText.text;
-        showHideElements(buttonText, isAlreadySelected);
         // common property
         flexibleColorPicker.gameObject.SetActive(false);
 
@@ -153,6 +152,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
             currItemPressed = "";
         }
+        showHideElements(buttonText, isAlreadySelected);
     }
 
     private void showHideElements(TMP_Text buttonText, bool isAlreadySelected)
@@ -174,6 +174,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
         else if (buttonText.transform.parent.name.Contains("Focus"))
         {
+            intensitySlider.value = currItemGO.GetComponent<LightController>().getIntensity();
+
             pointsPanel.SetActive(false);
             removeButton.gameObject.SetActive(!isAlreadySelected);
             speedInput.gameObject.SetActive(false);
@@ -356,24 +358,35 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
     }
 
-    public void onPointPressed(GameObject pointButton)
+    public void onPointPressed(Transform pointsPanelLayout, GameObject pointButton)
     {
         string[] splittedName = pointButton.name.Split(" ");
         int pointNum = int.Parse(splittedName[1]);
 
         if (pointNum == currPointPressed)
-        {
             currPointPressed = -1;
-            ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = normalBlueColor;
-            pointButton.GetComponent<Button>().colors = buttonColors;
-        }
         else
-        {
             currPointPressed = pointNum;
-            ColorBlock buttonColors = pointButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = selectedColor;
-            pointButton.GetComponent<Button>().colors = buttonColors;
+
+        for (int i=0; i < pointsPanelLayout.childCount; i++)
+        {
+            GameObject currPointButton = pointsPanelLayout.GetChild(i).gameObject;
+            splittedName = currPointButton.name.Split(" ");
+            int currPointNum = int.Parse(splittedName[1]);
+
+            if (currPointNum == currPointPressed)
+            {
+                ColorBlock buttonColors = currPointButton.GetComponent<Button>().colors;
+                buttonColors.normalColor = selectedColor;
+                currPointButton.GetComponent<Button>().colors = buttonColors;
+            }
+            else
+            {
+                ColorBlock buttonColors = currPointButton.GetComponent<Button>().colors;
+                buttonColors.normalColor = normalBlueColor;
+                currPointButton.GetComponent<Button>().colors = buttonColors;
+            }
+
         }
 
         DirectorPanelManager.instance.changePointsViewTexture(currItemPressed, currPointPressed);
@@ -433,6 +446,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
     public void addNewPointButton(string name, int pointNum)
     {
         GameObject newPointButton = Instantiate(pointButtonPrefab);
+        Transform parentLayout = null;
 
         for (int i = 0; i < pointsPanel.transform.childCount; i++)
         {
@@ -442,6 +456,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
                 continue;
 
             newPointButton.transform.parent = currLayout.transform;
+            parentLayout = currLayout.transform;
             RectTransform rTrans = newPointButton.GetComponent<RectTransform>();
             rTrans.localScale = new Vector3(1.0f, 1.0f, 1.0f);
             rTrans.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
@@ -450,6 +465,6 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         newPointButton.name = "Point " + pointNum;
         newPointButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pointNum.ToString();
-        newPointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(newPointButton); });
+        newPointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(parentLayout, newPointButton); });
     }
 }

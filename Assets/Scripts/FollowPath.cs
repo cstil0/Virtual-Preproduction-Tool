@@ -265,20 +265,10 @@ public class FollowPath : MonoBehaviour
         Transform pathTransform = pathContainer.transform;
         Transform circlesTransform = circlesContainer.transform;
 
-        GameObject line = pathTransform.GetChild(0).gameObject;
-        line.GetComponent<LineRenderer>().enabled = false;
+        hideShowPath(false);
 
-        for (int i = 1; i < pathTransform.childCount; i++)
-        {
-            GameObject currPoint = pathTransform.GetChild(i).gameObject;
-            currPoint.GetComponent<MeshRenderer>().enabled = false;
-        }
-
-        for (int i = 0; i < circlesTransform.childCount; i++)
-        {
-            GameObject currCircle = circlesTransform.GetChild(i).gameObject;
-            currCircle.GetComponent<SpriteRenderer>().enabled = false;
-        }
+        GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
+        itemControlMenu.GetComponent<Canvas>().enabled = false;
 
         isPlaying = !isPlaying;
         //isPlaying = true;
@@ -291,21 +281,35 @@ public class FollowPath : MonoBehaviour
         gameObject.transform.rotation = startRotation;
         currPoint = 0;
 
-        Transform pathTransform = pathContainer.transform;
-        Transform circlesTransform = circlesContainer.transform;
-        GameObject line = pathTransform.GetChild(0).gameObject;
-        line.GetComponent<LineRenderer>().enabled = true;
+        hideShowPath(true);
 
-        for (int i = 1; i < pathTransform.childCount; i++)
-        {
-            GameObject currPoint = pathTransform.GetChild(i).gameObject;
-            currPoint.GetComponent<MeshRenderer>().enabled = true;
-        }
+        GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
+        if (isSelectedForPath)
+            itemControlMenu.GetComponent<Canvas>().enabled = true;
+        else
+            itemControlMenu.GetComponent<Canvas>().enabled = false;
+    }
 
-        for (int i = 0; i < circlesTransform.childCount; i++)
+    void hideShowPath(bool isHidden)
+    {
+        if (pathContainer != null)
         {
-            GameObject currCircle = circlesTransform.GetChild(i).gameObject;
-            currCircle.GetComponent<SpriteRenderer>().enabled = false;
+            Transform pathTransform = pathContainer.transform;
+            Transform circlesTransform = circlesContainer.transform;
+            GameObject line = pathTransform.GetChild(0).gameObject;
+            line.GetComponent<LineRenderer>().enabled = isHidden;
+
+            for (int i = 1; i < pathTransform.childCount; i++)
+            {
+                GameObject currPoint = pathTransform.GetChild(i).gameObject;
+                currPoint.GetComponent<MeshRenderer>().enabled = isHidden;
+            }
+
+            for (int i = 0; i < circlesTransform.childCount; i++)
+            {
+                GameObject currCircle = circlesTransform.GetChild(i).gameObject;
+                currCircle.GetComponent<SpriteRenderer>().enabled = isHidden;
+            }
         }
     }
 

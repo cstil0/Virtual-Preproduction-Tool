@@ -32,11 +32,21 @@ public class ObjectsSelector : MonoBehaviour
     void playLinePath()
     {
         isPlaying = !isPlaying;
+
+        GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
+        itemControlMenu.GetComponent<Canvas>().enabled = false;
     }
 
     void stopLinePath()
     {
         isPlaying = false;
+
+        GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
+        if (isSelected)
+            itemControlMenu.GetComponent<Canvas>().enabled = true;
+        else
+            itemControlMenu.GetComponent<Canvas>().enabled = false;
+
     }
 
     // Update is called once per frame

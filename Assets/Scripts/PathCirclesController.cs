@@ -41,7 +41,6 @@ public class PathCirclesController : MonoBehaviour
         if (pointNum == currPointNum && pathNum == currPathNum)
         {
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
-            Debug.Log("CHANGING CIRCLE COLOR. PATH: " + currPathNum + " POINT: " + currPointNum + " COLOR: " + color);
         }
     }
 }

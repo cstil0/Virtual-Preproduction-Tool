@@ -5,6 +5,7 @@ using UnityEngine;
 public class LightController : MonoBehaviour
 {
     private Color originalColor;
+    private float intensity;
     [SerializeField] Light light;
 
     // Start is called before the first frame update
@@ -29,6 +30,11 @@ public class LightController : MonoBehaviour
         return light.color;
     }
 
+    public float getIntensity()
+    {
+        return intensity;
+    }
+
     public void changeLightColor(Color color, bool isAccepted)
     {
         light.color = color;
@@ -37,8 +43,9 @@ public class LightController : MonoBehaviour
             originalColor = color;
     }
 
-    public void changeLightIntensity(float intensity)
+    public void changeLightIntensity(float newIntensity)
     {
+        intensity = newIntensity;
         light.intensity = intensity;
     }
 }
