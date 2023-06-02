@@ -2111,6 +2111,11 @@ PrefabInstance:
       objectReference: {fileID: 1793905921}
     - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 893955596}
+    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
+        type: 3}
       propertyPath: handController
       value: 
       objectReference: {fileID: 861928155}
@@ -11087,6 +11092,26 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: dollyTracker
+      value: 
+      objectReference: {fileID: 1793905921}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 893955596}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: followPathCamera
+      value: 
+      objectReference: {fileID: 479241775}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: rotationController
+      value: 
+      objectReference: {fileID: 91735870}
     - target: {fileID: 1710512035028900461, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Layer
@@ -14334,10 +14359,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
+    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2028028363
+      objectReference: {fileID: 0}
+    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -15083,6 +15118,11 @@ PrefabInstance:
       propertyPath: dollyTracker
       value: 
       objectReference: {fileID: 1283584884}
+    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
+        type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 589624329}
     - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
       propertyPath: handController
@@ -26879,6 +26919,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2130943084915617136, guid: 4214b57e615806c448ba9d993d629531,
         type: 3}
+      propertyPath: advancedSettings.mainStatic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2130943084915617136, guid: 4214b57e615806c448ba9d993d629531,
+        type: 3}
       propertyPath: onColorChange.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -27856,10 +27901,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
+    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2890627271
+      objectReference: {fileID: 0}
+    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -38225,6 +38280,26 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: dollyTracker
+      value: 
+      objectReference: {fileID: 650033264}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 863538878}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: followPathCamera
+      value: 
+      objectReference: {fileID: 1776131376}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: rotationController
+      value: 
+      objectReference: {fileID: 1820964237}
     - target: {fileID: 1710512035028900461, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Layer
@@ -39081,10 +39156,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
+    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 448096893
+      objectReference: {fileID: 0}
+    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -39720,9 +39805,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
+        type: 3}
       propertyPath: dollyTracker
       value: 
       objectReference: {fileID: 650033264}
+    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
+        type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 863538878}
     - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
       propertyPath: handController
@@ -48334,6 +48429,26 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.221
       objectReference: {fileID: 0}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: dollyTracker
+      value: 
+      objectReference: {fileID: 1283584884}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: virtualCamera
+      value: 
+      objectReference: {fileID: 589624329}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: followPathCamera
+      value: 
+      objectReference: {fileID: 1825172524}
+    - target: {fileID: 777968407363387262, guid: 76f555b9dfd0d0d4484816b700de078c,
+        type: 3}
+      propertyPath: rotationController
+      value: 
+      objectReference: {fileID: 672654596}
     - target: {fileID: 1710512035028900461, guid: 76f555b9dfd0d0d4484816b700de078c,
         type: 3}
       propertyPath: m_Layer

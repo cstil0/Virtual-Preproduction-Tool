@@ -317,11 +317,12 @@ public class UDPSender : MonoBehaviour
             followPath.startPosition = rotatePointAround(startPos, pivotPoint, rotationQuat);
         }
 
-        GameObject[] sceneLines = GameObject.FindGameObjectsWithTag("Line");
+        GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
         // get all lines in the scene and rotate all of their points
-        foreach (GameObject line in sceneLines)
+        foreach (GameObject path in pathContainers)
         {
-            LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
+            LineRenderer lineRenderer = path.GetComponentInChildren<LineRenderer>();
+            // reasign lineRenderer points
             Vector3[] pathPoints = new Vector3[lineRenderer.positionCount];
             lineRenderer.GetPositions(pathPoints);
             for (int i = 0; i < pathPoints.Length; i++)
@@ -331,6 +332,8 @@ public class UDPSender : MonoBehaviour
             }
 
             lineRenderer.SetPositions(pathPoints);
+
+            path.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
         }
     }
 

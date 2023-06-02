@@ -248,12 +248,14 @@ public class HoverObjects : MonoBehaviour
                 alreadyTriggered = true;
                 changeColorMaterials(currentItemCollider, UnityEngine.Color.blue, false);
             }
-            // if the object has a limit rotation script mark it as selected
-            try
-            {
-                currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, true);
-            }
-            catch (System.Exception e) { }
+            // if the object has a custom grabbable script mark it as selected
+            currentItemCollider.TryGetComponent(out CustomGrabbableCharacters grabbableCharacters);
+            currentItemCollider.TryGetComponent(out CustomGrabbableCameras grabbableCameras);
+
+            if (grabbableCharacters != null)
+                grabbableCharacters.objectSelected(gameObject, true);
+            if (grabbableCameras != null)
+                grabbableCameras.objectSelected(gameObject.transform.GetChild(0).gameObject, true);
         }
 
         // if sphere path point
@@ -421,14 +423,13 @@ public class HoverObjects : MonoBehaviour
         // change the color to white to the first collider
         if (other.gameObject == currentItemCollider)
         {
-            try
-            {
-                currentItemCollider.GetComponent<CustomGrabbableCharacters>().objectSelected(gameObject, false);
-            }
-            catch (System.Exception e)
-            {
-                //Debug.Log(e.Message);
-            }
+            currentItemCollider.TryGetComponent(out CustomGrabbableCharacters grabbableCharacters);
+            currentItemCollider.TryGetComponent(out CustomGrabbableCameras grabbableCameras);
+
+            if (grabbableCharacters != null)
+                grabbableCharacters.objectSelected(gameObject, false);
+            if (grabbableCameras != null)
+                grabbableCameras.objectSelected(gameObject.transform.GetChild(0).gameObject, false);
 
             if (other.gameObject.layer == 10)
             {

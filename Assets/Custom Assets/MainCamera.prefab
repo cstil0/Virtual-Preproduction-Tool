@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 5781834974586894729}
   - component: {fileID: 5781834974586894726}
   - component: {fileID: 5781834974586894727}
+  - component: {fileID: 777968407363387262}
   - component: {fileID: 274941422599018155}
   m_Layer: 0
   m_Name: MainCamera
@@ -240,6 +241,23 @@ MonoBehaviour:
   streamingSize: {x: 1280, y: 720}
   depth: 0
   antiAliasing: 1
+--- !u!114 &777968407363387262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5781834974586894782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cb7d0ee3878b4290452e9badb55c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDown: 0
+  followPathCamera: {fileID: 0}
+  dollyTracker: {fileID: 0}
+  virtualCamera: {fileID: 0}
+  rotationController: {fileID: 0}
 --- !u!65 &274941422599018155
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -251,8 +269,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.18, y: 0.2, z: 0.35}
-  m_Center: {x: 0.03, y: 0, z: 0}
+  m_Size: {x: 0.19030854, y: 0.22448182, z: 0.37838405}
+  m_Center: {x: 0.026134968, y: -0.004506469, z: -0.009039016}
 --- !u!1 &5781834974976874970
 GameObject:
   m_ObjectHideFlags: 0

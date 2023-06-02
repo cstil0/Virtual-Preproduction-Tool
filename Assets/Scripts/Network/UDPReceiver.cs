@@ -472,7 +472,7 @@ public class UDPReceiver : MonoBehaviour
         if (!isMessageParsed)
         {
             string[] splittedMessage = lastMessageReceived.Split(":");
-            
+
             switch (ModesManager.instance.role)
             {
                 case ModesManager.eRoleType.DIRECTOR:

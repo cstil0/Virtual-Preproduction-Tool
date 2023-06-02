@@ -55,7 +55,6 @@ public class ItemsMenuController : MonoBehaviour
 
     void Start()
     {
-        // POTSER NO ÉS NECESSARI FER-HO SI JA HO ESTÀ FENT EL ENABLE
         triggerOn = false;
         buttonDown = false;
         buttonReleasedOnce = false;

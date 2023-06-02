@@ -142,8 +142,6 @@ public class ModesManager : MonoBehaviour
             {
                 NetworkManager.Singleton.StartClient();
                 //Display.displays[1].Activate();
-                // TOT AIXÒ SERIA MÉS MACO GESTIONAR-HO AMB EVENTS!! ARA QUE SÉ COM FUNCIONEN:)
-                // O BUENO NO SÉ SI SERÀ POSSIBLE JA QUE NO SÓN SCRIPTS MEUS I PER TANT HO HAURIA DE POSAR EN ALGUN ALTRE DINS EL MATEIX OBJECTE UNA MICA AMB COLA POTSER
                 Camera OVRCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
                 OVRCamera.targetDisplay = 1;
                 //OVRCamera.targetTexture = OVRCameraTexture;
@@ -267,6 +265,17 @@ public class ModesManager : MonoBehaviour
             IPAddress.text = "192.168.0.12";
 
             loadMainScene();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            //GameObject itemsParent = GameObject.Find("ItemsParent");
+
+            //for (int i = 0; i < itemsParent.transform.childCount; i++)
+            //{
+            //    GameObject currItem = itemsParent.transform.GetChild(i);
+
+            //}
         }
     }
 }

@@ -123,8 +123,8 @@ public class FollowPathCamera : MonoBehaviour
         //pathPositions = new List<Vector3>();
         //pathStartEnd = new Dictionary<int, int[]>();
 
-        startPosition = gameObject.transform.position;
-        startRotation = gameObject.transform.rotation;
+        startPosition = cinemachineVirtualCamera.transform.position;
+        startRotation = cinemachineVirtualCamera.transform.rotation;
 
         pathPositions = new List<Vector3>();
         pathRotations = new List<Vector3>();
@@ -145,7 +145,7 @@ public class FollowPathCamera : MonoBehaviour
 
                 if (pathPositions.Count == 0)
                 {
-                    startPosition = gameObject.transform.position;
+                    startPosition = cinemachineVirtualCamera.transform.position;
                     StartCoroutine(defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation));
                 }
 
@@ -165,28 +165,13 @@ public class FollowPathCamera : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && !isPlaying)
         {
             // when moving the camera reset its start position and rotation for the movement
-            if (triggerOn)
+            if (triggerOn && cinemachineVirtualCamera.transform.position != startPosition)
             {
                 startPosition = cinemachineVirtualCamera.transform.position;
                 startRotation = rotationController.transform.rotation;
+                relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
             }
         }
-
-        //if (OVRInput.Get(OVRInput.RawButton.X))
-        //{
-        //    if (!XButtonDown)
-        //    {
-        //        XButtonDown = true;
-        //        playLinePath();
-        //    }
-        //}
-        //else
-        //    XButtonDown = false;
-
-        //if (OVRInput.Get(OVRInput.RawButton.Y))
-        //{
-        //    stopLinePath();
-        //}
 
         if (Input.GetKeyDown(KeyCode.P))
             playLinePath();
@@ -257,6 +242,32 @@ public class FollowPathCamera : MonoBehaviour
             minAngDiffZ = angDiffInv.z;
 
         return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
+    }
+
+    private void relocateCinemachinePoints(CinemachineSmoothPath cinemachineSmoothPath, Vector3 startPosition)
+    {
+        CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
+
+        for (int i = 0; i < cinemachinePoints.Length; i++)
+        {
+            CinemachineSmoothPath.Waypoint newWayPoint;
+            if (i == 0)
+            {
+                newWayPoint = new CinemachineSmoothPath.Waypoint();
+                newWayPoint.position = new Vector3(0.0f, 0.0f, 0.0f);
+                cinemachinePoints[i] = newWayPoint;
+                cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+            }
+            else
+            {
+                newWayPoint = new CinemachineSmoothPath.Waypoint();
+                Vector3 newPointWrong = startPosition - pathPositions[i - 1];
+                Vector3 newPoint = new Vector3(newPointWrong.x, -newPointWrong.y, newPointWrong.z);
+                newWayPoint.position = newPoint;
+                cinemachinePoints[i] = newWayPoint;
+                cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+            }
+        }
     }
 
     public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
@@ -399,6 +410,12 @@ public class FollowPathCamera : MonoBehaviour
             doubleResolution *= 2;
 
         float countFloat = pointNum;
+        if (pointNum <= 0)
+        {
+            countFloat = pointNum;
+            doubleResolution = resolution;
+        }
+
         // iterate through the previous and following lines, adjacent to the current point to evaluate their bezier points
         for (int i = 1; i < doubleResolution + 1; i++)
         {

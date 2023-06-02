@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 4089259381384216083}
   - component: {fileID: -2632759893981246707}
   - component: {fileID: -1657352418009524937}
+  - component: {fileID: 253097588257495858}
   m_Layer: 10
   m_Name: HangingTorch
   m_TagString: Items
@@ -224,6 +225,21 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &253097588257495858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040191701624547288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d316678ddabbc0845b58116860f8a85a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSelected: 0
+  triggerOn: 0
+  menuCanvas: {fileID: 4162606829317707254}
 --- !u!1001 &165906457330223829
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -473,6 +489,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0090eb999a3808940a141bb7eba680e4, type: 3}
+--- !u!223 &4162606829317707254 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 4290215002297884451, guid: 0090eb999a3808940a141bb7eba680e4,
+    type: 3}
+  m_PrefabInstance: {fileID: 165906457330223829}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5164080044201846358 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5037017229657975939, guid: 0090eb999a3808940a141bb7eba680e4,
