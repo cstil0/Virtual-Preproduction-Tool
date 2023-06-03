@@ -7,10 +7,8 @@ using UnityEngine.UI;
 public class ActivateDisableMenu : MonoBehaviour
 {
     public GameObject Canvas;
-    //[Header("Menus")]
-    //public GameObject ItemsMenu_object;
     RotationScale rotationScale;
-    // since i am unable to use getKeyDown, only Get
+    // needed to know if key was pressed only at the first frame
     bool key_down = false;
 
     [SerializeField] eMenuType menuType;
@@ -21,9 +19,9 @@ public class ActivateDisableMenu : MonoBehaviour
         CONTROLLERS_MAP
     }
 
-    // start with all menus deactivated until user shows the items menu
     void Start()
     {
+        // start with all menus disabled until user shows the items menu
         int n_menus = Canvas.transform.childCount;
         for (int i = 0; i < n_menus; i++)
         {
@@ -32,7 +30,6 @@ public class ActivateDisableMenu : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         OVRInput.Update();
@@ -40,15 +37,16 @@ public class ActivateDisableMenu : MonoBehaviour
         {
             if(OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)){
                 // do it only if it is the first time it is pressed
+                // this is needed because I could not make getKeyDown method to work
                 if (!key_down)
                 {
                     key_down = true;
                     Canvas.transform.GetChild(0).gameObject.SetActive(true);
                 }
             }
-            // once it is up again, set it to false
             else
             {
+                // once it is up again, set it to false
                 key_down = false;
                 int n_menus = Canvas.transform.childCount;
                 bool any_active = false;
@@ -63,6 +61,7 @@ public class ActivateDisableMenu : MonoBehaviour
             }
         }
 
+        // show controllers map using the same logic as the items menu
         else if (menuType == eMenuType.CONTROLLERS_MAP)
         {
             if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger))

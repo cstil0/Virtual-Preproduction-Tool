@@ -2104,26 +2104,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1604092701
       objectReference: {fileID: 0}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: dollyTracker
-      value: 
-      objectReference: {fileID: 1793905921}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: virtualCamera
-      value: 
-      objectReference: {fileID: 893955596}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: handController
-      value: 
-      objectReference: {fileID: 861928155}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: followPathCamera
-      value: 
-      objectReference: {fileID: 479241775}
     - target: {fileID: 4156071268466387768, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
       propertyPath: m_Name
@@ -13241,7 +13221,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 589624329}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.9904012, z: 0, w: 0.1382226}
   m_LocalPosition: {x: 7.51, y: 1.4, z: -1.06}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13249,7 +13229,7 @@ Transform:
   - {fileID: 678954338}
   m_Father: {fileID: 266216893}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -164.11, z: 0}
 --- !u!1 &591650931
 GameObject:
   m_ObjectHideFlags: 0
@@ -14359,20 +14339,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
-    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2028028363
-      objectReference: {fileID: 0}
-    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -15113,26 +15083,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2090429863
       objectReference: {fileID: 0}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: dollyTracker
-      value: 
-      objectReference: {fileID: 1283584884}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: virtualCamera
-      value: 
-      objectReference: {fileID: 589624329}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: handController
-      value: 
-      objectReference: {fileID: 861928155}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: followPathCamera
-      value: 
-      objectReference: {fileID: 1825172524}
     - target: {fileID: 4156071268466387768, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
       propertyPath: m_Name
@@ -19224,7 +19174,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 863538878}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 4.246, y: 1.4, z: 0.79999995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -19232,7 +19182,7 @@ Transform:
   - {fileID: 1521536108}
   m_Father: {fileID: 266216893}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &863538880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19681,7 +19631,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893955596}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.9663761, z: 0, w: -0.25713268}
   m_LocalPosition: {x: 1.9200001, y: 1.4, z: -0.01999998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -19689,7 +19639,7 @@ Transform:
   - {fileID: 2016881966}
   m_Father: {fileID: 266216893}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -209.8, z: 0}
 --- !u!114 &893955598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27901,20 +27851,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
-    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2890627271
-      objectReference: {fileID: 0}
-    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -39156,20 +39096,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 266216893}
     m_Modifications:
-    - target: {fileID: 8319381553348127342, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127343, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
       propertyPath: GlobalObjectIdHash
       value: 448096893
-      objectReference: {fileID: 0}
-    - target: {fileID: 8319381553348127376, guid: 89a1e8b7411f653458eacdfadc569847,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8319381553348127379, guid: 89a1e8b7411f653458eacdfadc569847,
         type: 3}
@@ -39803,31 +39733,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 675169026
       objectReference: {fileID: 0}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: dollyTracker
-      value: 
-      objectReference: {fileID: 650033264}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: virtualCamera
-      value: 
-      objectReference: {fileID: 863538878}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: handController
-      value: 
-      objectReference: {fileID: 861928155}
-    - target: {fileID: 4156071268466387767, guid: 5f9de7f0477a70344a515f2e61cfab39,
-        type: 3}
-      propertyPath: followPathCamera
-      value: 
-      objectReference: {fileID: 1776131376}
     - target: {fileID: 4156071268466387768, guid: 5f9de7f0477a70344a515f2e61cfab39,
         type: 3}
       propertyPath: m_Name

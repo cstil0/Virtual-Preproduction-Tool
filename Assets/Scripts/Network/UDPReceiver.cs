@@ -133,26 +133,6 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
-    //void UDP_RotateSceneReceive()
-    //{
-    //    clientRotation = new UdpClient(rotateScenePort);
-    //    // loop needed to keep listening
-    //    while (true)
-    //    {
-    //        try
-    //        {
-    //            // recieve messages through the end point
-    //            IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, rotateScenePort);
-    //            byte[] receiveBytes = clientRotation.Receive(ref remoteEndPoint);
-    //            receivedSceneRotation = Encoding.ASCII.GetString(receiveBytes);
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            Debug.Log("Exception thrown " + e.Message);
-    //        }
-    //    }
-    //}
-
     void parsePointPosition(string itemName, string pointPosition)
     {
         GameObject item = itemsParent.transform.Find(itemName).gameObject;

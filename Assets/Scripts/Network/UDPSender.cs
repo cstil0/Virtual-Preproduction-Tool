@@ -292,29 +292,60 @@ public class UDPSender : MonoBehaviour
         Vector3 pivotPoint = OVRPlayer.transform.position;
         Quaternion rotationQuat = Quaternion.Euler(0.0f, rotationAngle, 0.0f);
 
+        GameObject itemsParent = GameObject.Find("ItemsParent");
         // get all items and characters in the scene
-        GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
-        foreach (GameObject item in sceneItems)
+        for (int i = 0; i < itemsParent.transform.childCount; i++)
         {
-            // rotate item
-            item.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
-            // rotate path points in the item
-            FollowPath followPath = item.GetComponent<FollowPath>();
-            if (followPath == null)
-                continue;
-
-            List<Vector3> pathPositions = followPath.pathPositions;
-            for (int i = 0; i < pathPositions.Count; i++)
+            GameObject item = itemsParent.transform.GetChild(i).gameObject;
+            if (item.name.Contains("MainCamera"))
             {
-                Vector3 point = pathPositions[i];
-                pathPositions[i] = rotatePointAround(point, pivotPoint, rotationQuat);
-            }
-                
-            item.GetComponent<FollowPath>().pathPositions = pathPositions;
+                FollowPathCamera followPathCamera = item.GetComponent<FollowPathCamera>();
+                CustomGrabbableCameras customGrabbableCameras = item.GetComponent<CustomGrabbableCameras>();
+                GameObject virtualCamera = customGrabbableCameras.virtualCamera;
+                GameObject dollyTrack = customGrabbableCameras.dollyTracker;
+                GameObject rotationController = customGrabbableCameras.rotationController;
 
-            // rotate also the start point for the character
-            Vector3 startPos = followPath.startPosition;
-            followPath.startPosition = rotatePointAround(startPos, pivotPoint, rotationQuat);
+                virtualCamera.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+                dollyTrack.transform.position = virtualCamera.transform.position;
+                rotationController.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+
+                List<Vector3> pathPositions = followPathCamera.pathPositions;
+                for (int j = 0; j < pathPositions.Count; j++)
+                {
+                    Vector3 point = pathPositions[j];
+                    pathPositions[j] = rotatePointAround(point, pivotPoint, rotationQuat);
+                }
+
+                followPathCamera.pathPositions = pathPositions;
+
+                // rotate also the start point for the character and cinemachine points
+                followPathCamera.startPosition = virtualCamera.transform.position;
+                followPathCamera.startRotation = virtualCamera.transform.rotation;
+                followPathCamera.relocateCinemachinePoints(followPathCamera.cinemachineSmoothPath, virtualCamera.transform.position);
+            }
+            else
+            {
+                // rotate item
+                item.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+                // rotate path points in the item
+                item.TryGetComponent(out FollowPath followPath);
+                if (followPath == null)
+                    continue;
+
+                List<Vector3> pathPositions = followPath.pathPositions;
+                for (int j = 0; j < pathPositions.Count; j++)
+                {
+                    Vector3 point = pathPositions[i];
+                    pathPositions[j] = rotatePointAround(point, pivotPoint, rotationQuat);
+                }
+                
+                followPath.pathPositions = pathPositions;
+
+                // rotate also the start point for the character
+                Vector3 startPos = followPath.startPosition;
+                followPath.startPosition = item.transform.position;
+                followPath.startRotation = item.transform.rotation;
+            }
         }
 
         GameObject[] pathContainers = GameObject.FindGameObjectsWithTag("PathContainer");
@@ -334,6 +365,13 @@ public class UDPSender : MonoBehaviour
             lineRenderer.SetPositions(pathPoints);
 
             path.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+        }
+
+        GameObject[] circleContainers = GameObject.FindGameObjectsWithTag("CirclesContainer");
+        // get all lines in the scene and rotate all of their points
+        foreach (GameObject circles in circleContainers)
+        {
+            circles.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
         }
     }
 

@@ -327,6 +327,9 @@ public class DefinePath : MonoBehaviour
 
         foreach (GameObject pathContainer in pathContainers)
         {
+            if (!pathContainer.name.Contains("MainCamera"))
+                continue;
+
             string[] splittedName = pathContainer.name.Split(" ");
             int pathNum = int.Parse(splittedName[2]);
             for (int i = 1; i < pathContainer.transform.childCount; i++)
@@ -392,9 +395,4 @@ public class DefinePath : MonoBehaviour
             }
         }
     }
-
-    //public int getItemsCount()
-    //{
-    //    return itemsMenuController.itemsCount;
-    //}
 }

@@ -7,33 +7,15 @@ using UnityEngine;
 
 public class CustomGrabbableCharacters : MonoBehaviour
 {
-    Vector3 startPosDiff;
+    //Vector3 startPosDiff;
+    Vector3 handStartPos;
+    Vector3 handStartRot;
+    Vector3 startPos;
+    Vector3 startRot;
     GameObject currentHand;
 
     [SerializeField] bool triggerOn;
     [SerializeField] bool buttonDown;
-
-    bool isBehindPlayer()
-    {
-        Transform OVRPlayer = GameObject.Find("OVRPlayerController").transform;
-        // get hand position in local coordinates of OVRPlayer
-        Vector3 localPosition = OVRPlayer.InverseTransformPoint(currentHand.transform.position);
-
-        if (localPosition.z < 0.2f)
-            return true;
-        else
-            return false;
-    }
-
-    //bool alreadyTriggered;
-    private void OnTriggerEnter(Collider other)
-    {
-        //bool alreadyTriggered = other.GetComponent<HoverObjects>().alreadyTriggered;
-        //if (other.gameObject.layer == 3 && !alreadyTriggered)
-        //{
-
-        //}
-    }
 
     public void objectSelected(GameObject handCollider, bool isTrigger)
     {
@@ -47,11 +29,6 @@ public class CustomGrabbableCharacters : MonoBehaviour
     {
         triggerOn = false;
         buttonDown = false;
-
-        //alreadyTriggered = false;
-
-        //LimitRotation.alreadyTriggered = false;
-        //gameObject.GetComponent<OVRGrabbable>().enabled = false;
     }
 
     // Update is called once per frame
@@ -59,33 +36,37 @@ public class CustomGrabbableCharacters : MonoBehaviour
     {
         Vector3 position = new Vector3();
         Vector3 limitRot = new Vector3();
+
+        // characters should not be grabbed while being on play mode
         if (!DefinePath.instance.isPlaying)
         {
             if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
             {
                 if (!buttonDown)
                 {
-                    Vector3 handStartPos = currentHand.transform.position;
-                    startPosDiff = gameObject.transform.position - handStartPos;
+                    handStartPos = currentHand.transform.position;
+                    handStartRot = currentHand.transform.rotation.eulerAngles;
+                    startPos = gameObject.transform.position;
+                    startRot = gameObject.transform.rotation.eulerAngles;
+                    //startPosDiff = gameObject.transform.position - handStartPos;
                     buttonDown = true;
                 }
 
-                Vector3 globalPosition = currentHand.transform.position + startPosDiff;
-                //position = isBehindPlayer() ? gameObject.transform.position : globalPosition;
-                position = globalPosition;
+                Vector3 posDiff = handStartPos - currentHand.transform.position;
+                position = startPos - posDiff;
+                //Vector3 globalPosition = currentHand.transform.position + startPosDiff;
+                //position = globalPosition;
 
-                RotationScale rotScale = gameObject.GetComponent<RotationScale>();
-                Vector3 rotation = rotScale.rotation;
-                Vector3 currRot = currentHand.transform.rotation.eulerAngles;
-                limitRot = new Vector3(-rotation.x, -currRot.y + rotation.y, -rotation.z);
+                //RotationScale rotScale = gameObject.GetComponent<RotationScale>();
+                //Vector3 rotation = rotScale.rotation;
+                Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;;
+                limitRot = new Vector3(startRot.x, startRot.y - rotDiff.y, startRot.z);
             }
             else
             {
                 if (buttonDown)
-                {
                     buttonDown = false;
-                }
-                //alreadyTriggered = false;
+
                 position = gameObject.transform.position;
 
                 Vector3 rotation = gameObject.transform.rotation.eulerAngles;
@@ -93,8 +74,7 @@ public class CustomGrabbableCharacters : MonoBehaviour
             }
 
             // make it touch always the floor
-            gameObject.transform.position = new Vector3(position.x, position.y, position.z);
-            //gameObject.transform.position = new Vector3(position.x, -attachPoint.localPosition.y, position.z);
+            gameObject.transform.position = position;
             gameObject.transform.rotation = Quaternion.Euler(limitRot);
         }
     }

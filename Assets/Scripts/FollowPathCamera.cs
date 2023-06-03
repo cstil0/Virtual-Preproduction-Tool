@@ -30,7 +30,7 @@ public class FollowPathCamera : MonoBehaviour
 
     public Vector3 startPosition;
     //Vector3 startDiffPosition;
-    Quaternion startRotation;
+    public Quaternion startRotation;
 
     //Animator animator;
 
@@ -244,7 +244,7 @@ public class FollowPathCamera : MonoBehaviour
         return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
     }
 
-    private void relocateCinemachinePoints(CinemachineSmoothPath cinemachineSmoothPath, Vector3 startPosition)
+    public void relocateCinemachinePoints(CinemachineSmoothPath cinemachineSmoothPath, Vector3 startPosition)
     {
         CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
 

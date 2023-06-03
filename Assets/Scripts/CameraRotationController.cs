@@ -5,8 +5,6 @@ using UnityEngine.UIElements;
 
 public class CameraRotationController : MonoBehaviour
 {
-    //public Transform currentSelectedMiniCamera;
-    //public GameObject currentSelectedCamera;
     public bool triggerOn = false;
     private bool triggerButtonDown = false;
     public bool isSelected = false;
@@ -17,13 +15,11 @@ public class CameraRotationController : MonoBehaviour
     private Quaternion lastRotation;
     public int pointNum = -1;
 
-    // Start is called before the first frame update
     void Start()
     {
         lastRotation = gameObject.transform.rotation;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // first check the trigger to inform follow path camera that mini camera to avoid instantiating new path points
@@ -35,10 +31,6 @@ public class CameraRotationController : MonoBehaviour
                 {
                     isSelected = !isSelected;
                     triggerButtonDown = true;
-                    //    currentSelectedMiniCamera = transform;
-                    //else
-                    //    currentSelectedMiniCamera = null;
-
                 }
             }
             else
@@ -48,22 +40,18 @@ public class CameraRotationController : MonoBehaviour
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight) && isSelected)
         {
             gameObject.transform.Rotate(rotationPan * Time.deltaTime);
-            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft) && isSelected)
         {
             gameObject.transform.Rotate(-rotationPan * Time.deltaTime);
-            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && isSelected)
         {
             gameObject.transform.Rotate(rotationTilt * Time.deltaTime);
-            //changePointRotation();
         }
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown) && isSelected)
         {
             gameObject.transform.Rotate (-rotationTilt * Time.deltaTime);
-            //changePointRotation();
         }
 
         // ensure that pointNum was already assigned before changing its rotation
@@ -78,12 +66,6 @@ public class CameraRotationController : MonoBehaviour
     {
         string[] pathName = transform.parent.name.Split(" ");
         int pathNum = int.Parse(pathName[1]);
-        //followPathCamera.pathRotations[pathNum] = currentSelectedMiniCamera.rotation.eulerAngles;
-        //GameObject dollyTracker = followPathCamera.cinemachineSmoothPath.gameObject;
-        //dollyTracker.transform.rotation = currentSelectedMiniCamera.rotation;
-
         followPathCamera.pathRotations[pathNum + 1] = gameObject.transform.rotation.eulerAngles;
     }
-
-
 }

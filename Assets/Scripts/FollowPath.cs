@@ -23,7 +23,7 @@ public class FollowPath : MonoBehaviour
     public int currPoint;
     public Vector3 startPosition;
     Vector3 startDiffPosition;
-    Quaternion startRotation;
+    public Quaternion startRotation;
 
     Animator animator;
 
