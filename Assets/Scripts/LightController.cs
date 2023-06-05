@@ -8,18 +8,17 @@ public class LightController : MonoBehaviour
     private float intensity;
     [SerializeField] Light light;
 
-    // Start is called before the first frame update
     void Start()
     {
         originalColor = light.color;
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
+    // original color is different than current one if the color has not been accepted yet
     public Color getOriginalLightColor()
     {
         return originalColor;

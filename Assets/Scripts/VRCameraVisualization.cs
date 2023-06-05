@@ -1,18 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
+// this script is not used anymore, since previously there was just one canvas in VR to previsualize the view of all cameras by iterating the texture
 public class VRCameraVisualization : MonoBehaviour
 {
     bool keyDown;
-    // LO GUAI SERIA LLEGIR DINAMICAMENT LES TEXTURES QUE HI HA
     public RenderTexture[] cameraTextures;
     // used to know which camera texture has to be shown
     int cameraCount;
     GameObject cameraPanel;
 
-    // Start is called before the first frame update
     void Start()
     {
         cameraPanel = gameObject.transform.GetChild(0).gameObject;
@@ -21,13 +19,12 @@ public class VRCameraVisualization : MonoBehaviour
         cameraCount = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
         OVRInput.Update();
         if (OVRInput.Get(OVRInput.Button.One))
         {
-            // do it only if it is the first time it is pressed
+            // perform action only if it is the first time the button is pressed
             if (!keyDown)
             {
                 Material cameraMat = cameraPanel.transform.GetComponent<UnityEngine.UI.Image>().material;
@@ -39,7 +36,7 @@ public class VRCameraVisualization : MonoBehaviour
 
                 keyDown = true;
                 cameraCount += 1;
-                // if we passed the limit of cameras return to -1 so that we hide the panel and then show it again when pressing the button
+                // if we passed the limit of cameras return count to -1 so that the panel is hidden and then show it again when pressing the button
                 cameraCount = cameraCount >= cameraTextures.Length ? -1 : cameraCount;
             }
         }

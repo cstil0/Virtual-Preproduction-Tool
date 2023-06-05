@@ -1,10 +1,4 @@
-using Microsoft.MixedReality.Toolkit.Input;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.RenderStreaming;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class ZenhitalZoom : MonoBehaviour
 {
@@ -32,7 +26,7 @@ public class ZenhitalZoom : MonoBehaviour
         {
             Vector3 targetPosition = cameraTransform.position;
             targetPosition.y -= 1;
-            // interpolate between 
+            // interpolate between current position and target one
             cameraTransform.position = Vector3.Slerp(cameraTransform.position, targetPosition, Time.deltaTime * speed);
         }
         if (Input.GetAxis("Mouse ScrollWheel") < 0f && rectTransform.rect.Contains(mouseLocalPoint))
@@ -50,7 +44,7 @@ public class ZenhitalZoom : MonoBehaviour
             if (lastMousePos == null)
                 lastMousePos = currMousePos;
             
-            // check direction of the movement
+            // check direction of the movement and change the camera's position accordingly
             Vector2 dist = lastMousePos - currMousePos;
 
             if (dist.x < 0)

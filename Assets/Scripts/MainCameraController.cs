@@ -17,19 +17,18 @@ public class MainCameraController : MonoBehaviour
 
     [SerializeField] HoverObjects hoverObjects;
 
-    // Start is called before the first frame update
     void Start()
     {
         buttonDown = false;
         currentlySending = false;
-        //gameObject.GetComponent<NetworkObject>().Spawn();
     }
 
-    // Update is called once per frame
     void Update()
     {
         OVRInput.Update();
 
+        // after pressing the B button from the controller, the main camera 1 can be controlled by moving the user's hand
+        // this was used for testing the LED wall movement during testing performed at Sala Aranyó
         if (OVRInput.Get(OVRInput.RawButton.B) && gameObject.name == "MainCamera 1" && !hoverObjects.itemAlreadySelected)
         {
             if (!buttonDown)

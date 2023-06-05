@@ -4,23 +4,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
-using UnityEngine.SearchService;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using OVRTouchSample;
 
 public class ModesManager : MonoBehaviour
 {
     public static ModesManager instance = null;
 
-    // It is necessary to separe this script from the initial menu one so that when loading the new scene we can still use it without needing to conserve all the canvas
-
+    // It is necessary to separate this script from the initial menu one so that when loading the new scene we can still use it without needing to conservate all the canvas
     public eRoleType role = eRoleType.NOT_DEFINED;
     public eModeType mode = eModeType.NOT_DEFINED;
 
@@ -62,11 +56,13 @@ public class ModesManager : MonoBehaviour
 
     public void loadMainScene()
     { 
-        // check that both role and mode are selected
+        // check that both role and mode are selected to load the main scene
         if (role != eRoleType.NOT_DEFINED && mode != eModeType.NOT_DEFINED)
         {
 
+            // check if the IP has the required format. If not, show an error message and avoid loading the main scene
             string[] ipArray = IPAddress.text.Split(".");
+            // first, check that there are 4 elements separated by dots
             if (ipArray.Length != 4)
             {
                 errorText.gameObject.SetActive(true);
@@ -74,8 +70,6 @@ public class ModesManager : MonoBehaviour
             }
 
             // if the length of the array is correct, let's check that all of them are integers from 0-255
-            // PENDENT -- PER ALGUN MOTIU L'ULTIM CARACTER NO EL RECONEIX COM A INTEGER, I EN ALGUN LLOC HE VIST QUE S'AFEGEIX ALGUN CARACTER AMAGAT
-            // DE MOMENT LLEGEIXO FINS EL PENÚLTIM, NO ÉS IMPORTANT
             for (int i=0; i<ipArray.Length; i++)
             {
                 try
@@ -94,21 +88,17 @@ public class ModesManager : MonoBehaviour
                 }
             }
 
+            // get the IP corresponding to the host for the multiplayer system
             if (role == eRoleType.DIRECTOR)
-            {
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = IPAddress.text;
-                //Camera OVRCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
-                //OVRCamera.targetTexture = OVRCameraTexture;
-            }
             else if (role == eRoleType.ASSISTANT)
-            {
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
-            }
 
             SceneManager.LoadScene("MainScene");
         }
     }
 
+    // get current device's IPV4
     private string getLocalIPV4()
     {
         var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -133,38 +123,34 @@ public class ModesManager : MonoBehaviour
     }
     void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode sceneMode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
-
         if (scene.name == "MainScene")
         {
+            // activate and disable the needed components for each corresponding application
             if (role == eRoleType.DIRECTOR)
             {
+                // multi-camera system application acts as the client
                 NetworkManager.Singleton.StartClient();
-                //Display.displays[1].Activate();
+
                 Camera OVRCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
                 OVRCamera.targetDisplay = 1;
-                //OVRCamera.targetTexture = OVRCameraTexture;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("UDP Sender").SetActive(true);
                 GameObject.Find("NDI Receiver").SetActive(true);
                 GameObject.Find("UDP Receiver").SetActive(true);
 
+                // enable the event system from the multi-camera canvas to enable PC events
                 GameObject eventSytem = GameObject.Find("EventSystem");
-                //eventSytem.GetComponent<EventSystem>().enabled = false;
                 GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
                 directorCanvas.GetComponent<EventSystem>().enabled = true;
             }
             else if (role == eRoleType.ASSISTANT)
             {
+                // VR application acts as the host
                 NetworkManager.Singleton.StartHost();
 
                 GameObject.Find("CenterEyeAnchor").GetComponent<Camera>().targetDisplay = 0;
                 GameObject.Find("Panel Camera").GetComponent<Camera>().targetDisplay = 1;
                 GameObject.Find("UDP Receiver").SetActive(true);
-
-                // ip address to send path points to director
-                //DrawLine.instance.ipAddress = IPAddress.text;
 
                 GameObject UDPSender = GameObject.Find("UDP Sender");
                 UDPSender.SetActive(true);
@@ -173,24 +159,17 @@ public class ModesManager : MonoBehaviour
 
                 GameObject.Find("NDI Receiver").SetActive(true);
 
+                // disable event system from multi-camera canvas, as we will only need those corresponding to VR
                 GameObject eventSytem = GameObject.Find("EventSystem");
-                //eventSytem.GetComponent<EventSystem>().enabled = true;
                 GameObject directorCanvas = GameObject.FindGameObjectWithTag("DirectorPanel");
                 directorCanvas.GetComponent<EventSystem>().enabled = false;
-
-                //RotationScale rotationScale = HarryPrefab.GetComponentInChildren<RotationScale>();
-
-                //GameObject objectInstance = Instantiate(HarryPrefab);
-                //objectInstance.transform.position = new Vector3(0.0f, 0.0f, -10f);
-                //objectInstance.GetComponent<NetworkObject>().Spawn();
-
-                //Display.displays[0].Activate();
             }
 
+            // deactivate all structural elements of the set when using mixed reality mode
             if (mode == eModeType.MIXEDREALITY)
             {
                 GameObject.Find("Walls").SetActive(false);
-                // we cannot desactivate the floor, since then the OVR player falls down
+                // we cannot deactivate the floor, since then the OVR player falls down, but we can deactivate its renderer
                 GameObject.Find("Plane").GetComponent<MeshRenderer>().enabled = false;
                 GameObject.Find("Big Screen").SetActive(false);
                 GameObject.Find("OVRCameraRig").GetComponent<OVRManager>().isInsightPassthroughEnabled = true;
@@ -201,6 +180,7 @@ public class ModesManager : MonoBehaviour
                 playerController.EnableLinearMovement = false;
                 playerController.EnableRotation = false;
             }
+            // ensure that all structural elements of the set are shown
             else if (mode == eModeType.VIRTUALREALITY)
             {
                 GameObject.Find("Walls").SetActive(true);
@@ -217,10 +197,9 @@ public class ModesManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // by default, if app is being run in PC, it enables the mouse input and disable OVR input
+        // by default, if app is being run in a PC, enable the mouse input and disable OVR input
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.isEditor)
         {
             role = eRoleType.DIRECTOR;
@@ -248,10 +227,9 @@ public class ModesManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
     void Update()
     {
-        // pressing D key is used for debug purposes to use Oculus Link and enable OVR input again
+        // pressing D key is used for debug purposes by using Oculus Link, so we need to enable OVR input again
         if (Input.GetKeyDown(KeyCode.D))
         {
             role = eRoleType.ASSISTANT;
@@ -267,15 +245,10 @@ public class ModesManager : MonoBehaviour
             loadMainScene();
         }
 
+        // pending to implement creating all items and points references and change buttons names when client reconnects to host
         if (Input.GetKeyDown(KeyCode.R))
         {
-            //GameObject itemsParent = GameObject.Find("ItemsParent");
 
-            //for (int i = 0; i < itemsParent.transform.childCount; i++)
-            //{
-            //    GameObject currItem = itemsParent.transform.GetChild(i);
-
-            //}
         }
     }
 }

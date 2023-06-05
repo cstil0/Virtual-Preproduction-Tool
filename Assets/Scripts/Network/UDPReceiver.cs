@@ -13,8 +13,6 @@ public class UDPReceiver : MonoBehaviour
 {
     public static UDPReceiver instance = null;
 
-    // udpclient object
-    //UdpClient client;
     UdpClient clientPath;
     UdpClient clientPlay;
     UdpClient clientRotation;
@@ -38,11 +36,8 @@ public class UDPReceiver : MonoBehaviour
     Vector3 currPos;
     Vector3 newCameraPosition;
 
-    //Vector3 startRot;
     Quaternion startRot;
-    //Vector3 remoteStartRot;
     Quaternion remoteStartRot;
-    //Vector3 currRot;
     Quaternion currRot;
 
     public delegate void ChangeItemColor(string itemName, Color color);
@@ -89,6 +84,7 @@ public class UDPReceiver : MonoBehaviour
             instance = this;
     }
 
+    // thread to listen to assistant messages
     void UDP_assistantToDirectorReceive()
     {
         clientPath = new UdpClient(assistantToDirectorPort);
@@ -111,6 +107,7 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    // thread to listen to director messages
     void UDP_directorToAssistantReceive()
     {
         clientPlay = new UdpClient(directoToAssistantPort);
@@ -133,8 +130,10 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    // executed when a new point is created in the scene
     void parsePointPosition(string itemName, string pointPosition)
     {
+        // get corresponding follow path script and containers
         GameObject item = itemsParent.transform.Find(itemName).gameObject;
         int itemNum = int.Parse(itemName.Split(" ")[1]);
         item.TryGetComponent(out FollowPath followPath);
@@ -174,9 +173,12 @@ public class UDPReceiver : MonoBehaviour
 
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
             int pointsCount = followPath.pathPositions.Count;
+
+            // create a new points layout if it is the first point of the character's path
             if (pointsCount == 1)
                 ItemsDirectorPanelController.instance.addPointsLayout(itemName);
 
+            // crate new point button
             ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 1);
 
             // add point to line renderer of the corresponding path
@@ -200,6 +202,7 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    // executed when a new camera point is created
     void parsePointRotation(string itemName, string pointRotation)
     {
         // handle exceptions in case the item is not found
@@ -220,6 +223,7 @@ public class UDPReceiver : MonoBehaviour
                 pathContainer = GameObject.Find("Path " + itemName).transform;
             }
 
+            // parse each axis rotation
             string[] splittedMessage = pointRotation.Split(" ");
             float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
             float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
@@ -245,13 +249,17 @@ public class UDPReceiver : MonoBehaviour
                 cameraRotationController.followPathCamera = followPathCamera;
                 cameraRotationController.pointNum = pointsCount -2;
 
+                // create new points layout if it is the first point of the camera path
                 if (pointsCount == 2)
                     ItemsDirectorPanelController.instance.addPointsLayout(itemName);
 
+                // instantiate a new point button
                 ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 2);
 
                 Transform pointTransform = pathContainer.GetChild(pointsCount - 1);
                 GameObject line = pathContainer.GetChild(0).gameObject;
+
+                // create point in line renderer as its positions are not synchronized with the multiplayer system
                 LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
                 if (pointsCount == 2)
                 {
@@ -422,7 +430,7 @@ public class UDPReceiver : MonoBehaviour
             clientPlay.Close();
         }
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         // director wants to receive new point paths created by the assistant
@@ -446,7 +454,6 @@ public class UDPReceiver : MonoBehaviour
         startRot = ScreenCamera.transform.rotation;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!isMessageParsed)
@@ -455,6 +462,7 @@ public class UDPReceiver : MonoBehaviour
 
             switch (ModesManager.instance.role)
             {
+                // parse director messages
                 case ModesManager.eRoleType.DIRECTOR:
                     eAssistantToDirectorMessages message_enumATD = (eAssistantToDirectorMessages)Enum.Parse(typeof(eAssistantToDirectorMessages), splittedMessage[0]);
                     switch (message_enumATD)
@@ -515,6 +523,8 @@ public class UDPReceiver : MonoBehaviour
                             break;
                     }
                     break;
+
+                // parse assistant messages
                 case ModesManager.eRoleType.ASSISTANT:
                     eDirectorToAssistantMessages message_enumDTA = (eDirectorToAssistantMessages)Enum.Parse(typeof(eDirectorToAssistantMessages), splittedMessage[0]);
                     switch (message_enumDTA)

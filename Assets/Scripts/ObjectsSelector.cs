@@ -23,7 +23,6 @@ public class ObjectsSelector : MonoBehaviour
         UDPReceiver.instance.OnChangeItemColor -= changeItemColorDirector;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         
@@ -33,6 +32,7 @@ public class ObjectsSelector : MonoBehaviour
     {
         isPlaying = !isPlaying;
 
+        // hide buttons on play
         GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
         itemControlMenu.GetComponent<Canvas>().enabled = false;
     }
@@ -41,6 +41,7 @@ public class ObjectsSelector : MonoBehaviour
     {
         isPlaying = false;
 
+        // show buttons again if object was selected before playing, else ensure they are hidden
         GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
         if (isSelected)
             itemControlMenu.GetComponent<Canvas>().enabled = true;
@@ -49,7 +50,6 @@ public class ObjectsSelector : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
@@ -59,6 +59,7 @@ public class ObjectsSelector : MonoBehaviour
                 secondaryIndexTriggerDown = true;
                 isSelected = !isSelected;
 
+                // enable buttons when object is selected
                 menuCanvas.enabled = isSelected;
             }
         }
@@ -66,8 +67,10 @@ public class ObjectsSelector : MonoBehaviour
             secondaryIndexTriggerDown = false;
     }
 
+    // used to change objec's color at client side when a change of color is received
     private void changeItemColorDirector(string itemName, Color color)
     {
+        // the event is received for all objects in the scene, so first check that this is the corresponding one
         if (itemName == gameObject.name)
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
     }

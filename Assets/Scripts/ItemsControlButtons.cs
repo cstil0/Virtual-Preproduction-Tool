@@ -53,6 +53,7 @@ public class ItemsControlButtons : MonoBehaviour
 
             triggerOn = true;
 
+            // get corresponding follow path script and set its selected property to false to avoid defining a new point when pressing the button
             if (followPath != null)
                 followPath.isSelectedForPath = false;
 
@@ -72,6 +73,7 @@ public class ItemsControlButtons : MonoBehaviour
 
             triggerOn = false;
 
+            // get corresponding follow path script and set its selected property back to true
             if (followPath != null)
                 followPath.isSelectedForPath = true;
 
@@ -80,9 +82,9 @@ public class ItemsControlButtons : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
-    {   
+    {  
+        // get the corresponding scripts and components if they are attached to the item
         item = gameObject.transform.parent.parent.parent.gameObject;
         item.TryGetComponent(out customGrabbableCharacters);
         item.TryGetComponent(out ovrgrabbable);
@@ -95,6 +97,7 @@ public class ItemsControlButtons : MonoBehaviour
             lastPosition = item.transform.position;
             heightText.text = lastPosition.y.ToString("#0.00");
         }
+        // ensure the correct color in the button
         else
         {
             var colors = button.GetComponent<Button>().colors;
@@ -102,10 +105,10 @@ public class ItemsControlButtons : MonoBehaviour
             button.GetComponent<Button>().colors = colors;
         }
 
+        // show height reference if grid is also enabled
         showHideHeight(DirectorPanelManager.instance.isGridShown);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
@@ -115,6 +118,7 @@ public class ItemsControlButtons : MonoBehaviour
         }
         else
         {
+            // perform the corresponding action
             if (triggerButtonDown && triggerOn)
             {
                 if (buttonType == eButtonType.TRASH)
@@ -128,6 +132,7 @@ public class ItemsControlButtons : MonoBehaviour
 
         if (buttonType == eButtonType.HEIGHT)
         {
+            // change height reference if the item's position changed
             if(lastPosition != item.transform.position)
             {
                 lastPosition = item.transform.position;
@@ -145,18 +150,21 @@ public class ItemsControlButtons : MonoBehaviour
         GameObject pathContainer = GameObject.Find("Path " + itemNum);
         GameObject circlesContainer = GameObject.Find("Circles " + itemNum);
 
+        // destroy the corresponding points and circles as well as the whole containers if it is a character
         if (circlesContainer != null)
         {
             for (int i = pathContainer.transform.childCount - 1; i >= 0; i--)
             {
                 Destroy(pathContainer.transform.GetChild(i).gameObject);
-                // circles have one less child
+                // circles have one less child in the circles container than path container, since those also store the line renderer
                 if (i < pathContainer.transform.childCount - 1)
                     Destroy(circlesContainer.transform.GetChild(i).gameObject);
             }
             Destroy(pathContainer);
             Destroy(circlesContainer);
         }
+
+        // destroy the points and path container if it is a camera
         else if (pathContainer != null)
         {
             for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
@@ -166,6 +174,7 @@ public class ItemsControlButtons : MonoBehaviour
             Destroy(pathContainer);
         }
 
+        // destroy the item and its references
         Destroy(item);
 
         if (followPath != null)
@@ -182,11 +191,13 @@ public class ItemsControlButtons : MonoBehaviour
 
     public void onLockPressed()
     {
+        // change button shape according to the new state
         if (isLocked)
             buttonImage.sprite = lockImage;
         else
             buttonImage.sprite = unlockImage;
 
+        // disable grabbable to avoid grabbing the item
         if (customGrabbableCharacters != null)
             customGrabbableCharacters.enabled = isLocked;
         if (ovrgrabbable != null)
@@ -200,6 +211,7 @@ public class ItemsControlButtons : MonoBehaviour
 
     public void showHideHeight(bool isGridShown)
     {
+        // enable numerical height reference
         if (buttonType == eButtonType.HEIGHT)
         {
             GameObject heightGO = heightText.transform.parent.gameObject;

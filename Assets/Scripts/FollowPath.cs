@@ -16,7 +16,6 @@ public class FollowPath : MonoBehaviour
     public GameObject handController;
     public List<Vector3> pathPositions;
     // relate each path ID with the start and end positions in the pathPositions list
-    //public Dictionary<int, int[]> pathStartEnd;
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
     public int pointsCount;
@@ -29,12 +28,9 @@ public class FollowPath : MonoBehaviour
 
     public GameObject pathContainer;
     public GameObject circlesContainer;
-    //int pathNum = -1;
 
     public bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
-    //bool AButtonDown = false;
-    //bool BButtonDown = false;
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
@@ -46,18 +42,6 @@ public class FollowPath : MonoBehaviour
     [SerializeField] Vector3 characterRotationLeft = new Vector3(0, -5f, 0);
     [SerializeField] Vector3 characterRotationRight = new Vector3(0, 5f, 0);
 
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = true;
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = false;
-    //}
     private void OnEnable()
     {
         DirectorPanelManager.instance.OnPlayPath += playLinePath;
@@ -73,6 +57,7 @@ public class FollowPath : MonoBehaviour
         UDPReceiver.instance.OnChangePathColor -= changePathColorDirector;
     }
 
+    // extracted from Vector3.MoveTowards() function
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
     {
         float num = target.x - current.x;
@@ -109,18 +94,15 @@ public class FollowPath : MonoBehaviour
             Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
             // compute the new rotation using this forward
             gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
-            //gameObject.transform.rotation = Quaternion.LookRotation(new Vector3(originalRotation.x, newForward.y, originalRotation.z));
         } catch (Exception e) {
             Debug.LogError(e.Message);
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         handController = GameObject.Find("RightHandAnchor");
         pathPositions = new List<Vector3>();
-        //pathStartEnd = new Dictionary<int, int[]>();
         pointsCount = 0;
 
         startPosition = gameObject.transform.position;
@@ -130,14 +112,12 @@ public class FollowPath : MonoBehaviour
             animator = gameObject.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
             if (!secondaryIndexTriggerDown && triggerOn)
             {
-                //DefinePath.instance.startLine = false;
                 secondaryIndexTriggerDown = true;
                 // first touch will select the character, and the second one will unselect it
                 isSelectedForPath = !isSelectedForPath;
@@ -164,10 +144,13 @@ public class FollowPath : MonoBehaviour
 
 
         if (triggerOn && !isPlaying) {
+            // rotate character with thubstick
             if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
                 rotateCharacter(characterRotationLeft);
             if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight))
                 rotateCharacter(characterRotationRight);
+
+            // if character is being relocated, reset its initial position
             if (gameObject.transform.position != startPosition)
             {
                 startPosition = gameObject.transform.position;
@@ -185,11 +168,11 @@ public class FollowPath : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.P))// || OVRInput.Get(OVRInput.RawButton.X))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             playLinePath();
         }
-        else if (Input.GetKeyDown(KeyCode.S))// || OVRInput.Get(OVRInput.RawButton.Y))
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             stopLinePath();
         }
@@ -208,11 +191,11 @@ public class FollowPath : MonoBehaviour
         {
             Vector3 currTarget = pathPositions[currPoint];
 
-            // QUE HI FA AQUÍ EL POSSPEED? NO HAURIA DE SER 0.1? AH POTSER ERA PER QUE VAGI UNA MICA MÉS RÀPID SI EL PERSONATGE TB?
+            // change walk / idle animations
             if (animator != null)
                 animator.SetFloat("Speed", 0.1f, 0.05f, Time.deltaTime);
-                //animator.SetFloat("Speed", posSpeed, 0.05f, Time.deltaTime);
 
+            // since VR application is set as host it plays the movement
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                 move(currTarget);
 
@@ -229,10 +212,12 @@ public class FollowPath : MonoBehaviour
 
     public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
     {
+        // if it is the first point, compute the initial difference needed to compute the height of the point
         pointsCount++;
         if (pointsCount == 1)
             startDiffPosition = controllerPos - startPosition;
 
+        // new Y is computed to ensure that the character will be on the ground on the first point and the rest are taken from there
         float newY = controllerPos.y - startDiffPosition.y;
         Vector3 newPoint = new Vector3(controllerPos.x, newY, controllerPos.z);
 
@@ -241,12 +226,14 @@ public class FollowPath : MonoBehaviour
         {
             if (pointsCount == 1)
             {
+                // create the new path and save the corresponding containers
                 List<GameObject> containers = DefinePath.instance.addPointToNewPath(controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
                 pathContainer = containers[0];
                 circlesContainer = containers[1];
             }
             else
             {
+                // create the new point in the corresponding container
                 LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
                 addLineRendererPoint(lineRenderer, controllerPos, pointsCount - 1);
                 DefinePath.instance.addPointToExistentPath(pathContainer, controllerPos, Quaternion.identity, pointsCount - 1, gameObject, false, newY);
@@ -257,32 +244,32 @@ public class FollowPath : MonoBehaviour
             // send new path point from assistant to director so that he can also play and visualize paths
             UDPSender.instance.sendPointPath(gameObject, newPoint);
         }
-
     }
 
     void playLinePath()
     {
-        Transform pathTransform = pathContainer.transform;
-        Transform circlesTransform = circlesContainer.transform;
-
+        // hide path spheres and line renderers to show the scene in a clear way
         hideShowPath(false);
 
+        // disable the buttons to show the scene in a clear way
         GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
         itemControlMenu.GetComponent<Canvas>().enabled = false;
 
         isPlaying = !isPlaying;
-        //isPlaying = true;
     }
 
     void stopLinePath()
     {
         isPlaying = false;
+        // return character to its initial position and rotation
         gameObject.transform.position = startPosition;
         gameObject.transform.rotation = startRotation;
         currPoint = 0;
 
+        // show path spheres and line renderers again
         hideShowPath(true);
 
+        // show the buttons again in case the character was selected before playing
         GameObject itemControlMenu = transform.Find("ItemControlMenu").gameObject;
         if (isSelectedForPath)
             itemControlMenu.GetComponent<Canvas>().enabled = true;
@@ -296,9 +283,12 @@ public class FollowPath : MonoBehaviour
         {
             Transform pathTransform = pathContainer.transform;
             Transform circlesTransform = circlesContainer.transform;
+
+            // disable line renderer to hide or show it
             GameObject line = pathTransform.GetChild(0).gameObject;
             line.GetComponent<LineRenderer>().enabled = isHidden;
 
+            // iterate through all spheres and circles and hide or show them
             for (int i = 1; i < pathTransform.childCount; i++)
             {
                 GameObject currPoint = pathTransform.GetChild(i).gameObject;
@@ -315,16 +305,17 @@ public class FollowPath : MonoBehaviour
 
     void addLineRendererPoint(LineRenderer lineRenderer, Vector3 newPosition, int pointsCount)
     {
+        // add it both to the positions array and line renderer
         lineRenderer.positionCount += 1;
         lineRenderer.SetPosition(pointsCount, newPosition);
     }
 
     void removeLineRendererPoint(LineRenderer lineRenderer, int pointNum) 
     {
+        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
         int pointsCount = lineRenderer.positionCount;
         Vector3[] pathPositionsArray = new Vector3[pointsCount];
         lineRenderer.GetPositions(pathPositionsArray);
-        // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
         pathPositionsList.RemoveAt(pointNum);
 
@@ -352,7 +343,7 @@ public class FollowPath : MonoBehaviour
         sphere.position += direction;
         Vector3 newPoint = sphere.position;
 
-        // position saved in the list has different height
+        // get the position of the point by correcting its height, as it is saved considering the first point to be over the ground
         pathPositions[pointNum] = pathPositions[pointNum] + direction;
 
         GameObject line = pathContainer.transform.Find("Line").gameObject;
@@ -365,7 +356,7 @@ public class FollowPath : MonoBehaviour
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
         pathPositionsList[pointNum] = newPoint;
 
-        // reassign
+        // reassign positions to the line renderer
         pathPositionsArray = pathPositionsList.ToArray();
         currLineRenderer.SetPositions(pathPositionsArray);
     }
@@ -383,12 +374,14 @@ public class FollowPath : MonoBehaviour
 
     public void changePathColor()
     {
+        // get the corresponding color
         Color color = DefinePath.instance.defaultLineColor;
         if (isSelectedForPath)
             color = DefinePath.instance.selectedLineColor;
 
         DefinePath.instance.changePathColor(pathContainer, color, isSelectedForPath);
 
+        // inform about the change of color for this path
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
             UDPSender.instance.sendChangePathColor(gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
@@ -396,25 +389,20 @@ public class FollowPath : MonoBehaviour
     private void changeItemColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
-        {
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
-            Debug.Log("CHANGING ITEM COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
-        }
     }
 
     private void changePathColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
-        {
             StartCoroutine(changeColorWaitPathContainer(color));
-        }
     }
 
+    // this coroutine is necessary in the client part since we need to wait until the path container is received and correctly stored
     IEnumerator changeColorWaitPathContainer(Color color)
     {
         while (pathContainer == null) yield return null;
 
         DefinePath.instance.changePathColor(pathContainer, color, false);
-        Debug.Log("CHANGING PATH COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 }

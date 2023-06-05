@@ -60,7 +60,6 @@ public class DirectorPanelManager : MonoBehaviour
             instance = this;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
@@ -75,7 +74,6 @@ public class DirectorPanelManager : MonoBehaviour
         distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.RawButton.X))
@@ -90,9 +88,7 @@ public class DirectorPanelManager : MonoBehaviour
             }
         }
         else
-        {
             isXbuttonDown = false;
-        }
     }
 
     public void goToAerialView()
@@ -108,17 +104,20 @@ public class DirectorPanelManager : MonoBehaviour
 
     public void changePGMCamera(GameObject input)
     {
+        // ressign the camera texture to be rendered at the PGM slot
         string[] inputName = input.name.Split(" ");
         int inputNum = int.Parse(inputName[1]);
         Texture cameraView = input.GetComponent<RawImage>().texture;
-
         PGMView.GetComponent<RawImage>().texture = cameraView;
+
+        // inform of the change of camera
         UDPSender.instance.changeMainCamera(inputNum);
         Color normalColor = ItemsDirectorPanelController.instance.normalColor;
         normalColor.a = 0f;
         Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
         selectedColor.a = 0.15f;
 
+        // change texture color to visually tell the one that is selected
         for (int i = 0; i < cameraViewButtons.Length; i ++)
         {
             Button currButton = cameraViewButtons[i];
@@ -141,18 +140,22 @@ public class DirectorPanelManager : MonoBehaviour
         else
             playPauseButton.GetComponent<Image>().sprite = playIcon;
 
-        //playPauseButton.GetComponent<Button>().colors;
+        // call play event
         OnPlayPath();
+        // inform that play was pressed
         SendPlayStop("PLAY");
     }
 
     public void stopPath()
     {
+        // all stop event
         OnStopPath();
         playPauseButton.GetComponent<Image>().sprite = playIcon;
+        // inform that stop was pressed
         SendPlayStop("STOP");
     }
 
+    // send play/stop message
     public void SendPlayStop(string playMessage)
     {
         try
@@ -178,16 +181,21 @@ public class DirectorPanelManager : MonoBehaviour
     public void showHideGrid()
     {
         isGridShown = !isGridShown;
+        // activate or disable grid image
         if (isGridShown)
             gridButton.GetComponent<Image>().sprite = gridCancelIcon;
         else
             gridButton.GetComponent<Image>().sprite = gridIcon;
 
         grid.SetActive(isGridShown);
+
+        // inform that grid was shown
         UDPSender.instance.sendShowHideGridAssistant(isGridShown);
 
+        // call show grid event
         OnHideShowGrid(isGridShown);
 
+        // when grid is shown, objects can be only moved with the GUI arrows, so activate / disable OVR grabbers
         customRightHand.GetComponent<OVRGrabber>().enabled = isGridShown;
         customLeftHand.GetComponent<OVRGrabber>().enabled = isGridShown;
         customRightHand.transform.parent.parent.GetComponent<HoverObjects>().enabled = isGridShown;
@@ -208,20 +216,20 @@ public class DirectorPanelManager : MonoBehaviour
 
     public void changePointsViewTexture(string itemPressedName, int pointNumPressed)
     {
-        // get the camera point texture and show it in screen
         if (itemPressedName.Contains("MainCamera"))
         {
+            // show alert message if no point is
             if (pointNumPressed == -1)
             {
                 pointsView.GetComponent<RawImage>().texture = null;
                 pointsView.GetComponent<RawImage>().color = new Color(1.0f, 0.4352941f, 0.3686275f);
                 pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
             }
+
+            // get the camera point texture and show it in screen
             else
             {
                 Transform currPathCamera = GameObject.Find("Path " + itemPressedName).transform;
-                Debug.Log("CHANGING POINT VIEW: " + pointNumPressed);
-                Debug.Log("CURRENT POINT PATH: " + currPathCamera.name);
                 Transform currPoint = currPathCamera.GetChild(pointNumPressed + 1);
                 GameObject cameraCanvas = currPoint.GetChild(2).gameObject;
                 Texture cameraTexture = cameraCanvas.GetComponentInChildren<RawImage>().texture;
@@ -229,20 +237,15 @@ public class DirectorPanelManager : MonoBehaviour
                 pointsView.GetComponent<RawImage>().texture = cameraTexture;
                 pointsView.GetComponent<RawImage>().color = Color.white;
                 pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
-
-                //aerealviewPanel.SetActive(false);
-                //pointsView.SetActive(true);
             }
         }
 
+        // show the alert message if no camera is selected
         else
         {
             pointsView.GetComponent<RawImage>().texture = null;
             pointsView.GetComponent<RawImage>().color = new Color(1.0f, 0.4352941f, 0.3686275f);
             pointsView.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
-
-            //aerealviewPanel.SetActive(true);
-            //pointsView.SetActive(false);
         }
     } 
 

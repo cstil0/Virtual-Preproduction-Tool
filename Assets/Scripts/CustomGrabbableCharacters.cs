@@ -44,22 +44,19 @@ public class CustomGrabbableCharacters : MonoBehaviour
             {
                 if (!buttonDown)
                 {
+                    // save the initial position and rotation for both the hand and the character
                     handStartPos = currentHand.transform.position;
                     handStartRot = currentHand.transform.rotation.eulerAngles;
                     startPos = gameObject.transform.position;
                     startRot = gameObject.transform.rotation.eulerAngles;
-                    //startPosDiff = gameObject.transform.position - handStartPos;
                     buttonDown = true;
                 }
 
+                // compute how much the character should move and rotate based on the controller's difference
                 Vector3 posDiff = handStartPos - currentHand.transform.position;
                 position = startPos - posDiff;
-                //Vector3 globalPosition = currentHand.transform.position + startPosDiff;
-                //position = globalPosition;
-
-                //RotationScale rotScale = gameObject.GetComponent<RotationScale>();
-                //Vector3 rotation = rotScale.rotation;
-                Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;;
+                Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;
+                // consider only hand's rotation in the y axis while mantaining x and z
                 limitRot = new Vector3(startRot.x, startRot.y - rotDiff.y, startRot.z);
             }
             else

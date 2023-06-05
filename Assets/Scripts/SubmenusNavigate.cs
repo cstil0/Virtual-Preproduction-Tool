@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,7 +65,6 @@ public class SubmenusNavigate : MonoBehaviour
         triggerOn = false;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         buttonReleasedOnce = false;
@@ -75,7 +72,6 @@ public class SubmenusNavigate : MonoBehaviour
         buttonDown = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
@@ -95,6 +91,7 @@ public class SubmenusNavigate : MonoBehaviour
             {
                 if (buttonType == ebuttonType.PREVIOUS)
                 {
+                    // check there is at least one previous page left to go
                     if (adp.currentPage - 1 >= 0)
                     {
                         adp.currentPage--;
@@ -103,18 +100,17 @@ public class SubmenusNavigate : MonoBehaviour
                         changeButtonColor(nextButton, Color.white, true);
                         nextButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
+                        // check if previous button should be shown as disabled or not
                         if (adp.currentPage - 1 < 0)
-                        {
                             isEnabled = false;
-                            changeButtonColor(previousButton, Color.white, isEnabled);
-                        }
                         else
-                        {
                             isEnabled = true;
-                            changeButtonColor(previousButton, Color.white, isEnabled);
-                        }
+
+                        changeButtonColor(previousButton, Color.white, isEnabled);
 
                         int startButton = adp.currentPage * buttonsPerPage;
+
+                        // iterate through each button in the current and previous pages to determine if it should be enabled or not
                         for (int i = startButton; i < startButton + 3; i++)
                         {
                             if (i < adp.buttonsCount)
@@ -127,6 +123,7 @@ public class SubmenusNavigate : MonoBehaviour
                                 currentMenu.transform.GetChild(i).gameObject.SetActive(false);
                         }
                     }
+                    // if there is no previous page left, ensure that the button is shown as disabled
                     else
                     {
                         isEnabled = false;
@@ -135,6 +132,7 @@ public class SubmenusNavigate : MonoBehaviour
                 }
                 else if (buttonType == ebuttonType.NEXT)
                 {
+                    // check there is at least one following page left to go
                     if (adp.currentPage + 1 < adp.buttonsCount / buttonsPerPage)
                     {
                         adp.currentPage++;
@@ -143,16 +141,12 @@ public class SubmenusNavigate : MonoBehaviour
                         changeButtonColor(previousButton, Color.white, true);
                         previousButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
+                        // check if next button should be shown as disabled or not
                         if (adp.currentPage + 1 >= adp.buttonsCount / buttonsPerPage)
-                        {
                             isEnabled = false;
-                            changeButtonColor(nextButton, Color.white, isEnabled);
-                        }
                         else
-                        {
                             isEnabled = true;
-                            changeButtonColor(nextButton, Color.white, isEnabled);
-                        }
+                        changeButtonColor(nextButton, Color.white, isEnabled);
 
                         int startButton = adp.currentPage * buttonsPerPage;
                         if (adp.currentPage - 1 >= 0)
@@ -166,6 +160,7 @@ public class SubmenusNavigate : MonoBehaviour
 
                         if (startButton < adp.buttonsCount)
                         {
+                            // iterate through each button in the current and next pages to determine if it should be enabled or not
                             for (int i = startButton; i < startButton + buttonsPerPage; i++)
                             {
                                 if (i < adp.buttonsCount)
@@ -173,18 +168,19 @@ public class SubmenusNavigate : MonoBehaviour
                             }
                         }
                     }
+                    // if there is no following page left, ensure that the button is shown as disabled
                     else
                     {
                         isEnabled = false;
                         changeButtonColor(nextButton, Color.white, isEnabled);
                     }
-
                 }
             }
             buttonDown = false;
         }
     }
 
+    // change button color according to its corresponding state
     void changeButtonColor(Button button, Color color, bool isEnabled)
     {
         ColorBlock buttonColors = button.colors;

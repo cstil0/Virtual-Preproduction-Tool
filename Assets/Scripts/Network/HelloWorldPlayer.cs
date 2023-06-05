@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace HelloWorld
 {
+    // this script was just a test to learn how to use the multiplayer system, but it is not in use currently
     public class HelloWorldPlayer : NetworkBehaviour
     {
         public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();

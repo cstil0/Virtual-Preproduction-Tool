@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1456751059504817328}
   - component: {fileID: 1456751059504817331}
   - component: {fileID: 1456751059504817330}
-  - component: {fileID: 1456751059504817341}
   - component: {fileID: 2254682298330938050}
   - component: {fileID: 2877552819779582181}
   m_Layer: 7
@@ -146,22 +145,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1456751059504817341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1456751059504817343}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6970cef549f5a4b468abba1af1e8ff1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTextures:
-  - {fileID: 8400000, guid: 9c34fe104b641b8458a0c46484619133, type: 2}
-  - {fileID: 8400000, guid: 6dd0c5854692807469e131d48cf79853, type: 2}
-  - {fileID: 8400000, guid: 0b3d78b395b1de746bcd793b3aed45eb, type: 2}
 --- !u!114 &2254682298330938050
 MonoBehaviour:
   m_ObjectHideFlags: 0

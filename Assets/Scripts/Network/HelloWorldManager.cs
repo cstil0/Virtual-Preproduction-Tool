@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace HelloWorld
 {
+    // this script was just a test to learn how to use the multiplayer system, but it is not in use currently
     public class HelloWorldManager : MonoBehaviour
     {
         public GameObject HarryPrefab;
         private void Start()
         {
 
-            //NetworkManager.Singleton.StartClient();
             NetworkManager.Singleton.StartHost();
 
 

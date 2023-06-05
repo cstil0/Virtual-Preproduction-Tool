@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script is not used anymore, as it was created to implement the item's scroll menu in VR which is now handled by pages
 public class ScrollMenu : MonoBehaviour
 {
     bool triggerOn;
@@ -22,36 +23,33 @@ public class ScrollMenu : MonoBehaviour
         triggerOn = false;
     }
     
-    // Start is called before the first frame update
     void Start()
     {
         triggerOn = false;
         menusPanel = gameObject.transform.GetChild(0);
     }
 
-    // Update is called once per frame
     void Update()
     {
         float speed = 1.5f;
+        // compute the new scroll position that should be applied to the menu according to the user's input
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn){
             ScrollRect scrollRect = gameObject.GetComponent<ScrollRect>();
             RectTransform rectTrans = gameObject.GetComponent<RectTransform>();
             Vector3 localHandPos = gameObject.transform.InverseTransformPoint(handController.transform.position);
-            float panelBottom = gameObject.transform.position.y - rectTrans.rect.height;
             float distance = -localHandPos.y;
             float scrollPos = Mathf.InverseLerp(0.0f, rectTrans.rect.height, distance*speed);
             scrollRect.verticalNormalizedPosition = scrollPos;
         }
 
-        //gameObject.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
-
-        // ESTARÍA BIEN HACER ESTO SOLO CUANDO SE CAMBIE DE MENÚ
+        // iterate through all menus and get only the active one to apply the scroll
         for (int i = 0; i < menusPanel.childCount; i++)
         {
             GameObject currMenu = menusPanel.GetChild(i).gameObject;
             if (!currMenu.active)
                 continue;
 
+            // change the y axis position for the menu according to the scroll that has to be applied
             RectTransform menus_rt = menusPanel.GetComponent<RectTransform>();
             RectTransform currPanel_rt = currMenu.GetComponent<RectTransform>();
             float newHeight = currMenu.transform.childCount * 18.5f;

@@ -4,14 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Globalization;
 using System.Collections;
-using UnityEngine.UIElements;
-using UnityEngine.Animations;
-using System.Linq;
 using System;
 using System.Collections.Generic;
-using Facebook.WitAi.CallbackHandlers;
-using Microsoft.MixedReality.Toolkit.Input;
-using UnityEditor.Rendering;
 
 public class UDPSender : MonoBehaviour
 {
@@ -120,7 +114,6 @@ public class UDPSender : MonoBehaviour
     }
 
     // -- ASSISTANT TO SCREEN MESSAGES --
-    // main thread that listens to UDP messages through a defined port
     public void SendPosRot()
     {
         client = new UdpClient(assistantToScreenPort);
@@ -284,7 +277,6 @@ public class UDPSender : MonoBehaviour
     {
         sendCameraType();
         yield return new WaitForSeconds(5);
-        //SendPosRot();
     }
 
     public void rotateItemsInScene(float rotationAngle)
@@ -297,6 +289,7 @@ public class UDPSender : MonoBehaviour
         for (int i = 0; i < itemsParent.transform.childCount; i++)
         {
             GameObject item = itemsParent.transform.GetChild(i).gameObject;
+            // if it is a camera, rotate the cinemachine gameobjects
             if (item.name.Contains("MainCamera"))
             {
                 FollowPathCamera followPathCamera = item.GetComponent<FollowPathCamera>();
@@ -309,6 +302,7 @@ public class UDPSender : MonoBehaviour
                 dollyTrack.transform.position = virtualCamera.transform.position;
                 rotationController.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
 
+                // iterate through each defined point and rotate it
                 List<Vector3> pathPositions = followPathCamera.pathPositions;
                 for (int j = 0; j < pathPositions.Count; j++)
                 {
@@ -385,7 +379,6 @@ public class UDPSender : MonoBehaviour
         return dir + pivotPoint;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         screenCameraStartPos = screenCamera.transform.position;
@@ -400,11 +393,8 @@ public class UDPSender : MonoBehaviour
 
         if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
             sendCameraType();
-
-        //StartCoroutine(sendInitialParameters());
     }
 
-    // Update is called once per frame
     void Update()
     {
         int rotation = 0;
@@ -438,8 +428,6 @@ public class UDPSender : MonoBehaviour
 
         if (OVRInput.Get(OVRInput.RawButton.Y))
         {
-            //if (!buttonDown)
-            //{
             float rotationConstant = 30.0f * Time.deltaTime;
             // The way the secondary scene reads the angle is in total (not just the delta one)
             sceneRotation += rotationConstant;
@@ -451,23 +439,6 @@ public class UDPSender : MonoBehaviour
 
             buttonDown = 1;
             rotation = 5;
-
-            //    //GameObject[] sceneItems = GameObject.FindGameObjectsWithTag("Items");
-
-            //    //foreach (GameObject item in sceneItems)
-            //    //{
-            //    //    Vector3 itemPos = item.transform.position;
-            //    //    Vector3 itemRot = item.transform.rotation.eulerAngles;
-
-            //    //    item.transform.position = new Vector3(OVRPlayer.transform.position.x, itemPos.y, OVRPlayer.transform.position.z);
-            //    //    item.transform.rotation = Quaternion.Euler(new Vector3(0.0f, rotation + itemRot.y , 0.0f));
-            //    //    item.transform.position = item.transform.forward * itemPos.z;
-            //    //    item.transform.position = item.transform.right * itemPos.x;
-            //    //    //item.transform.RotateAround(OVRPlayer.transform.position, Vector3.up, 5*Time.deltaTime);
-            //    //}
-
-            //    //    buttonDown = true;
-            //    //}
         }
         else
         {
@@ -483,7 +454,6 @@ public class UDPSender : MonoBehaviour
             resetStart = true;
 
             sendResetPosRot();
-            //SendPosRot();
         }
     }
 }

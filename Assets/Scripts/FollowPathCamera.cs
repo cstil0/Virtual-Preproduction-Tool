@@ -16,32 +16,21 @@ public class FollowPathCamera : MonoBehaviour
     public float speed = 0.005f;
 
     public GameObject handController;
-    //[SerializeField] GameObject miniCamera;
     public List<Vector3> pathPositions;
     public List<Vector3> pathRotations;
-    //public List<Quaternion> pathRotations;
-    // relate each path ID with the start and end positions in the pathPositions list
-    //public Dictionary<int, int[]> pathStartEnd;
-    //public float posSpeed = 10.0f;
-    //public float rotSpeed = 10.0f;
     float pathLength;
     float currPathPosition;
     float lastRotFactor = 0;
 
     public Vector3 startPosition;
-    //Vector3 startDiffPosition;
     public Quaternion startRotation;
 
-    //Animator animator;
 
     public GameObject pathContainer;
 
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
     bool XButtonDown = false;
-    //bool AButtonDown = false;
-    //bool BButtonDown = false;
-    //bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
     public bool isPointOnTrigger = false;
@@ -51,24 +40,6 @@ public class FollowPathCamera : MonoBehaviour
     [SerializeField] int currentSelectedPath = 0;
     private float currPathgPosition = 0;
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = true;
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.gameObject.layer == 3)
-    //        triggerOn = false;
-    //}
-    //private void OnEnable()
-    //{
-    //    DirectorPanelManager.instance.OnPlayPath += playLinePath;
-    //    DirectorPanelManager.instance.OnStopPath += stopLinePath;
-    //    UDPReceiver.instance.OnChangeItemColor += changeItemColorDirector;
-    //    UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
-    //}
     private void OnDisable()
     {
         DirectorPanelManager.instance.OnPlayPath -= playLinePath;
@@ -78,6 +49,7 @@ public class FollowPathCamera : MonoBehaviour
 
     }
 
+    // extracted from Vector3.MoveTowards() method
     public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
     {
         float num = target.x - current.x;
@@ -93,6 +65,7 @@ public class FollowPathCamera : MonoBehaviour
         return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
     }
 
+    // inverse interpolation
     public static float InverseLerp(Vector3 pointA, Vector3 pointB, Vector3 middlePoint)
     {
         Vector3 distanceAB = pointB - pointA;
@@ -100,14 +73,6 @@ public class FollowPathCamera : MonoBehaviour
         return Vector3.Dot(distanceAM, distanceAB) / Vector3.Dot(distanceAB, distanceAB);
     }
 
-    //public static float InverseLerp(Vector3 pointA, Vector3 pointB, Vector3 middlePoint)
-    //{
-    //    float distanceAB = Vector3.Distance(pointB, pointA);
-    //    float distanceAM = Vector3.Distance(middlePoint, pointA);
-    //    return distanceAM/ distanceAB;
-    //}
-
-    // Start is called before the first frame update
     void Start()
     {
         DirectorPanelManager.instance.OnPlayPath += playLinePath;
@@ -120,20 +85,14 @@ public class FollowPathCamera : MonoBehaviour
         pathLength = cinemachineTrackedDolly.m_Path.MaxPos;
 
         handController = GameObject.Find("RightHandAnchor");
-        //pathPositions = new List<Vector3>();
-        //pathStartEnd = new Dictionary<int, int[]>();
 
         startPosition = cinemachineVirtualCamera.transform.position;
         startRotation = cinemachineVirtualCamera.transform.rotation;
 
         pathPositions = new List<Vector3>();
         pathRotations = new List<Vector3>();
-
-        //if (gameObject.GetComponent<Animator>())
-        //    animator = gameObject.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
@@ -143,6 +102,7 @@ public class FollowPathCamera : MonoBehaviour
                 secondaryIndexTriggerDown = true;
                 isSelectedForPath = !isSelectedForPath;
 
+                // if camera was just selected and there are no points defined yet, define a new one
                 if (pathPositions.Count == 0)
                 {
                     startPosition = cinemachineVirtualCamera.transform.position;
@@ -153,6 +113,7 @@ public class FollowPathCamera : MonoBehaviour
             }
             else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
             {
+                // define a new path point if camera is selected but controller is not touching it
                 secondaryIndexTriggerDown = true;
                 StartCoroutine(defineNewPathPoint(handController.transform.position, handController.transform.rotation));
             }
@@ -178,6 +139,7 @@ public class FollowPathCamera : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S))
             stopLinePath();
 
+        // check that there are at least two points already defined since the first one determines the initial position
         if (isPlaying && pathPositions.Count >= 2)
         {
             cinemachineSmoothPath.m_Appearance.width = 0.2f;
@@ -188,29 +150,32 @@ public class FollowPathCamera : MonoBehaviour
 
             float floorPathPos = Mathf.Floor(currPathPosition);
             Vector3 currTargetPos = pathPositions[(int)floorPathPos + 1];
-            //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
             Vector3 lastTargetPos = pathPositions[(int)floorPathPos];
             float distance = Vector3.Distance(currTargetPos, lastTargetPos);
 
             float step = speed * Time.deltaTime;
 
-            // first compute the real position that we want to reach
+            // first compute the real position that we want to reach using a constant step
             Vector3 currRealPos = MoveTowardsCustom(lastTargetPos, currTargetPos, step);
             // then compute the interpolation factor that we need to get to that real position
             float tempCurrPathPosition = currPathPosition + InverseLerp(lastTargetPos, currTargetPos, currRealPos);
 
+            // check if we are already at the final point of the path
             if (tempCurrPathPosition < pathLength - 1)
             {
                 currPathPosition = tempCurrPathPosition;
                 cinemachineTrackedDolly.m_PathPosition = currPathPosition;
 
+                // get the current point num without decimals
                 floorPathPos = Mathf.Floor(currPathPosition);
+                // compute the factor from 0 to 1 between the two current positions
                 float factor = currPathPosition - floorPathPos;
 
+                // get the two current rotations
                 Vector3 currTargetRot = pathRotations[(int)floorPathPos + 1];
-                //Quaternion currTargetRot = pathRotations[(int)floorPathPos + 1];
                 Vector3 lastTargetRot = pathRotations[(int)floorPathPos];
 
+                // compute the current angle by an interpolation using the cinemachine factor and apply it
                 Vector3 angDiff = currTargetRot - lastTargetRot;
                 Vector3 minAngDiff = findMinAngle(angDiff);
                 Vector3 targetRot = lastTargetRot + (minAngDiff) * factor;
@@ -228,12 +193,14 @@ public class FollowPathCamera : MonoBehaviour
 
     Vector3 findMinAngle(Vector3 angDiff)
     {
+        // compute the conjugate angle
         Vector3 angDiffInv = vector3Abs(angDiff) - new Vector3(360.0f, 360.0f, 360.0f);
 
         float minAngDiffX = angDiff.x;
         float minAngDiffY = angDiff.y;
         float minAngDiffZ = angDiff.z;
         
+        // get the minimum one ignoring the negative sign
         if (Math.Abs(angDiffInv.x) < minAngDiffX)
             minAngDiffX = angDiffInv.x;
         if (Math.Abs(angDiffInv.y) < minAngDiffY)
@@ -248,9 +215,11 @@ public class FollowPathCamera : MonoBehaviour
     {
         CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
 
+        // iterate through all points in the cinemachine path and compute the new point considering the distance between the new initial position and the already defined point
         for (int i = 0; i < cinemachinePoints.Length; i++)
         {
             CinemachineSmoothPath.Waypoint newWayPoint;
+            // first point is always (0,0,0) representing distance 0
             if (i == 0)
             {
                 newWayPoint = new CinemachineSmoothPath.Waypoint();
@@ -303,7 +272,9 @@ public class FollowPathCamera : MonoBehaviour
             pathRotations.Add(newRotVec);
         }
 
+        // the rest of points are computed as the difference between the actual point and the initial one
         Vector3 newPointCinemachineWrong = startPosition - newPoint;
+        // y-axis needs to be flipped to obtain the desired position
         Vector3 newPointCinemachine = new Vector3(newPointCinemachineWrong.x, - newPointCinemachineWrong.y, newPointCinemachineWrong.z);
         CinemachineSmoothPath.Waypoint newWayPoint = new CinemachineSmoothPath.Waypoint();
         newWayPoint.position = newPointCinemachine;
@@ -332,21 +303,22 @@ public class FollowPathCamera : MonoBehaviour
                 DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
             }
 
+            // inform of the new position and rotation
+            // wait to ensure that the point was already created and renamed in the client side
             yield return new WaitForSeconds(0.2f);
-
             UDPSender.instance.sendPointPath(gameObject, newPoint);
             yield return new WaitForSeconds(0.1f);
             UDPSender.instance.sendRotationPath(gameObject, Quaternion.Euler(newRotVec));
         }
-
-        //GameObject newMiniCamera = Instantiate(miniCamera);
     }
 
     void addBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, float pathLength)
     {
         float count = pathLength - 1;
+        // iterate through all in-between positions generated in the cinemachine path from the last one to the new defined point
         for (int i = 1; i < cinemachineSmoothPath.m_Resolution + 1; i++)
         {
+            // evaluate the real position of each in-between point and assign it to the line renderer
             float step = 1.0f / (float)cinemachineSmoothPath.m_Resolution;
             Vector3 bezierPosition = cinemachineSmoothPath.EvaluatePosition(count);
             lineRenderer.positionCount += 1;
@@ -366,6 +338,7 @@ public class FollowPathCamera : MonoBehaviour
 
         int resolution = cinemachineSmoothPath.m_Resolution;
 
+        // remove all line renderer positions previous to the deleted point
         int count = (pointNum + 1) * resolution;
         for (int i = resolution - 1; i >= 0 ; i--)
         {
@@ -377,7 +350,7 @@ public class FollowPathCamera : MonoBehaviour
         lineRenderer.SetPositions(pathPositionsArray);
         lineRenderer.positionCount = pathPositionsArray.Length;
 
-        // relocate its following points in case it is not the last point of the movement
+        // relocate its following points in case it is not the last point of the movement to follow the new bezier curve
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         int pathLength = wayPoints.Length;
         if (pointNum < pathLength - 2)
@@ -405,6 +378,8 @@ public class FollowPathCamera : MonoBehaviour
 
         CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
         int pathLength = wayPoints.Length;
+
+        // the start and ending positions to be re-evaluated depend if the relocated point is at the beginning or end of the movement
         int doubleResolution = resolution;
         if (pointNum < (pathLength - 2))
             doubleResolution *= 2;
@@ -424,7 +399,7 @@ public class FollowPathCamera : MonoBehaviour
             lineRenderer.SetPosition((pointNum - 1) * resolution + i, bezierPosition);
 
             countFloat += step;
-    }
+        }
     }
 
     void playLinePath()
@@ -435,7 +410,7 @@ public class FollowPathCamera : MonoBehaviour
             // check if we are comming from stop
             if (currPathPosition == 0)
             {
-                // if first and second point are the same pass directly to second one
+                // if first and second point are the same, pass directly to second one. Instead it takes longer to start the movement
                 try
                 {
                     if (pathPositions[0] == pathPositions[1])
@@ -446,64 +421,30 @@ public class FollowPathCamera : MonoBehaviour
                 catch (Exception e) { currPathPosition = 0;  }
             }
             
+            // continue movement from the current position
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
+            rotationController.transform.rotation = Quaternion.Euler(pathRotations[(int)currPathPosition]);
 
-            rotationController.transform.rotation = startRotation;
-
-            GameObject dollyTracker = cinemachineSmoothPath.gameObject;
-            dollyTracker.transform.rotation = startRotation;
-            //startPosition = dollyTracker.transform.position;
-
-            //Transform pathTransform = pathContainer.transform;
-
-            //GameObject line = pathTransform.GetChild(0).gameObject;
-            //line.GetComponent<LineRenderer>().enabled = false;
-
-            //for (int i = 1; i < pathTransform.childCount; i++)
-            //{
-            //    GameObject currPoint = pathTransform.GetChild(i).gameObject;
-            //    currPoint.GetComponent<MeshRenderer>().enabled = false;
-            //}
             hideShowPath(false);
         }
-
-        Camera udpSenderCamera = UDPSender.instance.screenCamera;
 
         isPlaying = !isPlaying;
     }
 
     void stopLinePath()
     {
+        // go back to the start position and rotation
         isPlaying = false;
         cinemachineTrackedDolly.m_PathPosition = 0;
         rotationController.transform.rotation = startRotation;
         currPathPosition = 0;
 
         hideShowPath(true);
-
-        //GameObject[] paths = GameObject.FindGameObjectsWithTag("PathContainer");
-
-        //for (int i = 0; i < paths.Length; i++)
-        //{
-        //    Transform currPath = paths[i].transform;
-
-        //    for (int j = 0; j < currPath.childCount; j++)
-        //    {
-        //        GameObject pathObject = currPath.GetChild(j).gameObject;
-
-        //        if (pathObject.name.Contains("Line"))
-        //            pathObject.GetComponent<LineRenderer>().enabled = true;
-
-        //        else if (pathObject.name.Contains("Point"))
-        //            pathObject.SetActive(true);
-        //    }
-        //}
-
-        Camera udpSenderCamera = UDPSender.instance.screenCamera;
     }
 
     void hideShowPath(bool isHidden)
     {
+        // iterate through all points and line renderer and disable / enable them
         if (pathContainer != null)
         {
             Transform pathTransform = pathContainer.transform;
@@ -515,19 +456,20 @@ public class FollowPathCamera : MonoBehaviour
             {
                 GameObject currPoint = pathTransform.GetChild(i).gameObject;
                 currPoint.SetActive(isHidden);
-                //currPoint.GetComponent<MeshRenderer>().enabled = true;
             }
         }
-
     }
 
     public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
+        // remove point from local arrays
         pathPositions.RemoveAt(pointNum - 1);
+        pathRotations.RemoveAt(pointNum - 1);
 
         if (deleteLine)
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
 
+        // remove point from cinemachine array
         CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
 
         List<CinemachineSmoothPath.Waypoint> cinemachinePointsList = cinemachinePoints.ToList();
@@ -541,7 +483,8 @@ public class FollowPathCamera : MonoBehaviour
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)
     {
-        // inverted direction is needed for the way at which cinemachine points are saved
+        // relocate point from local position array
+        // inverted direction is needed because of the way at which cinemachine points are saved
         if (directionInv == new Vector3(0.0f,0.0f,0.0f))
             pathPositions[pointNum + 1] += direction;
         else
@@ -600,14 +543,15 @@ public class FollowPathCamera : MonoBehaviour
 
     IEnumerator changeColorWaitPathContainer(Color color)
     {
+        // wait until path container is received and correctly stored
         while (pathContainer == null) yield return null;
 
         DefinePath.instance.changePathColor(pathContainer, color, false);
-        Debug.Log("CHANGING PATH COLOR " + gameObject.name + " " + UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 
     Vector3 getPositiveRotation(Quaternion rot)
     {
+        // if angle is negative, compute its conjugate
         Vector3 newRot = rot.eulerAngles;
         if (newRot.x < 0)
             newRot.x = newRot.x + 360.0f;

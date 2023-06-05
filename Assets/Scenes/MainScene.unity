@@ -11395,6 +11395,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
@@ -13857,6 +13858,7 @@ MonoBehaviour:
   pointsLayoutPrefab: {fileID: 5868563464203099476, guid: 6cd5a830ed0f8b643b65f2ad47c603d8,
     type: 3}
   itemsParent: {fileID: 1959356655}
+  itemsDirectorPanelScroll: {fileID: 777726946}
   selectedColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
   normalColor: {r: 0.96862745, g: 0.972549, b: 0.9529412, a: 1}
   normalBlueColor: {r: 0.34090424, g: 0.34090424, b: 0.5283019, a: 1}
@@ -38543,6 +38545,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
@@ -39845,6 +39848,7 @@ MonoBehaviour:
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0

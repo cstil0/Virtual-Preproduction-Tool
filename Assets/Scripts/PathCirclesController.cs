@@ -7,13 +7,11 @@ public class PathCirclesController : MonoBehaviour
     public int pathNum;
     public int pointNum;
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -31,16 +29,18 @@ public class PathCirclesController : MonoBehaviour
         HoverObjects.instance.OnPathPointHovered -= changeColor;
     }
 
+    // change circle position when its corresponding point is relocated
     void changeCirclePosition(int currPathNum, int currPointNum, Vector3 distance) {
+        // event is received for all circles in the scene, so first check that this is the corresponding one
         if(pointNum == currPointNum && pathNum == currPathNum)
             transform.position = transform.position - distance;
     }
 
+    // change circle color when its corresponding point changes its color
     void changeColor(int currPathNum, int currPointNum, Color color)
     {
+        // event is received for all circles in the scene, so first check that this is the corresponding one
         if (pointNum == currPointNum && pathNum == currPathNum)
-        {
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
-        }
     }
 }

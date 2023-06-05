@@ -35,7 +35,7 @@ public class PathSpheresController : MonoBehaviour
     {
         lastPosition = gameObject.transform.position;
     }
-    // Update is called once per frame
+
     void Update()
     {
         bool isPlaying = DefinePath.instance.isPlaying;
@@ -62,22 +62,8 @@ public class PathSpheresController : MonoBehaviour
                 {
                     int pointNum = int.Parse(splittedName[1]);
                     isSelected = !isSelected;
-
-                    if (isSelected)
-                    {
-                        // DESELECT ALL POINTS - BETTER FROM HOVER OBJECTS
-                    }
                 }
                 catch (Exception e) { Debug.LogError(e.Message); }
-
-                
-                //if (followPath != null)
-                //    followPath.deletePathPoint(pointNum);
-                //else if (followPathCamera != null)
-                //    followPathCamera.deletePathPoint(pointNum);
-
-                //StartCoroutine(HoverObjects.instance.deletePathPoint());
-                //StartCoroutine(deletePathPoint());
             }
         }
         else
@@ -85,21 +71,17 @@ public class PathSpheresController : MonoBehaviour
 
         if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && !isPlaying)
         {
+            // if sphere was moved, change both the position in the follow path component and the line renderer
             if (lastPosition != gameObject.transform.position)
             {
-                // change both the position in the follow camera component and the line renderer
                 Vector3 newPosition = gameObject.transform.position;
                 GameObject line = null;
-                //int pathNum = -1;
                 if (followPathCamera != null)
                 {
                     Vector3 direction = lastPosition - newPosition;
                     Vector3 directionInv = newPosition - lastPosition;
                     Vector3 directionCorrected = new Vector3(direction.x, -direction.y, direction.z);
                     followPathCamera.relocatePoint(pointNum, directionCorrected, false, directionInv);
-                    //followPathCamera.pathPositions[pointNum] = newPosition;
-                    //line = transform.parent.parent.Find("Line").gameObject;
-
                 }
                 if (followPath != null)
                 {
@@ -117,6 +99,7 @@ public class PathSpheresController : MonoBehaviour
             }
         }
 
+        // relocate point using controller's thumbstick
         if (isSelected && OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp) && !isPlaying)
         {
             if (followPath != null)
@@ -140,30 +123,6 @@ public class PathSpheresController : MonoBehaviour
         }
     }
 
-    public IEnumerator deletePathPoint()
-    {
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        HoverObjects.instance.pointAlreadySelected = false;
-        HoverObjects.instance.currentPointCollider = null;
-
-        while (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger)) yield return null;
-        //yield return new WaitForSeconds(1f);
-
-
-        if (HoverObjects.instance.currentSelectedForPath.layer == 10)
-        {
-            FollowPath followPath = HoverObjects.instance.currentSelectedForPath.GetComponent<FollowPath>();
-            followPath.isPointOnTrigger = false;
-        }
-        else if (HoverObjects.instance.currentSelectedForPath.layer == 7)
-        {
-            FollowPathCamera followPathCamera = HoverObjects.instance.currentSelectedForPath.GetComponent<FollowPathCamera>();
-            followPathCamera.isPointOnTrigger = false;
-        }
-
-        Destroy(gameObject);
-    }
-
     public void changeTriggerState(bool newTriggerState)
     {
         // if point is on trigger we do not want to instantiate new points when pressing trigger button
@@ -182,6 +141,7 @@ public class PathSpheresController : MonoBehaviour
         }
     }
 
+    // used to know if the point corresponds to a camera or a character
     public void getFollowPath()
     {
         item.TryGetComponent<FollowPath>(out followPath);
@@ -193,6 +153,7 @@ public class PathSpheresController : MonoBehaviour
         StartCoroutine(waitItemAssigned(itemName, pointName, color));
     }
 
+    // wait until there is a reference of its corresponding item to change the point's color on client side
     IEnumerator waitItemAssigned(string itemName, string pointName, Color color)
     {
         while (item == null) yield return null;

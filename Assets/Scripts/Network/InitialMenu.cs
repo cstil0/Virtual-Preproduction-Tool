@@ -1,10 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
-using UnityEngine.SceneManagement;
-using Unity.Netcode.Transports.UTP;
-using Microsoft.MixedReality.Toolkit;
 using UnityEngine.UI;
 
 public class InitialMenu : MonoBehaviour
@@ -14,15 +10,7 @@ public class InitialMenu : MonoBehaviour
 
     public ModesManager modesManager;
 
-    //public void setDirectorRole() {
-    //    modesManager.role = ModesManager.eRoleType.DIRECTOR;
-    //}
-
-    //public void setAssitantRole()
-    //{
-    //    modesManager.role = ModesManager.eRoleType.ASSISTANT;
-    //}
-
+    // set Mixed Reality mode and change the MR and VR button colors to show the selected mode
     public void setMRMode()
     {
         modesManager.mode = ModesManager.eModeType.MIXEDREALITY;
@@ -38,6 +26,7 @@ public class InitialMenu : MonoBehaviour
         VRButton.GetComponent<Button>().colors = buttonColors;
     }
 
+    // set Virtual Reality mode and change the vR and MR button colors to show the selected mode
     public void setVRMode()
     {
         modesManager.mode = ModesManager.eModeType.VIRTUALREALITY;
@@ -57,13 +46,11 @@ public class InitialMenu : MonoBehaviour
         modesManager.loadMainScene();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         

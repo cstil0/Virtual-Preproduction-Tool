@@ -46,16 +46,6 @@ public class HandAnim : MonoBehaviour
       m_animLayerIndexThumb = m_animator.GetLayerIndex(ANIM_LAYER_NAME_THUMB);
       m_animParamIndexFlex = Animator.StringToHash(ANIM_PARAM_NAME_FLEX);
       m_animParamIndexPose = Animator.StringToHash(ANIM_PARAM_NAME_POSE);
-
-      // var inputDevices = new List<UnityEngine.XR.InputDevice>();
-      // UnityEngine.XR.InputDevices.GetDevices(inputDevices);
-      //
-      // foreach (var device in inputDevices)
-      // {
-      //     Debug.Log(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.role.ToString()));
-      //     solutionText.SetText(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.role.ToString()));
-      //
-      // }
       }
 
     // Update is called once per frame

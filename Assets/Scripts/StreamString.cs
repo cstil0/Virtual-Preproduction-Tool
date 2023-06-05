@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Text;
 
@@ -16,6 +13,7 @@ public class StreamString
         streamEncoding = new UnicodeEncoding();
     }
 
+    // decode string comming from pipes message
     public string ReadString()
     {
         int len = 0;
@@ -28,6 +26,7 @@ public class StreamString
         return streamEncoding.GetString(inBuffer);
     }
 
+    // encode string into pipes message
     public int WriteString(string outString)
     {
         byte[] outBuffer = streamEncoding.GetBytes(outString);

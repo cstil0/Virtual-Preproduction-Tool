@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Security.Principal;
-using System.Text;
 using System.Globalization;
 
+// pipes library was used previously to send messages from the multi-camera application to the LED screen one, but it blocks the application when executing it if both projects are not running
+// therefore, currently both applications communicate sending the message first to the VR one and then re-sending it to the corresponding one
 public class PipeReceiver : MonoBehaviour
 {
-    // HAY UN LIO CON EL NOMBRE DE ESTA VARIABLE Y EL DEL THREAD EN SI!! CAMBIAR!!!
     Thread receiveThread;
     NamedPipeClientStream pipeClient;
     string recievedMessage;
@@ -24,16 +22,16 @@ public class PipeReceiver : MonoBehaviour
     {
         while (true)
         {
-            //Create Client Instance
+            // create Client Instance
             NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", "MyCOMApp",
                             PipeDirection.InOut, PipeOptions.None,
                             TokenImpersonationLevel.Impersonation);
 
-            //Connect to server
+            // connect to server
             pipeClient.Connect();
-            //Created stream for reading and writing
+            // created stream for reading and writing
             StreamString clientStream = new StreamString(pipeClient);
-            //Read from Server
+            // read from Server
             recievedMessage = clientStream.ReadString();
             string[] splittedMessage = recievedMessage.Split(" ");
             currPos = new Vector3(float.Parse(splittedMessage[0], CultureInfo.InvariantCulture), float.Parse(splittedMessage[1], CultureInfo.InvariantCulture), float.Parse(splittedMessage[2], CultureInfo.InvariantCulture));
@@ -43,7 +41,7 @@ public class PipeReceiver : MonoBehaviour
             }
 
             Debug.Log("Recieved:" + recievedMessage);
-            //Close client
+            // close client
             pipeClient.Close();
         }
     }
@@ -54,14 +52,13 @@ public class PipeReceiver : MonoBehaviour
         if (receiveThread != null)
             receiveThread.Abort();
 
-        //Close client
+        // close client
         pipeClient.Close();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Start thread to listen UDP messages and set it as background
+        // start thread to listen to pipe messages and set it as background
         receiveThread = new Thread(recieveThread);
         receiveThread.IsBackground = true;
         receiveThread.Start();
@@ -69,7 +66,6 @@ public class PipeReceiver : MonoBehaviour
         startPos = ScreenCamera.transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (recievedMessage != null)
@@ -77,9 +73,5 @@ public class PipeReceiver : MonoBehaviour
             Vector3 remotePosDiff = currPos - remoteStartPos;
             ScreenCamera.transform.position = remotePosDiff + startPos;
         }
-        //if (!receiveThread.IsAlive)
-        //{
-        //    receiveThread.Start();
-        //}
     }
 }

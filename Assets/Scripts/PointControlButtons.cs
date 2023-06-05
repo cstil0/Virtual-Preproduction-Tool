@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit;
-using UnityEngine.Tilemaps;
 
 public class PointControlButtons : MonoBehaviour
 {
@@ -27,6 +25,7 @@ public class PointControlButtons : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // check if collider corresponds to the hand
         if (other.gameObject.layer == 3)
         {
             // Change color to make hover effect
@@ -36,6 +35,7 @@ public class PointControlButtons : MonoBehaviour
 
             triggerOn = true;
 
+            // change item's selected state to false to avoid creating a new point when pressing the button
             if (followPath != null)
                 followPath.isSelectedForPath = false;
 
@@ -44,6 +44,7 @@ public class PointControlButtons : MonoBehaviour
         }
     }
 
+    // check if collider corresponds to the hand
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.layer == 3)
@@ -55,6 +56,7 @@ public class PointControlButtons : MonoBehaviour
 
             triggerOn = false;
 
+            // change item's selected state back to true
             if (followPath != null)
                 followPath.isSelectedForPath = true;
 
@@ -63,16 +65,15 @@ public class PointControlButtons : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         point = gameObject.transform.parent.parent.parent.gameObject;
         PathSpheresController spheresController = point.GetComponent<PathSpheresController>();
 
-        // if point corresponds to item
+        // if point corresponds to character or object get the item's reference
         if (spheresController != null)
             item = spheresController.item;
-        // if point corresponds to camera
+        // if point corresponds to camera get the item and camera rotation controller references
         else
         {
             cameraRotationController = point.GetComponent<CameraRotationController>();
@@ -85,8 +86,7 @@ public class PointControlButtons : MonoBehaviour
         colors.normalColor = Color.white;
         button.GetComponent<Button>().colors = colors;
 
-        //StartCoroutine(assignFollowPath());
-
+        // get corresponding follow path script
         if (item != null)
         {
             item.TryGetComponent(out followPath);
@@ -94,15 +94,6 @@ public class PointControlButtons : MonoBehaviour
         }
     }
 
-    //IEnumerator assignFollowPath()
-    //{
-    //    while (item == null) yield return null;
-
-    //    item.TryGetComponent(out followPath);
-    //    item.TryGetComponent(out followPathCamera);
-    //}
-
-    // Update is called once per frame
     void Update()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
@@ -112,6 +103,7 @@ public class PointControlButtons : MonoBehaviour
         }
         else
         {
+            // action is performed once the button was released to avoid creating a new path point when destroying the current one
             if (triggerButtonDown && triggerOn)
             {
                 if (buttonType == eButtonType.TRASH)
@@ -127,6 +119,8 @@ public class PointControlButtons : MonoBehaviour
     void onTrashPressed()
     {
         string[] splittedName = null;
+        // delete point from the corresponding follow path script and change the item's state back to selected,
+        // since ontrigger exit will not be called after destroying the sphere
         if (followPath != null)
         {
             splittedName = point.name.Split(" ");
@@ -146,6 +140,7 @@ public class PointControlButtons : MonoBehaviour
 
     void onLevelPressed()
     {
+        // eliminate x and z rotation axis to ensure that the minicamera is leveled in the horizontal axis
         Vector3 oldRotation = point.transform.rotation.eulerAngles;
         Vector3 newRotation = new Vector3(0.0f, oldRotation.y, 0.0f);
         point.transform.rotation = Quaternion.Euler(newRotation);

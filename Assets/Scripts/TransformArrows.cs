@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class TransformArrows : MonoBehaviour
 {
@@ -32,7 +31,6 @@ public class TransformArrows : MonoBehaviour
             Material material = renderer.material;
             material.color = Color.blue;
         }
-
     }
 
     private void OnTriggerExit(Collider other)
@@ -43,7 +41,6 @@ public class TransformArrows : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         DirectorPanelManager.instance.OnHideShowGrid += showHideArrows;
@@ -55,7 +52,6 @@ public class TransformArrows : MonoBehaviour
         showHideArrows(DirectorPanelManager.instance.isGridShown);
     }
 
-    // Update is called once per frame
     void Update()
     {
         // start movement when controller is triggering the arrow and button is pressed

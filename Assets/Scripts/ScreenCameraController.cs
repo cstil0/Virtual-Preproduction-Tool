@@ -11,14 +11,11 @@ public class ScreenCameraController : MonoBehaviour
     public Camera mainCamera;
     public Vector3 startPosition;
 
-    // Start is called before the first frame update
     void Start()
     {
-        //screenCamera.aspect = 2/1;
         gameObject.transform.position = startPosition;
     }
 
-    // Update is called once per frame
     void Update()
     {
         

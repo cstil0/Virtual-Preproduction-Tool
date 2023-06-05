@@ -255,6 +255,9 @@ public class OVRGrabber : MonoBehaviour
             for (int j = 0; j < grabbable.grabPoints.Length; ++j)
             {
                 Collider grabbableCollider = grabbable.grabPoints[j];
+                if (grabbableCollider == null)
+                    continue;
+
                 // Store the closest grabbable
                 Vector3 closestPointOnBounds = grabbableCollider.ClosestPointOnBounds(m_gripTransform.position);
                 float grabbableMagSq = (m_gripTransform.position - closestPointOnBounds).sqrMagnitude;
@@ -268,8 +271,6 @@ public class OVRGrabber : MonoBehaviour
         }
 
         // Disable grab volumes to prevent overlaps
-        // POR ALGUN MOTIVO NO PASA DE AQUÍ AL LLAMAR A ESTA FUNCIÓN, PERO SOLO LA PRIMERA VEZ QUE SE LE DA AL BOTÓN
-        // SI PONGO UN BOOLEANO PARA QUE ENTRE EN CADA FRAME MIENTRAS SE ESTÁ APRETANDO EL BOTÓN, ENTONCES SI QUE SIGUE :(
         //GrabVolumeEnable(false);
 
         if (closestGrabbable != null)
