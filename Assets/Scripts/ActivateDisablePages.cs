@@ -9,7 +9,6 @@ public class ActivateDisablePages : MonoBehaviour
 
     private void OnEnable()
     {
-        currentPage = 0;
         buttonsCount = 0;
 
         // iterate through all the buttons on the current category to count them

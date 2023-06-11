@@ -1,15 +1,8 @@
-using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Xml;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FollowPath : MonoBehaviour
 {
@@ -34,7 +27,6 @@ public class FollowPath : MonoBehaviour
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
-    public bool isPointOnTrigger = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -116,6 +108,7 @@ public class FollowPath : MonoBehaviour
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
+            bool isElementOnTrigger = HoverObjects.instance.checkIfElementOnTrigger();
             if (!secondaryIndexTriggerDown && triggerOn)
             {
                 secondaryIndexTriggerDown = true;
@@ -130,7 +123,8 @@ public class FollowPath : MonoBehaviour
                 changePathColor();
             }
 
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
+            // define new path point if the item no element is being triggered
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && HoverObjects.instance.currentItemSelected == gameObject && !isElementOnTrigger)
             {
                 secondaryIndexTriggerDown = true;
                 StartCoroutine(defineNewPathPoint(handController.transform.position));

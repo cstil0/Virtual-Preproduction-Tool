@@ -7,6 +7,8 @@ public class PointControlButtons : MonoBehaviour
 {
     private bool triggerOn = false;
     private bool triggerButtonDown = false;
+    private bool isPointSelectedOriginal = false;
+
     [SerializeField] eButtonType buttonType;
 
     [SerializeField] Button button;
@@ -37,10 +39,15 @@ public class PointControlButtons : MonoBehaviour
 
             // change item's selected state to false to avoid creating a new point when pressing the button
             if (followPath != null)
+            {
+                isPointSelectedOriginal = followPath.isSelectedForPath;
                 followPath.isSelectedForPath = false;
+            }
 
-            if (followPathCamera != null)
+            if (followPathCamera != null){
+                isPointSelectedOriginal = followPathCamera.isSelectedForPath;
                 followPathCamera.isSelectedForPath = false;
+            }
         }
     }
 
@@ -56,12 +63,12 @@ public class PointControlButtons : MonoBehaviour
 
             triggerOn = false;
 
-            // change item's selected state back to true
+            // change item's selected state back to its original state
             if (followPath != null)
-                followPath.isSelectedForPath = true;
+                followPath.isSelectedForPath = isPointSelectedOriginal;
 
             if (followPathCamera != null)
-                followPathCamera.isSelectedForPath = true;
+                followPathCamera.isSelectedForPath = isPointSelectedOriginal;
         }
     }
 

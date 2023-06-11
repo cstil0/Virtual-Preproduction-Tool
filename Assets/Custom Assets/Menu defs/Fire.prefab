@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 2948207187797253668}
   - component: {fileID: 6755897657403938380}
   m_Layer: 10
-  m_Name: Fire_Medium-Smoke-Sparks_RateOverTime
+  m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,7 +82,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9195308507420792288}
   serializedVersion: 8
-  lengthInSec: 2
+  lengthInSec: 100000
   simulationSpeed: 1
   stopAction: 2
   cullingMode: 0
@@ -4951,8 +4951,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.65, y: 2.79, z: 1.4}
-  m_Center: {x: 0, y: 1.28, z: 0}
+  m_Size: {x: 1.65, y: 2.7605062, z: 1.7096875}
+  m_Center: {x: 0, y: 1.0293005, z: -0.022120714}
 --- !u!54 &-1248800696126106912
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4981,7 +4981,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugPanelText: {fileID: 0}
   m_allowOffhandGrab: 1
   m_snapPosition: 0
   m_snapOrientation: 0
@@ -5001,7 +5000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
 --- !u!114 &6755897657403938380
 MonoBehaviour:
@@ -5101,6 +5100,61 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: lengthInSec
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: simulationSpeed
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: SubModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: ShapeModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: EmissionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 770
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851700514677484800, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.minScalar
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7685568948667721206, guid: 9981e4cec22644c10bd12f28ca683bae,
         type: 3}
       propertyPath: m_Name
@@ -5110,6 +5164,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7685568948667721206, guid: 9981e4cec22644c10bd12f28ca683bae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7919878490494356873, guid: 9981e4cec22644c10bd12f28ca683bae,
         type: 3}
@@ -5155,6 +5214,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017941345898534900, guid: 3cf692a56f30a4c2ba321db57e966c0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5290603011084889797, guid: 3cf692a56f30a4c2ba321db57e966c0e,
         type: 3}
@@ -5295,6 +5359,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4957288164747090111, guid: b80d6728ed796486a9794e8f98467142,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b80d6728ed796486a9794e8f98467142, type: 3}

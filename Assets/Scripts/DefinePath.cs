@@ -271,7 +271,10 @@ public class DefinePath : MonoBehaviour
 
                 // destroy minicamera
                 if (pathContainer.transform.GetChild(i).tag != "PathPoint")
+                {
                     Destroy(pathContainer.transform.GetChild(i).GetChild(1).gameObject);
+                    Destroy(pathContainer.transform.GetChild(i).GetChild(2).gameObject);
+                }
 
                 GameObject sphere = pathContainer.transform.GetChild(i).gameObject;
                 // destroy the corresponding sphere
@@ -314,6 +317,16 @@ public class DefinePath : MonoBehaviour
                     rawImage.GetComponent<RawImage>().texture = miniCameraTextures[i - 2];
                 }
             }
+        }
+
+        if (pathContainer.transform.childCount <= 2 && pointNum == 0)
+        {
+            // destroy line renderer and the container itself
+            Destroy(pathContainer.transform.GetChild(0).gameObject);
+            Destroy(pathContainer);
+
+            if (circlesContainer != null)
+                Destroy(circlesContainer);
         }
     }
 

@@ -33,8 +33,6 @@ public class FollowPathCamera : MonoBehaviour
     bool XButtonDown = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
-    public bool isPointOnTrigger = false;
-    public bool isMiniCameraOnTrigger = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -97,6 +95,8 @@ public class FollowPathCamera : MonoBehaviour
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
         {
+            bool isElementOnTrigger = HoverObjects.instance.checkIfElementOnTrigger();
+
             if (!secondaryIndexTriggerDown && triggerOn)
             {
                 secondaryIndexTriggerDown = true;
@@ -111,7 +111,7 @@ public class FollowPathCamera : MonoBehaviour
 
                 changePathColor();
             }
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && !isPointOnTrigger & !isMiniCameraOnTrigger && HoverObjects.instance.currentItemCollider == gameObject)
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && HoverObjects.instance.currentItemSelected == gameObject && !isElementOnTrigger)
             {
                 // define a new path point if camera is selected but controller is not touching it
                 secondaryIndexTriggerDown = true;
@@ -463,8 +463,8 @@ public class FollowPathCamera : MonoBehaviour
     public void deletePathPoint(int pointNum, bool deleteLine=true)
     {
         // remove point from local arrays
-        pathPositions.RemoveAt(pointNum - 1);
-        pathRotations.RemoveAt(pointNum - 1);
+        pathPositions.RemoveAt(pointNum + 1);
+        pathRotations.RemoveAt(pointNum + 1);
 
         if (deleteLine)
             DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
@@ -477,8 +477,15 @@ public class FollowPathCamera : MonoBehaviour
         cinemachinePoints = cinemachinePointsList.ToArray();
         cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
 
-        LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
-        removeBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pointNum - 1);
+        // if the only existent point is being deleted, remove also the first one representing the initial position
+        if (pointNum == 0 && pathPositions.Count == 1)
+            deletePathPoint(-1, false);
+
+        if (pointNum > 0)
+        {
+            LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+            removeBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pointNum - 1);
+        }
     }
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)

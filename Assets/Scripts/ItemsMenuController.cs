@@ -13,7 +13,6 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject itemsParent;
 
 
-    // SERIA GUAI PODER MOSTRAR LES VARIABLES SEGONS EL ENUM SELECCIONAT PERÒ S'HA DE CREAR UN NOU EDITOR I ÉS UNA MICA LIADA DE MOMENT
     [Header("Category Button Parameters")]
     // Used if the button type is category
     public GameObject currMenu;
@@ -29,7 +28,6 @@ public class ItemsMenuController : MonoBehaviour
     }
     public eTypeOfButton typeOfButton;
 
-    // TREURE TRIGGER ON
     bool triggerOn;
     bool buttonDown;
     bool buttonReleasedOnce;
@@ -111,6 +109,24 @@ public class ItemsMenuController : MonoBehaviour
     }
     public void ChangeMenu()
     {
+        // reset current and next menu's pages
+        currMenu.TryGetComponent(out ActivateDisablePages currADP);
+        newMenu.TryGetComponent(out ActivateDisablePages newADP);
+
+        if (currADP != null)
+        {
+            currADP.currentPage = 0;
+            SubmenusNavigate submenusNavigate = currMenu.GetComponentInChildren<SubmenusNavigate>();
+            submenusNavigate.activateDisableButtons();
+        }
+
+        if (newADP != null)
+        {
+            newADP.currentPage = 0;
+            SubmenusNavigate submenusNavigate = newMenu.GetComponentInChildren<SubmenusNavigate>();
+            submenusNavigate.activateDisableButtons();
+        }
+
         currMenu.SetActive(false);
         newMenu.SetActive(true);
     }
@@ -137,19 +153,32 @@ public class ItemsMenuController : MonoBehaviour
         Vector3 handPosition = handController.transform.position;
         // només ens interessa la rotació de la y. +180 per què quedi com necessitem
         Vector3 handRoty = new Vector3(0.0f, handRotation.y, 0.0f);
-        //objectInstance.transform.position = handController.transform.position;
         // sumem les dues rotacions
         objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);
         objectInstance.transform.localScale = scale;
         // take local position from attachpont because we do not want to take it referent to the parent
-        objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.y, handPosition.z) /*+ rotationScale.rotation*/;
+        objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.y, handPosition.z);
         objectInstance.transform.position -= objectInstance.transform.forward * attachPoint.z;
-        //objectInstance.transform.rotation = Quaternion.Euler(rotation);
-        // translate trasllada desde la posició a la que estem tantes unitats
-        //objectInstance.transform.Translate(-attachPoint, handController.transform);
+
+        if (objectInstance.name.Contains("Crowd"))
+            spawnCrowdChilds(objectInstance.transform);
 
         objectInstance.GetComponent<NetworkObject>().Spawn();
         objectInstance.transform.parent = itemsParent.transform;
         UDPSender.instance.sendItemMiddle(objectInstance.name, wrongName);
+    }
+    
+
+    // to spawn in the network the GameObjects of the same type, groupped and instanced together such as the crowd of extras
+    private void spawnCrowdChilds(Transform crowdGO)
+    {
+        for (int i = 0; i < crowdGO.childCount; i++)
+        {
+            GameObject currObject = crowdGO.GetChild(i).gameObject;
+            currObject.TryGetComponent(out NetworkObject networkObject);
+
+            if (networkObject != null)
+                networkObject.Spawn();
+        }
     }
 }

@@ -127,11 +127,6 @@ public class PathSpheresController : MonoBehaviour
     {
         // if point is on trigger we do not want to instantiate new points when pressing trigger button
         triggerOn = newTriggerState;
-        // avoid each point changing this variable - do it only on change of state
-        if (followPath != null)
-            followPath.isPointOnTrigger = triggerOn;
-        if (followPathCamera != null)
-            followPathCamera.isPointOnTrigger = triggerOn;
 
         // add the rigidbody once the hand did the trigger exit to avoid pulling out the OVRPlayer
         if (!triggerOn)

@@ -2,22 +2,25 @@ using ClipperLib;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 public class HoverObjects : MonoBehaviour
 {
     public static HoverObjects instance = null;
 
-    bool alreadyTriggered;
+    // used to know if there is a change of state in the selected item, point or minicamera
     public bool itemAlreadySelected = false;
     public bool pointAlreadySelected = false;
     public bool miniCameraAlreadySelected = false;
 
-    //bool alreadySelectedForPath;
+    // used to manage all elements that are being triggered or selected
     public GameObject currentItemCollider;
     public GameObject currentPointCollider;
     public GameObject currentMiniCameraCollider;
-    public GameObject currentSelectedForPath;
+    public GameObject currentItemSelected;
+    public GameObject currentPointSelected;
+    public GameObject currentMiniCameraSelected;
 
     public GameObject itemsParent;
 
@@ -85,7 +88,7 @@ public class HoverObjects : MonoBehaviour
             GameObject currItem = itemsParent.transform.GetChild(i).gameObject;
 
             // if it matches the current selected one, skip it to avoid unselecting it
-            if (currItem == currentSelectedForPath)
+            if (currItem == currentItemSelected)
                 continue;
 
             currItem.TryGetComponent(out FollowPath followPath);
@@ -224,37 +227,34 @@ public class HoverObjects : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // change the color only to the first object that collided with the controller, only if it is an item
-        if (!alreadyTriggered && (other.gameObject.layer == 10 || other.gameObject.layer == 7))
+        if (currentItemCollider == null && (other.gameObject.layer == 7 || other.gameObject.layer == 10))
         {
             // check if it was selected to set the correct color
             bool isSelected = false;
             currentItemCollider = other.gameObject;
-            if (other.gameObject.layer == 10)
-            {
-                // change its trigger state either if it is a character or an object
-                FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-                ObjectsSelector objectsSelector = other.gameObject.GetComponent<ObjectsSelector>();
-                if (followPath != null)
-                {
-                    followPath.triggerOn = true;
-                    isSelected = followPath.isSelectedForPath;
-                }
 
-                if (objectsSelector != null)
-                {
-                    objectsSelector.triggerOn = true;
-                    isSelected = objectsSelector.isSelected;
-                }
-            }
-            else if (other.gameObject.layer == 7)
+            // change its trigger state either if it is a character or an object
+            other.gameObject.TryGetComponent(out FollowPath followPath);
+            other.gameObject.TryGetComponent(out ObjectsSelector objectsSelector);
+            other.gameObject.TryGetComponent(out FollowPathCamera followPathCamera);
+
+            if (followPath != null)
             {
-                // change its trigger state if it is ca camera
-                FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
-                if (followPath != null)
-                {
-                    followPath.triggerOn = true;
-                    isSelected = followPath.isSelectedForPath;
-                }
+                followPath.triggerOn = true;
+                isSelected = followPath.isSelectedForPath;
+            }
+
+            if (objectsSelector != null)
+            {
+                objectsSelector.triggerOn = true;
+                isSelected = objectsSelector.isSelected;
+            }
+
+            // change its trigger state if it is ca camera
+            if (followPathCamera != null)
+            {
+                followPathCamera.triggerOn = true;
+                isSelected = followPathCamera.isSelectedForPath;
 
                 // inform to the screen project about a change in the main camera
                 if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
@@ -263,10 +263,8 @@ public class HoverObjects : MonoBehaviour
 
             // change its hover color if it is not selected
             if (!isSelected)
-            {
-                alreadyTriggered = true;
                 changeColorMaterials(currentItemCollider, UnityEngine.Color.blue, false);
-            }
+
             // if the object has a custom grabbable script mark it as selected
             currentItemCollider.TryGetComponent(out CustomGrabbableCharacters grabbableCharacters);
             currentItemCollider.TryGetComponent(out CustomGrabbableCameras grabbableCameras);
@@ -278,30 +276,19 @@ public class HoverObjects : MonoBehaviour
         }
 
         // if sphere path point change its trigger state and its hover color
-        if (!pointAlreadySelected && (other.gameObject.layer == 14))
+        else if (currentPointCollider == null && other.gameObject.layer == 14)
         {
-            pointAlreadySelected = true;
             currentPointCollider = other.gameObject;
-            changeColorMaterials(currentPointCollider, Color.blue, false);
             PathSpheresController pathSpheresController = currentPointCollider.GetComponent<PathSpheresController>();
             pathSpheresController.changeTriggerState(true);
-
-            if (pathSpheresController.followPath != null)
-            {
-                int pathNum = pathSpheresController.pathNum;
-                int pointNum = pathSpheresController.pointNum;
-                // change also the color for the corresponding circle
-                OnPathPointHovered(pathNum, pointNum, Color.blue);
-            }
+            changePointColor(Color.blue, pathSpheresController, other.gameObject);
         }
 
         // if mini camera, change its trigger state and hover color
-        if (!miniCameraAlreadySelected && (other.gameObject.layer == 15))
+        else if (currentMiniCameraCollider == null && other.gameObject.layer == 15)
         {
-            miniCameraAlreadySelected = true;
             currentMiniCameraCollider = other.gameObject;
             currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = true;
-            currentMiniCameraCollider.GetComponent<CameraRotationController>().followPathCamera.isMiniCameraOnTrigger = true;
         }
     }
 
@@ -317,66 +304,56 @@ public class HoverObjects : MonoBehaviour
 
             if (followPath != null)
             {
+                bool isSelected = followPath.isSelectedForPath;
+                // if it selected but a different object than the one already selected, this has preference
+                if (isSelected && currentItemSelected != other.gameObject)
+                    itemAlreadySelected = false;
+
                 // change color only if selected state has changed to avoid slowing performance since then we would do this for each frame
-                if (itemAlreadySelected != followPath.isSelectedForPath)
+                if (itemAlreadySelected != isSelected)
                 {
-                    bool isSelected = followPath.isSelectedForPath;
                     // show or hide buttons
                     GameObject itemControlMenu = other.transform.Find("ItemControlMenu").gameObject;
                     itemControlMenu.GetComponent<Canvas>().enabled = isSelected;
 
-                    // change its color
-                    currentSelectedForPath = other.gameObject;
-                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
-
-                    changeColorMaterials(currentItemCollider, color);
-                    itemAlreadySelected = followPath.isSelectedForPath;
-
-                    // deselect the rest of items in the scene
-                    if (isSelected)
-                        deselectAllItems();
+                    changeItemStates(other.gameObject, isSelected);
                 }
             }
 
-            if (objectsSelector != null)
+            if (objectsSelector != null )
             {
+                bool isSelected = objectsSelector.isSelected;
+                // if it selected but a different object than the one already selected, this has preference
+                if (isSelected && currentItemSelected != other.gameObject)
+                    itemAlreadySelected = false;
+
                 // change color only if selected state has changed to avoid slowing performance since then we would do this for each frame
-                if (itemAlreadySelected != objectsSelector.isSelected)
+                if (itemAlreadySelected != isSelected)
                 {
-                    bool isSelected = objectsSelector.isSelected;
+                    // show or hide buttons
+                    GameObject itemControlMenu = other.transform.Find("ItemControlMenu").gameObject;
+                    itemControlMenu.GetComponent<Canvas>().enabled = isSelected;
 
-                    // change its color
-                    currentSelectedForPath = other.gameObject;
-                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
-                    changeColorMaterials(currentItemCollider, color);
-                    itemAlreadySelected = objectsSelector.isSelected;
-
-                    // deselect the rest of items in the scene
-                    if (isSelected) 
-                        deselectAllItems();                    
+                    changeItemStates(other.gameObject, isSelected);
                 }
             }
 
             // if camera
             if (followPathCamera != null)
             {
+                bool isSelected = followPathCamera.isSelectedForPath;
+                // if it selected but a different object than the one already selected, this has preference
+                if (isSelected && currentItemSelected != other.gameObject)
+                    itemAlreadySelected = false;
+
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-                if (itemAlreadySelected != followPathCamera.isSelectedForPath)
+                if (itemAlreadySelected != isSelected)
                 {
-                    bool isSelected = followPathCamera.isSelectedForPath;
-                    currentSelectedForPath = other.gameObject;
-                    Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.black;
 
-                    // change its color
-                    changeColorMaterials(currentItemCollider, color);
-                    itemAlreadySelected = isSelected;
-
-                    // deselect the rest of items in the scene
-                    if (isSelected)
-                        deselectAllItems();
+                    changeItemStates(other.gameObject, isSelected);
 
                     // reassign the textures that are shown for each path point
-                    string[] splittedName = currentSelectedForPath.name.Split(" ");
+                    string[] splittedName = other.name.Split(" ");
                     int cameraNum = int.Parse(splittedName[1]);
                     DefinePath.instance.reassignPathCanvas(cameraNum);
                 }
@@ -384,7 +361,7 @@ public class HoverObjects : MonoBehaviour
         }
 
         // if point sphere
-        if (currentPointCollider == other.gameObject)
+        else if (currentPointCollider == other.gameObject)
         {
             currentPointCollider.TryGetComponent(out PathSpheresController pathSpheresController);
 
@@ -392,39 +369,23 @@ public class HoverObjects : MonoBehaviour
             if (pathSpheresController != null)
                 isSelected = pathSpheresController.isSelected;
 
+            // if it selected but a different point than the one already selected, this has preference
+            if (isSelected && currentPointSelected != other.gameObject)
+                pointAlreadySelected = false;
+
             // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-            if (isSelected != pointAlreadySelected && currentPointCollider == other.gameObject)
+            if (isSelected != pointAlreadySelected)
             {
-                // change its selected state
-                pointAlreadySelected = isSelected;
                 // show / hide buttons
                 GameObject pointControlButtons = other.transform.Find("PointControlButtons").gameObject;
                 showHidePointsControl(pointControlButtons, isSelected);
 
-                // change its color
-                Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
-                if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                {
-                    changeColorMaterials(currentPointCollider, color, false);
-                    UDPSender.instance.sendChangePointColor(pathSpheresController.item.name, currentPointCollider.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
-                }
-
-                // if it corresponds to a character, call the event to change also the circles color
-                if (pathSpheresController.followPath != null)
-                {
-                    int pathNum = pathSpheresController.pathNum;
-                    int pointNum = pathSpheresController.pointNum;
-                    OnPathPointHovered(pathNum, pointNum, color);
-                }
-
-                // deselect the rest of points in the scene
-                if (isSelected)
-                    deselectAllPoints(pathSpheresController.pointNum);
+                changePointStates(other.gameObject, isSelected, pathSpheresController, pathSpheresController.pointNum);
             }
         }
 
         // if minicamera
-        if (currentMiniCameraCollider == other.gameObject)
+        else if (currentMiniCameraCollider == other.gameObject)
         {
             currentMiniCameraCollider.TryGetComponent(out CameraRotationController cameraRotationController);
 
@@ -432,8 +393,12 @@ public class HoverObjects : MonoBehaviour
             if (cameraRotationController != null)
                 isSelected = cameraRotationController.isSelected;
 
+            // if it selected but a different point than the one already selected, this has preference
+            if (isSelected && currentMiniCameraSelected != other.gameObject)
+                miniCameraAlreadySelected = false;
+
             // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
-            if (isSelected != miniCameraAlreadySelected && currentMiniCameraCollider == other.gameObject)
+            if (isSelected != miniCameraAlreadySelected)
             {
                 // change its selected state
                 miniCameraAlreadySelected = isSelected;
@@ -441,14 +406,7 @@ public class HoverObjects : MonoBehaviour
                 GameObject cameraControlButtons = other.transform.Find("CameraControlButtons").gameObject;
                 showHidePointsControl(cameraControlButtons, isSelected);
 
-                // change its color
-                Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
-                if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                    changeColorMaterials(currentMiniCameraCollider, color, false);
-
-                // deselect the rest of points in the scene
-                if (isSelected)
-                    deselectAllPoints(cameraRotationController.pointNum);
+                changeMiniCameraStates(other.gameObject, isSelected, cameraRotationController.pointNum);
             }
         }
     }
@@ -468,80 +426,42 @@ public class HoverObjects : MonoBehaviour
             if (grabbableCameras != null)
                 grabbableCameras.objectSelected(gameObject.transform.GetChild(0).gameObject, false);
 
-            // if character or normal oject
-            if (other.gameObject.layer == 10)
+            other.gameObject.TryGetComponent(out FollowPath followPath);
+            other.gameObject.TryGetComponent(out ObjectsSelector objectsSelector);
+            other.gameObject.TryGetComponent(out FollowPathCamera followPathCamera);
+
+            // if character, changei its trigger state
+            bool isSelected = false;
+            if (followPath != null)
             {
-                FollowPath followPath = other.gameObject.GetComponent<FollowPath>();
-                ObjectsSelector objectsSelector = other.gameObject.GetComponent<ObjectsSelector>();
-                // if character, changei its trigger state
-                bool isSelected = false;
-                if (followPath != null)
-                {
-                    followPath.triggerOn = false;
-                    alreadyTriggered = false;
-                    // if another character was already selected, ensure that the current one is set as deselected
-                    if (other.gameObject != currentSelectedForPath)
-                        followPath.isSelectedForPath = false;
-                    isSelected = followPath.isSelectedForPath;
+                followPath.triggerOn = false;
+                isSelected = followPath.isSelectedForPath;
+            }
 
-                }
+            // if normal object, change its trigger state
+            else if (objectsSelector != null)
+            {
+                objectsSelector.triggerOn = false;
+                isSelected = objectsSelector.isSelected;
+            }
 
-                // if normal object, change its trigger state
-                if (objectsSelector != null)
-                {
-                    objectsSelector.triggerOn = false;
-                    alreadyTriggered = false;
-                    if (other.gameObject != currentSelectedForPath)
-                        objectsSelector.isSelected = false;
-                    isSelected = objectsSelector.isSelected;
-                }
-
+            // if camera, cnange its states
+            else if (followPathCamera != null)
+            {
+                followPathCamera.triggerOn = false;
+                isSelected = followPathCamera.isSelectedForPath;
+            }
+            
+            if (!isSelected)
+            {
                 // if it is not selected, change its color back to white
-                if (!isSelected)
-                {
-                    alreadyTriggered = false;
+                Color color = followPathCamera != null ? Color.black : Color.white;
 
-                    Color color = Color.white;
-
-                    if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                        changeColorMaterials(currentItemCollider, color);
-
-                    if (other.gameObject == currentSelectedForPath)
-                        currentSelectedForPath = null;
-                }
+                if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                    changeColorMaterials(currentItemCollider, color);
             }
 
-            // if camera
-            if (other.gameObject.layer == 7)
-            {
-                FollowPathCamera followPath = other.gameObject.GetComponent<FollowPathCamera>();
-                // if the object has a limit rotation script mark it as selected
-                bool isSelected = false;
-                if (followPath != null)
-                {
-                    followPath.triggerOn = false;
-                    alreadyTriggered = false;
-                    // we just want to define a path for a single object
-                    if (other.gameObject != currentSelectedForPath)
-                        followPath.isSelectedForPath = false;
-                    isSelected = followPath.isSelectedForPath;
-
-                }
-
-                // if its not selected, change its color back to black
-                if (!isSelected)
-                {
-                    alreadyTriggered = false;
-
-                    Color color = Color.black;
-
-                    if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                        changeColorMaterials(currentItemCollider, color);
-
-                    if (other.gameObject == currentSelectedForPath)
-                        currentSelectedForPath = null;
-                }
-            }
+            currentItemCollider = null;
         }
 
         // if sphere path point
@@ -570,24 +490,10 @@ public class HoverObjects : MonoBehaviour
 
             Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
 
-            // change its color only in the VR side since it has the correct reference of the current selected one,
-            // then, client side will change it thanks to the UDP message sent
-            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-            {
-                changeColorMaterials(currentPointCollider, color);
-                UDPSender.instance.sendChangePointColor(spheresController.item.name, currentPointCollider.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
-            }
+            changePointColor(color, spheresController, other.gameObject);
 
             // remove the intrigger item reference
             currentPointCollider = null;
-
-            // if it corresponds to a character, change also the corresponding circle
-            if (spheresController.followPath != null)
-            {
-                int pathNum = spheresController.pathNum;
-                int pointNum = spheresController.pointNum;
-                OnPathPointHovered(pathNum, pointNum, color);
-            }
         }
 
         // if minicamera
@@ -596,7 +502,6 @@ public class HoverObjects : MonoBehaviour
             // change its trigger state
             CameraRotationController cameraRotationController = currentMiniCameraCollider.GetComponent<CameraRotationController>();
             cameraRotationController.triggerOn = false;
-            cameraRotationController.followPathCamera.isMiniCameraOnTrigger = false;
 
             bool isSelected = cameraRotationController.isSelected;
             // check if the parent item is selected to know which is the correct color to use
@@ -624,12 +529,102 @@ public class HoverObjects : MonoBehaviour
         OnPathPointHovered(pathNum, pointNum, color);
     }
 
+    private void changeItemStates(GameObject itemCollider, bool isSelected)
+    {
+        Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+
+        if (isSelected)
+        {
+            itemAlreadySelected = isSelected;
+            currentItemSelected = itemCollider;
+            changeColorMaterials(itemCollider, color);
+            deselectAllItems();
+        }
+        else if (currentItemSelected == itemCollider)
+        {
+            itemAlreadySelected = isSelected;
+            currentItemSelected = null;
+            changeColorMaterials(itemCollider, color);
+        }
+    }
+
+    private void changePointStates(GameObject pointCollider, bool isSelected, PathSpheresController pathSpheresController, int pointNum)
+    {
+        Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+
+        if (isSelected)
+        {
+            pointAlreadySelected = isSelected;
+            currentPointSelected = pointCollider;
+
+            changePointColor(color, pathSpheresController, pointCollider);
+            deselectAllPoints(pointNum);
+        }
+        else if (currentPointSelected == pointCollider)
+        {
+            pointAlreadySelected = isSelected;
+            currentPointSelected = null;
+
+            changePointColor(color, pathSpheresController, pointCollider);
+        }
+    }
+
+    private void changePointColor(Color color, PathSpheresController pathSpheresController, GameObject pointCollider)
+    {
+        // change its color only in the VR side since it has the correct reference of the current selected one,
+        // then, client side will change it thanks to the UDP message sent
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        {
+            changeColorMaterials(currentPointCollider, color, false);
+            UDPSender.instance.sendChangePointColor(pathSpheresController.item.name, pointCollider.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+        }
+
+        // if it corresponds to a character, call the event to change also the circles color
+        if (pathSpheresController.followPath != null)
+        {
+            int pathNum = pathSpheresController.pathNum;
+            int pointNum = pathSpheresController.pointNum;
+            OnPathPointHovered(pathNum, pointNum, color);
+        }
+    }
+
+    private void changeMiniCameraStates(GameObject miniCameraCollider, bool isSelected, int pointNum)
+    {
+        Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+
+        if (isSelected)
+        {
+            miniCameraAlreadySelected = isSelected;
+            currentMiniCameraSelected = miniCameraCollider;
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                changeColorMaterials(currentMiniCameraCollider, color, false);
+            
+            deselectAllPoints(pointNum);
+        }
+        else if (currentMiniCameraSelected == miniCameraCollider)
+        {
+            miniCameraAlreadySelected = isSelected;
+            currentMiniCameraSelected = null;
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+                changeColorMaterials(currentMiniCameraCollider, color, false);
+        }
+    }
+
+    // returns true if the controller is colliding with any item in the scene
+    public bool checkIfElementOnTrigger()
+    {
+        bool isElementBeingTriggered = false;
+        isElementBeingTriggered = isElementBeingTriggered || currentItemCollider != null;
+        isElementBeingTriggered = isElementBeingTriggered || currentPointCollider != null;
+        isElementBeingTriggered = isElementBeingTriggered || currentMiniCameraCollider != null;
+        return isElementBeingTriggered;
+    }
+
     void Start()
     {
-        alreadyTriggered = false;
         itemAlreadySelected = false;
         pointAlreadySelected = false;
-        currentSelectedForPath = null;
+        currentItemSelected = null;
         currentItemCollider = null;
         currentPointCollider = null;
     }

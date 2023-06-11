@@ -936,7 +936,7 @@ GameObject:
   - component: {fileID: -126769901681588338}
   - component: {fileID: -2661948907090516173}
   m_Layer: 10
-  m_Name: TargetChestLockedPrefab
+  m_Name: Chest
   m_TagString: Items
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1053,7 +1053,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
 --- !u!114 &-2661948907090516173
 MonoBehaviour:

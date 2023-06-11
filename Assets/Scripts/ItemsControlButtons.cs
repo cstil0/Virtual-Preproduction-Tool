@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,7 @@ public class ItemsControlButtons : MonoBehaviour
     private bool isLocked = false;
     private bool triggerOn = false;
     private bool triggerButtonDown = false;
+    private bool isItemSelectedOriginal = false;
 
     [SerializeField] Button button;
     [SerializeField] Image buttonImage;
@@ -52,13 +54,18 @@ public class ItemsControlButtons : MonoBehaviour
             button.GetComponent<Button>().colors = colors;
 
             triggerOn = true;
-
             // get corresponding follow path script and set its selected property to false to avoid defining a new point when pressing the button
             if (followPath != null)
+            {
+                isItemSelectedOriginal = followPath.isSelectedForPath;
                 followPath.isSelectedForPath = false;
+            }
 
             if (followPathCamera != null)
+            {
+                isItemSelectedOriginal = followPathCamera.isSelectedForPath;
                 followPathCamera.isSelectedForPath = false;
+            }
         }
     }
 
@@ -73,12 +80,12 @@ public class ItemsControlButtons : MonoBehaviour
 
             triggerOn = false;
 
-            // get corresponding follow path script and set its selected property back to true
+            // get corresponding follow path script and set its selected property back to its original state
             if (followPath != null)
-                followPath.isSelectedForPath = true;
+                followPath.isSelectedForPath = isItemSelectedOriginal;
 
             if (followPathCamera != null)
-                followPathCamera.isSelectedForPath = true;
+                followPathCamera.isSelectedForPath = isItemSelectedOriginal;
         }
     }
 

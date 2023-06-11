@@ -2413,7 +2413,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
 --- !u!114 &6473772387390875838
 MonoBehaviour:
@@ -2460,12 +2460,12 @@ MonoBehaviour:
   pointsCount: 0
   currPoint: 0
   startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
   circlesContainer: {fileID: 0}
   isPlaying: 0
   triggerOn: 0
   isSelectedForPath: 0
-  isPointOnTrigger: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
   characterRotationLeft: {x: 0, y: -10, z: 0}

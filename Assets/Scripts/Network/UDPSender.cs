@@ -292,30 +292,31 @@ public class UDPSender : MonoBehaviour
             // if it is a camera, rotate the cinemachine gameobjects
             if (item.name.Contains("MainCamera"))
             {
-                FollowPathCamera followPathCamera = item.GetComponent<FollowPathCamera>();
-                CustomGrabbableCameras customGrabbableCameras = item.GetComponent<CustomGrabbableCameras>();
-                GameObject virtualCamera = customGrabbableCameras.virtualCamera;
-                GameObject dollyTrack = customGrabbableCameras.dollyTracker;
-                GameObject rotationController = customGrabbableCameras.rotationController;
+                continue;
+                //FollowPathCamera followPathCamera = item.GetComponent<FollowPathCamera>();
+                //CustomGrabbableCameras customGrabbableCameras = item.GetComponent<CustomGrabbableCameras>();
+                //GameObject virtualCamera = customGrabbableCameras.virtualCamera;
+                //GameObject dollyTrack = customGrabbableCameras.dollyTracker;
+                //GameObject rotationController = customGrabbableCameras.rotationController;
 
-                virtualCamera.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
-                dollyTrack.transform.position = virtualCamera.transform.position;
-                rotationController.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+                //virtualCamera.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
+                //dollyTrack.transform.position = virtualCamera.transform.position;
+                //rotationController.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
 
-                // iterate through each defined point and rotate it
-                List<Vector3> pathPositions = followPathCamera.pathPositions;
-                for (int j = 0; j < pathPositions.Count; j++)
-                {
-                    Vector3 point = pathPositions[j];
-                    pathPositions[j] = rotatePointAround(point, pivotPoint, rotationQuat);
-                }
+                //// iterate through each defined point and rotate it
+                //List<Vector3> pathPositions = followPathCamera.pathPositions;
+                //for (int j = 0; j < pathPositions.Count; j++)
+                //{
+                //    Vector3 point = pathPositions[j];
+                //    pathPositions[j] = rotatePointAround(point, pivotPoint, rotationQuat);
+                //}
 
-                followPathCamera.pathPositions = pathPositions;
+                //followPathCamera.pathPositions = pathPositions;
 
-                // rotate also the start point for the character and cinemachine points
-                followPathCamera.startPosition = virtualCamera.transform.position;
-                followPathCamera.startRotation = virtualCamera.transform.rotation;
-                followPathCamera.relocateCinemachinePoints(followPathCamera.cinemachineSmoothPath, virtualCamera.transform.position);
+                //// rotate also the start point for the character and cinemachine points
+                //followPathCamera.startPosition = virtualCamera.transform.position;
+                //followPathCamera.startRotation = virtualCamera.transform.rotation;
+                //followPathCamera.relocateCinemachinePoints(followPathCamera.cinemachineSmoothPath, virtualCamera.transform.position);
             }
             else
             {
