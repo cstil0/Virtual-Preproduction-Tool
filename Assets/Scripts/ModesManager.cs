@@ -240,7 +240,7 @@ public class ModesManager : MonoBehaviour
             leftHand.SetActive(true);
             rightHand.SetActive(true);
 
-            IPAddress.text = "192.168.0.12";
+            IPAddress.text = "192.168.0.18";
 
             loadMainScene();
         }

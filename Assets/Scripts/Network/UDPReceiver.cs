@@ -19,7 +19,7 @@ public class UDPReceiver : MonoBehaviour
     // separate it in different ports since this is used both for assistant and director,
     // so that it is less messy for me
     [SerializeField] int assistantToDirectorPort = 8051;
-    [SerializeField] int directoToAssistantPort = 8052;
+    [SerializeField] int directorToAssistantPort = 8052;
 
     [SerializeField] GameObject itemsParent;
 
@@ -110,14 +110,14 @@ public class UDPReceiver : MonoBehaviour
     // thread to listen to director messages
     void UDP_directorToAssistantReceive()
     {
-        clientPlay = new UdpClient(directoToAssistantPort);
+        clientPlay = new UdpClient(directorToAssistantPort);
         // loop needed to keep listening
         while (true)
         {
             try
             {
                 // recieve messages through the end point
-                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, directoToAssistantPort);
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, directorToAssistantPort);
                 byte[] receiveBytes = clientPlay.Receive(ref remoteEndPoint);
 
                 lastMessageReceived = Encoding.ASCII.GetString(receiveBytes);
@@ -139,8 +139,8 @@ public class UDPReceiver : MonoBehaviour
         item.TryGetComponent(out FollowPath followPath);
         item.TryGetComponent(out FollowPathCamera followPathCamera);
 
-        Transform pathContainer;
-        Transform circlesContainer;
+        Transform pathContainer = null;
+        Transform circlesContainer = null;
 
         string[] splittedMessage = pointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
@@ -159,17 +159,24 @@ public class UDPReceiver : MonoBehaviour
                 pathContainer.name = "Path " + itemNum;
                 circlesContainer.name = "Circles " + itemNum;
             }
+            // if it is not the first received point, it will have the correct name already
             catch (Exception e) {
                 pathContainer = GameObject.Find("Path " + itemNum).transform;
+                circlesContainer = GameObject.Find("Circles " + itemNum).transform;
             }
 
             // find the corresponding path sphere to change its name and assign the corresponding item
             GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
+            GameObject circle = circlesContainer.GetChild(circlesContainer.childCount - 1).gameObject;
+
             pathSphere.name = "Point " + (pathContainer.childCount - 2);
+            circle.name = "Circle " + (circlesContainer.childCount - 2);
+            
             PathSpheresController spheresController = pathSphere.GetComponent<PathSpheresController>();
             spheresController.item = item;
 
             followPath.pathContainer = pathContainer.gameObject;
+            followPath.circlesContainer = circlesContainer.gameObject;
 
             StartCoroutine(followPath.defineNewPathPoint(newPointPosition, false));
             int pointsCount = followPath.pathPositions.Count;

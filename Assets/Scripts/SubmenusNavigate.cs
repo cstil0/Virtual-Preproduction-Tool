@@ -39,7 +39,7 @@ public class SubmenusNavigate : MonoBehaviour
     {
         while(adp.buttonsCount == 0) { yield return null; }
 
-        activateDisableButtonsStart();
+        activateDisableButtons();
         checkPreviousNextButtons();
     }
 
@@ -122,31 +122,14 @@ public class SubmenusNavigate : MonoBehaviour
     public void activateDisableButtons()
     {
         int startButton = adp.currentPage * buttonsPerPage;
-
-        // iterate through each button in the current and previous pages to determine if it should be enabled or not
-        for (int i = startButton; i < startButton + buttonsPerPage; i++)
-        {
-            if (i < adp.buttonsCount)
-                currentMenu.transform.GetChild(i).gameObject.SetActive(true);
-        }
-
-        for (int i = startButton + buttonsPerPage; i < startButton + buttonsPerPage * 2; i++)
-        {
-            if (i < adp.buttonsCount)
-                currentMenu.transform.GetChild(i).gameObject.SetActive(false);
-        }
-    }
-
-    public void activateDisableButtonsStart()
-    {
-        int startButton = adp.currentPage * buttonsPerPage;
+        int endButton = startButton + buttonsPerPage;
 
         // iterate through each button and determine if it should be enabled or not
         for (int i = 0; i < adp.buttonsCount; i++)
         {
-            if (i >= startButton && i < startButton + buttonsPerPage)
+            if (i >= startButton && i < endButton)
                 currentMenu.transform.GetChild(i).gameObject.SetActive(true);
-            else if (i >= startButton + buttonsPerPage && i < adp.buttonsCount)
+            else if ((i >= endButton && i < adp.buttonsCount) || i < startButton )
                 currentMenu.transform.GetChild(i).gameObject.SetActive(false);
         }
     }

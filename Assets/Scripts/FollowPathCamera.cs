@@ -423,7 +423,8 @@ public class FollowPathCamera : MonoBehaviour
             
             // continue movement from the current position
             cinemachineTrackedDolly.m_PathPosition = currPathPosition;
-            rotationController.transform.rotation = Quaternion.Euler(pathRotations[(int)currPathPosition]);
+            if (pathRotations.Count> 0)
+                rotationController.transform.rotation = Quaternion.Euler(pathRotations[(int)currPathPosition]);
 
             hideShowPath(false);
         }
