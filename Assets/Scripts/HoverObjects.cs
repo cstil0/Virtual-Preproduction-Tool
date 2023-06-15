@@ -446,7 +446,7 @@ public class HoverObjects : MonoBehaviour
                 followPathCamera.triggerOn = false;
                 isSelected = followPathCamera.isSelectedForPath;
             }
-            
+
             if (!isSelected)
             {
                 // if it is not selected, change its color back to white
@@ -455,6 +455,8 @@ public class HoverObjects : MonoBehaviour
                 if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                     changeColorMaterials(currentItemCollider, color);
             }
+            else
+                UDPSender.instance.sendChangeItemColor(other.gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(DefinePath.instance.selectedLineColor));
 
             currentItemCollider = null;
         }

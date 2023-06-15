@@ -82,18 +82,15 @@ public class PathSpheresController : MonoBehaviour
                     Vector3 directionInv = newPosition - lastPosition;
                     Vector3 directionCorrected = new Vector3(direction.x, -direction.y, direction.z);
                     followPathCamera.relocatePoint(pointNum, directionCorrected, false, directionInv);
+                    UDPSender.instance.sendPointRelocation(item.name, pointNum, -direction, -directionInv);
                 }
                 if (followPath != null)
                 {
                     Vector3 distance = lastPosition - newPosition;
-                    followPath.pathPositions[pointNum] = followPath.pathPositions[pointNum] - distance;
-                    line = transform.parent.Find("Line").gameObject;
+                    followPath.relocatePoint(pointNum, -distance, false);
 
                     DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, distance);
-
-                    // get the line by looking at the path container's childs
-                    LineRenderer lineineRenderer = line.GetComponent<LineRenderer>();
-                    lineineRenderer.SetPosition(pointNum, newPosition);
+                    UDPSender.instance.sendPointRelocation(item.name, pointNum, -distance, new Vector3());
                 }
                 lastPosition = gameObject.transform.position;
             }
@@ -104,7 +101,7 @@ public class PathSpheresController : MonoBehaviour
         {
             if (followPath != null)
             {
-                followPath.relocatePoint(pointNum, upVector);
+                followPath.relocatePoint(pointNum, upVector, true);
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, downVector);
             }
             if (followPathCamera != null)
@@ -115,7 +112,7 @@ public class PathSpheresController : MonoBehaviour
         {
             if (followPath != null)
             {
-                followPath.relocatePoint(pointNum, downVector);
+                followPath.relocatePoint(pointNum, downVector, true);
                 DefinePath.instance.triggerPointPathChanged(pathNum, pointNum, upVector);
             }
             if (followPathCamera != null)
@@ -158,6 +155,9 @@ public class PathSpheresController : MonoBehaviour
             Renderer renderer = gameObject.GetComponent<Renderer>();
             Material material = renderer.material;
             material.color = color;
+
+            if (followPath != null)
+                HoverObjects.instance.callHoverPointEvent(pathNum, pointNum, color);
         }
     }
 }

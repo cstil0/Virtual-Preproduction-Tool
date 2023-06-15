@@ -34,6 +34,12 @@ public class UDPSender : MonoBehaviour
     [SerializeField] HoverObjects hoverObjects;
     [SerializeField] GameObject itemsParent;
 
+    // BORRAR!!!!!!!!!!!!!!!1
+    int count = 0;
+
+    float timeElapsedSendPos = 0.0f;
+    float targetFPS = 40.0f;
+
     private void Awake()
     {
         if (instance)
@@ -120,17 +126,13 @@ public class UDPSender : MonoBehaviour
         client = new UdpClient(assistantToScreenPort);
 
         // sending data
-        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-        byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString());
-        client.Send(message, message.Length, target);
-
         Vector3 cameraPos = screenCamera.transform.position;
-        string specifier = "G";
-        message = Encoding.ASCII.GetBytes(cameraPos.ToString(specifier, CultureInfo.InvariantCulture));
-        client.Send(message, message.Length, target);
-
         Quaternion cameraRot = screenCamera.transform.rotation;
-        message = Encoding.ASCII.GetBytes(cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
+        count += 1;
+        string specifier = "G";
+
+        IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
+        byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString() + "#" + cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + "#" + cameraRot.ToString(specifier, CultureInfo.InvariantCulture) + "#" + count);
         client.Send(message, message.Length, target);
 
         client.Close();
@@ -142,7 +144,7 @@ public class UDPSender : MonoBehaviour
         {
             Vector3 cameraRotation = screenCamera.transform.rotation.eulerAngles;
             Quaternion currentRotation = Quaternion.Euler(0.0f, cameraRotation.y + sceneRotation, 0.0f);
-            sendInfo(assistantToScreenPort, "SCENE_ROTATION:" + currentRotation.ToString());
+            sendInfo(assistantToScreenPort, "SCENE_ROTATION:" + rotationAngle.ToString());
             sendInfo(assistantToDirectorPort, "SCENE_ROTATION:" + currentRotation.ToString());
         }
         catch (Exception e) { }
@@ -184,15 +186,18 @@ public class UDPSender : MonoBehaviour
 
     public void changeMainCamera(GameObject currentCamera)
     {
-        string[] cameraName = currentCamera.name.Split(" ");
-        int cameraNum = int.Parse(cameraName[1]);
+        if (currentCamera != screenCamera.gameObject)
+        {
+            string[] cameraName = currentCamera.name.Split(" ");
+            int cameraNum = int.Parse(cameraName[1]);
 
-        screenCamera = currentCamera.GetComponent<Camera>();
+            screenCamera = currentCamera.GetComponent<Camera>();
 
-        screenCameraStartPos = screenCamera.transform.position;
-        screenCameraStartRot = screenCamera.transform.rotation;
+            screenCameraStartPos = screenCamera.transform.position;
+            screenCameraStartRot = screenCamera.transform.rotation;
 
-        sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
+            sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
+        }
     }
 
     public void sendResetPosRot()
@@ -277,6 +282,16 @@ public class UDPSender : MonoBehaviour
     public void sendShowHideGridDirector(bool isShowed)
     {
         sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
+    }
+
+    public void sendPointRelocation(string itemName, int pointNum, Vector3 direction, Vector3 directionInv)
+    {
+        string message = "RELOCATE_POINT:" + itemName + ":" + pointNum + ":";
+        message += direction.x.ToString(CultureInfo.InvariantCulture) + " " + direction.y.ToString(CultureInfo.InvariantCulture) + " " + direction.z.ToString(CultureInfo.InvariantCulture);
+
+        if (directionInv != new Vector3())
+        message += directionInv.x.ToString(CultureInfo.InvariantCulture) + " " + directionInv.y.ToString(CultureInfo.InvariantCulture) + " " + directionInv.z.ToString(CultureInfo.InvariantCulture);
+        sendInfo(assistantToDirectorPort, message);
     }
 
     IEnumerator sendInitialParameters()
@@ -404,23 +419,6 @@ public class UDPSender : MonoBehaviour
 
     void Update()
     {
-        Vector3 currentPos = screenCamera.transform.position;
-        if (lastPos != currentPos)
-        {
-            //if (!positionChanged)
-            //    changeResetStart(true);
-            //else
-            //    changeResetStart(false);
-
-            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                SendPosRot();
-
-            //positionChanged = true;
-            lastPos = currentPos;
-            changeResetStart(false);
-            //posChangedCount = 0;
-        }
-
         //else if (positionChanged)
         //{
         //    // needed to make sure that position is not changing,
@@ -432,6 +430,29 @@ public class UDPSender : MonoBehaviour
         //        positionChanged = false;
         //    }
         //}
+
+        Vector3 currentPos = screenCamera.transform.position;
+        if (lastPos != currentPos)
+        {
+            //if (!positionChanged)
+            //    changeResetStart(true);
+            //else
+            //    changeResetStart(false);
+
+            timeElapsedSendPos += Time.deltaTime;
+            Debug.Log("TIME ELAPSED SINCE LAST POS: " + timeElapsedSendPos);
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT && timeElapsedSendPos >= 1/targetFPS)
+            {
+                Debug.Log("SENDING POS: " + timeElapsedSendPos);
+                SendPosRot();
+                timeElapsedSendPos = 0.0f;
+            }
+
+            //positionChanged = true;
+            lastPos = currentPos;
+            changeResetStart(false);
+            //posChangedCount = 0;
+        }
 
         if (OVRInput.Get(OVRInput.RawButton.Y))
         {

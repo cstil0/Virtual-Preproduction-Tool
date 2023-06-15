@@ -141,6 +141,10 @@ public class DefinePath : MonoBehaviour
             spherePoint.transform.position = newPosition;
             spherePoint.transform.rotation = Quaternion.identity;
 
+            // define transform properties
+            circlePoint.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            circlePoint.transform.position = new Vector3(newPosition.x, startDifferenceY, newPosition.z);
+
             // spawn object in connected clients
             spherePoint.GetComponent<NetworkObject>().Spawn();
             circlePoint.GetComponent<NetworkObject>().Spawn();
@@ -149,9 +153,6 @@ public class DefinePath : MonoBehaviour
             if (startDifferenceY == 0.0f)
                 startDifferenceY += 0.001f;
 
-            // define transform properties
-            circlePoint.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            circlePoint.transform.position = new Vector3(newPosition.x, startDifferenceY, newPosition.z);
             circlePoint.transform.SetParent(circlesContainer.transform);
             circlePoint.name = "Circle " + pointsCount;
 

@@ -3606,7 +3606,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 183047851}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 315.4, y: 78.4, z: 176.4}
+  m_LocalPosition: {x: 311.3, y: 78.4, z: 169.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11399,6 +11399,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &479241776
@@ -38561,6 +38562,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &1776131377
@@ -39862,6 +39864,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &1825172525

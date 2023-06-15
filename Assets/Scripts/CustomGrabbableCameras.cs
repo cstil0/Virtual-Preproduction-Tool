@@ -5,10 +5,12 @@ using UnityEngine;
 public class CustomGrabbableCameras : MonoBehaviour
 {
     GameObject currentHand;
-    Vector3 startRotation;
+    Quaternion startRotation;
+    //Vector3 startRotation;
     Vector3 startPosition;
     Vector3 handStartPos;
-    Vector3 handStartRot;
+    //Vector3 handStartRot;
+    Quaternion handStartRot;
 
     [SerializeField] bool buttonDown;
     [SerializeField] bool triggerOn;
@@ -30,14 +32,16 @@ public class CustomGrabbableCameras : MonoBehaviour
         triggerOn = false;
 
         startPosition = transform.position;
-        startRotation = transform.rotation.eulerAngles;
+        startRotation = transform.rotation;
+        //startRotation = transform.rotation.eulerAngles;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 position = new Vector3();
-        Vector3 rotation = new Vector3();
+        Quaternion rotation = new Quaternion();
+        //Vector3 rotation = new Vector3();
         
         // cameras should not be able to be grabbed while being on play mode
         if (!DefinePath.instance.isPlaying)
@@ -48,37 +52,65 @@ public class CustomGrabbableCameras : MonoBehaviour
                 {
                     // get position and rotation of both of the virtual camera and hand when the controller hits the camera
                     handStartPos = currentHand.transform.position;
-                    handStartRot = currentHand.transform.rotation.eulerAngles;
+                    handStartRot = currentHand.transform.rotation;
+                    //handStartRot = currentHand.transform.rotation.eulerAngles;
                     startPosition = virtualCamera.transform.position;
-                    startRotation = virtualCamera.transform.rotation.eulerAngles;
+                    startRotation = virtualCamera.transform.rotation;
+                    //startRotation = virtualCamera.transform.rotation.eulerAngles;
                     buttonDown = true;
 
                     UDPSender.instance.changeResetStart(true);
+                    UDPSender.instance.SendPosRot();
                 }
 
                 // compute how much the camera should move and rotate based on the difference between the current and the initial one from the hand
                 Vector3 posDiff = handStartPos - currentHand.transform.position;
                 position = startPosition - posDiff;
-                Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;
-                rotation = startRotation - rotDiff;
+                Quaternion rotDiff = Quaternion.Inverse(handStartRot) * currentHand.transform.rotation;
+                //Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;
+                rotation = startRotation * rotDiff;
+                //Vector3 rotationCorrected = correctRotation(rotation.normalized);
 
                 // apply position and rotation to each involved gameobject
                 dollyTracker.transform.position = position;
                 virtualCamera.transform.position = position;
                 rotationController.transform.position = position;
 
-                virtualCamera.transform.rotation = Quaternion.Euler(rotation);
-                rotationController.transform.rotation = Quaternion.Euler(rotation);
+                virtualCamera.transform.rotation = rotation;
+                //virtualCamera.transform.rotation = Quaternion.Euler(rotationCorrected);
+                rotationController.transform.rotation = rotation;
+                //rotationController.transform.rotation = Quaternion.Euler(rotationCorrected);
             }
             else
             {
-                // if the camera is not being grab, ensure that all gameobjects have the same position and rotation
+                // if the camera is not being grabbed, ensure that all gameobjects have the same position and rotation
                 if (buttonDown)
                     buttonDown = false;
 
                 position = virtualCamera.transform.position;
-                rotation = virtualCamera.transform.rotation.eulerAngles;
+                rotation = virtualCamera.transform.rotation;
             }
         }
+    }
+
+    Vector3 correctRotation(Vector3 cameraRotation)
+    {
+        Vector3 correctedRotation = new Vector3(cameraRotation.x, cameraRotation.y, cameraRotation.z);
+        while (correctedRotation.x < 0.0f)
+            correctedRotation.x += 360.0f;
+        while (correctedRotation.x > 360.0f)
+            correctedRotation.x -= 360.0f;
+
+        while (correctedRotation.y < 0.0f)
+            correctedRotation.y += 360.0f;
+        while (correctedRotation.y > 360.0f)
+            correctedRotation.y -= 360.0f;
+
+        while (correctedRotation.z < 0.0f)
+            correctedRotation.z += 360.0f;
+        while (correctedRotation.z > 360.0f)
+            correctedRotation.z -= 360.0f;
+
+        return correctedRotation;
     }
 }

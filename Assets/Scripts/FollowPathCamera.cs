@@ -3,9 +3,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class FollowPathCamera : MonoBehaviour
 {
@@ -133,9 +135,13 @@ public class FollowPathCamera : MonoBehaviour
             {
                 startPosition = cinemachineVirtualCamera.transform.position;
                 startRotation = rotationController.transform.rotation;
-                relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
-                LineRenderer lineRenderer = pathContainer.GetComponentInChildren<LineRenderer>();
-                relocateAllBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath);
+
+                if (pathRotations.Count > 0)
+                {
+                    relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
+                    LineRenderer lineRenderer = pathContainer.GetComponentInChildren<LineRenderer>();
+                    relocateAllBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath);
+                }
             }
         }
 
@@ -184,7 +190,7 @@ public class FollowPathCamera : MonoBehaviour
                 Vector3 angDiff = currTargetRot - lastTargetRot;
                 Vector3 minAngDiff = findMinAngle(angDiff);
                 Vector3 targetRot = lastTargetRot + (minAngDiff) * factor;
-                //Vector3 targetRot = Vector3.Lerp(currTargetPos, lastTargetRot, factor);
+                //Vector3 targetRot = Vector3.Lerp(currTargetPos, lastTargetRot, temporalStep);
                 //Vector3 targetRot = Vector3.Slerp(currTargetPos, lastTargetRot, factor);
 
                 rotationController.transform.rotation = Quaternion.Euler(targetRot);
@@ -581,6 +587,7 @@ public class FollowPathCamera : MonoBehaviour
             // relocate sphere
             Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
             sphere.position = newPoint;
+            UDPSender.instance.sendPointRelocation(gameObject.name, pointNum, direction, directionInv);
         }
     }
 
@@ -635,5 +642,11 @@ public class FollowPathCamera : MonoBehaviour
             newRot.z = newRot.z + 360.0f;
 
         return newRot;
+    }
+
+    public int extractCameraNum()
+    {
+        string[] splittedName = gameObject.name.Split(' ');
+        return int.Parse(splittedName[1]);
     }
 }

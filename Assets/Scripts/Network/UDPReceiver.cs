@@ -8,6 +8,7 @@ using System.Globalization;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -47,7 +48,8 @@ public class UDPReceiver : MonoBehaviour
     public delegate void ChangePointColor(string itemName, string pointName, Color color);
     public event ChangePointColor OnChangePointColor;
 
-    enum eAssistantToDirectorMessages{
+    enum eAssistantToDirectorMessages
+    {
         NEW_ITEM,
         NEW_POINT,
         NEW_ROTATION,
@@ -57,7 +59,8 @@ public class UDPReceiver : MonoBehaviour
         DELETE_POINT,
         CHANGE_ITEM_COLOR,
         CHANGE_PATH_COLOR,
-        CHANGE_POINT_COLOR
+        CHANGE_POINT_COLOR,
+        RELOCATE_POINT
     }
 
     enum eDirectorToAssistantMessages
@@ -170,10 +173,16 @@ public class UDPReceiver : MonoBehaviour
             GameObject circle = circlesContainer.GetChild(circlesContainer.childCount - 1).gameObject;
 
             pathSphere.name = "Point " + (pathContainer.childCount - 2);
-            circle.name = "Circle " + (circlesContainer.childCount - 2);
-            
-            PathSpheresController spheresController = pathSphere.GetComponent<PathSpheresController>();
-            spheresController.item = item;
+            circle.name = "Circle " + (circlesContainer.childCount - 1);
+            PathCirclesController circlesController = circle.GetComponent<PathCirclesController>();
+            circlesController.pointNum = circlesContainer.childCount - 1;
+            circlesController.pathNum = itemNum;
+
+            PathSpheresController pathSpheresController = pathSphere.GetComponent<PathSpheresController>();
+            pathSpheresController.item = item;
+            pathSpheresController.pointNum = pathContainer.childCount - 2;
+            pathSpheresController.pathNum = itemNum;
+            pathSpheresController.getFollowPath();
 
             followPath.pathContainer = pathContainer.gameObject;
             followPath.circlesContainer = circlesContainer.gameObject;
@@ -257,6 +266,8 @@ public class UDPReceiver : MonoBehaviour
             PathSpheresController spheresController = pathSphere.GetComponentInChildren<PathSpheresController>();
             CameraRotationController cameraRotationController = pathSphere.GetComponentInChildren<CameraRotationController>();
             spheresController.item = item;
+            spheresController.pointNum = pointsCount - 2;
+            spheresController.pathNum = itemNum;
             spheresController.followPathCamera = followPathCamera;
             cameraRotationController.followPathCamera = followPathCamera;
             cameraRotationController.pointNum = pointsCount -2;
@@ -394,6 +405,35 @@ public class UDPReceiver : MonoBehaviour
         DirectorPanelManager.instance.showHideGrid(false);
     }
 
+    void parsePointRelocation(string itemName, int pointNum, string direction, string directionInv)
+    {
+        string[] directionSplitted = direction.Split(" ");
+        float dirX = float.Parse(directionSplitted[0], CultureInfo.InvariantCulture);
+        float dirY = float.Parse(directionSplitted[1], CultureInfo.InvariantCulture);
+        float dirZ = float.Parse(directionSplitted[2], CultureInfo.InvariantCulture);
+        Vector3 directionVec = new Vector3(dirX, dirY, dirZ);
+
+        Vector3 directionInvVec = new Vector3();
+        if (directionInv != "")
+        {
+            string[] directionInvSplitted = direction.Split(" ");
+            float dirInvX = float.Parse(directionInvSplitted[0], CultureInfo.InvariantCulture);
+            float dirInvY = float.Parse(directionInvSplitted[1], CultureInfo.InvariantCulture);
+            float dirInvZ = float.Parse(directionInvSplitted[2], CultureInfo.InvariantCulture);
+            directionInvVec = new Vector3(dirInvX, dirInvY, dirInvZ);
+        }
+
+        GameObject item = itemsParent.transform.Find(itemName).gameObject;
+        item.TryGetComponent(out FollowPath followPath);
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
+
+        if (followPath != null)
+            followPath.relocatePoint(pointNum, directionVec, false);
+
+        if (followPathCamera != null)
+            followPathCamera.relocatePoint(pointNum, directionVec, false, directionInvVec);
+    }
+
     void parseChangeLightColor(string focusName, string colorHex, bool isAccepted)
     {
         GameObject focus = itemsParent.transform.Find(focusName).gameObject;
@@ -516,6 +556,16 @@ public class UDPReceiver : MonoBehaviour
                             string pointName = splittedMessage[2];
                             colorHex = splittedMessage[3];
                             StartCoroutine(parsePointChangeColor(itemName, pointName, colorHex));
+                            break;
+                        case eAssistantToDirectorMessages.RELOCATE_POINT:
+                            string pathNum = splittedMessage[1];
+                            pointNum = int.Parse(splittedMessage[2]);
+                            string direction = splittedMessage[3];
+
+                            string directionInv = "";
+                            if (splittedMessage.Length == 5)
+                                directionInv = splittedMessage[4];
+                            parsePointRelocation(pathNum, pointNum, direction, directionInv);
                             break;
                     }
                     break;

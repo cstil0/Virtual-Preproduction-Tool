@@ -334,25 +334,35 @@ public class FollowPath : MonoBehaviour
         pointsCount--;
     }
 
-    public void relocatePoint(int pointNum, Vector3 direction)
+    public void relocatePoint(int pointNum, Vector3 direction, bool relocateSphere)
     {
         // relocate sphere
-        Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
-        sphere.position += direction;
-        Vector3 newPoint = sphere.position;
+        if (relocateSphere)
+        {
+            Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
+            sphere.position += direction;
+            UDPSender.instance.sendPointRelocation(gameObject.name, pointNum, direction, new Vector3());
+        }
 
         // get the position of the point by correcting its height, as it is saved considering the first point to be over the ground
         pathPositions[pointNum] = pathPositions[pointNum] + direction;
 
-        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        GameObject line = null;
+        foreach (Transform child in pathContainer.transform)
+        {
+            if (child.name.Contains("Line"))
+            {
+                line = child.gameObject;
+                break;
+            }
+        }
         LineRenderer currLineRenderer = line.GetComponent<LineRenderer>();
-        int pointsCount = currLineRenderer.positionCount;
 
         // relocate point in line renderer
         Vector3[] pathPositionsArray = new Vector3[pathPositions.Count];
         currLineRenderer.GetPositions(pathPositionsArray);
         List<Vector3> pathPositionsList = pathPositionsArray.ToList<Vector3>();
-        pathPositionsList[pointNum] = newPoint;
+        pathPositionsList[pointNum] += direction;
 
         // reassign positions to the line renderer
         pathPositionsArray = pathPositionsList.ToArray();
@@ -402,5 +412,11 @@ public class FollowPath : MonoBehaviour
         while (pathContainer == null) yield return null;
 
         DefinePath.instance.changePathColor(pathContainer, color, false);
+    }
+
+    public int extractItemNum()
+    {
+        string[] splittedName = gameObject.name.Split(' ');
+        return int.Parse(splittedName[1]);
     }
 }
