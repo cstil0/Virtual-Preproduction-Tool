@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal.Internal;
 
 public class TransformArrows : MonoBehaviour
 {
@@ -75,24 +76,44 @@ public class TransformArrows : MonoBehaviour
 
         if (isMoving)
         {
-            Vector3 difference = handCollider.transform.position - lastHandPosition;            
+            Vector3 difference = handCollider.transform.position - lastHandPosition;  
             // only the axis with value 1 in arrowDirection will remain
             Vector3 movementDirection = new Vector3(difference.x * arrowDirection.x, difference.y * arrowDirection.y, difference.z * arrowDirection.z);
 
             Transform parent = gameObject.transform.parent.parent;
             if (parent.name.Contains("Camera")){
                 FollowPathCamera followPathCamera = parent.gameObject.GetComponent<FollowPathCamera>();
+                movementDirection = applyRotation(parent, movementDirection);
                 followPathCamera.cinemachineSmoothPath.transform.position += movementDirection;
             }
             else
+            {
+                movementDirection = applyRotation(parent, movementDirection);
                 parent.position += movementDirection;
+            }
             
             lastHandPosition = handCollider.transform.position;
         }
     }
 
+    Vector3 applyRotation(Transform item, Vector3 movementDirection)
+    {
+        if (movementDirection.x != 0.0f)
+            return movementDirection.x * item.right;
+        else if (movementDirection.y != 0.0f)
+            return movementDirection.y * item.up;
+        else if (movementDirection.z != 0.0f)
+            return movementDirection.z * item.forward;
+        else
+            return movementDirection;
+    }
+
     void showHideArrows(bool isShow)
     {
         gameObject.GetComponent<MeshRenderer>().enabled = isShow;
+        Transform parent = gameObject.transform.parent.parent;
+        parent.TryGetComponent(out OVRGrabbable ovrgrabbable);
+        if (ovrgrabbable != null)
+            ovrgrabbable.enabled = !isShow;
     }
 }

@@ -57,13 +57,11 @@ public class ItemsControlButtons : MonoBehaviour
             // get corresponding follow path script and set its selected property to false to avoid defining a new point when pressing the button
             if (followPath != null)
             {
-                isItemSelectedOriginal = followPath.isSelectedForPath;
                 followPath.isSelectedForPath = false;
             }
 
             if (followPathCamera != null)
             {
-                isItemSelectedOriginal = followPathCamera.isSelectedForPath;
                 followPathCamera.isSelectedForPath = false;
             }
         }
@@ -82,10 +80,10 @@ public class ItemsControlButtons : MonoBehaviour
 
             // get corresponding follow path script and set its selected property back to its original state
             if (followPath != null)
-                followPath.isSelectedForPath = isItemSelectedOriginal;
+                followPath.isSelectedForPath = followPath.isSelectedForPathOriginal;
 
             if (followPathCamera != null)
-                followPathCamera.isSelectedForPath = isItemSelectedOriginal;
+                followPathCamera.isSelectedForPath = followPathCamera.isSelectedForPathOriginal;
         }
     }
 

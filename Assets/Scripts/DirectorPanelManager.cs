@@ -80,10 +80,8 @@ public class DirectorPanelManager : MonoBehaviour
         {
             if (!isXbuttonDown)
             {
-                isGridShown = !isGridShown;
-                grid.SetActive(isGridShown);
+                showHideGrid(false);
                 UDPSender.instance.sendShowHideGridDirector(isGridShown);
-                OnHideShowGrid(isGridShown);
                 isXbuttonDown = true;
             }
         }
@@ -132,7 +130,7 @@ public class DirectorPanelManager : MonoBehaviour
         }
     }
 
-    public void playPath()
+    public void playPath(bool fromDirector = true)
     {
         isPlaying = !isPlaying;
         if (isPlaying)
@@ -142,8 +140,10 @@ public class DirectorPanelManager : MonoBehaviour
 
         // call play event
         OnPlayPath();
-        // inform that play was pressed
-        SendPlayStop("PLAY");
+
+        // if the message is comming from the panel inform that play was pressed to the assistant
+        if (fromDirector)
+            SendPlayStop("PLAY");
     }
 
     public void stopPath()
@@ -178,7 +178,7 @@ public class DirectorPanelManager : MonoBehaviour
         }
     }
 
-    public void showHideGrid()
+    public void showHideGrid(bool sendMessage)
     {
         isGridShown = !isGridShown;
         // activate or disable grid image
@@ -190,15 +190,16 @@ public class DirectorPanelManager : MonoBehaviour
         grid.SetActive(isGridShown);
 
         // inform that grid was shown
-        UDPSender.instance.sendShowHideGridAssistant(isGridShown);
+        if (sendMessage)
+            UDPSender.instance.sendShowHideGridAssistant(isGridShown);
 
         // call show grid event
         OnHideShowGrid(isGridShown);
 
         // when grid is shown, objects can be only moved with the GUI arrows, so activate / disable OVR grabbers
-        customRightHand.GetComponent<OVRGrabber>().enabled = isGridShown;
-        customLeftHand.GetComponent<OVRGrabber>().enabled = isGridShown;
-        customRightHand.transform.parent.parent.GetComponent<HoverObjects>().enabled = isGridShown;
+        customRightHand.GetComponent<OVRGrabber>().enabled = !isGridShown;
+        customLeftHand.GetComponent<OVRGrabber>().enabled = !isGridShown;
+        //customRightHand.transform.parent.parent.GetComponent<HoverObjects>().enabled = !isGridShown;
     }
 
     public void showHidePointsView()

@@ -42,7 +42,7 @@ public class CustomGrabbableCameras : MonoBehaviour
         // cameras should not be able to be grabbed while being on play mode
         if (!DefinePath.instance.isPlaying)
         {
-            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
+            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn && !DirectorPanelManager.instance.isGridShown)
             {
                 if (!buttonDown)
                 {
@@ -52,6 +52,8 @@ public class CustomGrabbableCameras : MonoBehaviour
                     startPosition = virtualCamera.transform.position;
                     startRotation = virtualCamera.transform.rotation.eulerAngles;
                     buttonDown = true;
+
+                    UDPSender.instance.changeResetStart(true);
                 }
 
                 // compute how much the camera should move and rotate based on the difference between the current and the initial one from the hand
@@ -59,6 +61,14 @@ public class CustomGrabbableCameras : MonoBehaviour
                 position = startPosition - posDiff;
                 Vector3 rotDiff = handStartRot - currentHand.transform.rotation.eulerAngles;
                 rotation = startRotation - rotDiff;
+
+                // apply position and rotation to each involved gameobject
+                dollyTracker.transform.position = position;
+                virtualCamera.transform.position = position;
+                rotationController.transform.position = position;
+
+                virtualCamera.transform.rotation = Quaternion.Euler(rotation);
+                rotationController.transform.rotation = Quaternion.Euler(rotation);
             }
             else
             {
@@ -69,14 +79,6 @@ public class CustomGrabbableCameras : MonoBehaviour
                 position = virtualCamera.transform.position;
                 rotation = virtualCamera.transform.rotation.eulerAngles;
             }
-
-            // apply position and rotation to each involved gameobject
-            dollyTracker.transform.position = position;
-            virtualCamera.transform.position = position;
-            rotationController.transform.position = position;
-
-            virtualCamera.transform.rotation = Quaternion.Euler(rotation);
-            rotationController.transform.rotation = Quaternion.Euler(rotation);
         }
     }
 }

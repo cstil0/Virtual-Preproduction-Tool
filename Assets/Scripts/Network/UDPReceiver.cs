@@ -206,6 +206,7 @@ public class UDPReceiver : MonoBehaviour
         if (followPathCamera != null)
         {
             newCameraPosition = newPointPosition;
+            Debug.Log("RECEIVED POSITION CAMERA: " + newCameraPosition);
         }
     }
 
@@ -213,88 +214,76 @@ public class UDPReceiver : MonoBehaviour
     void parsePointRotation(string itemName, string pointRotation)
     {
         // handle exceptions in case the item is not found
+        //try
+        //{
+        Transform transformItem = itemsParent.transform.Find(itemName);
+        if (transformItem == null)
+            return;
+
+        GameObject item = transformItem.gameObject;
+        int itemNum = int.Parse(itemName.Split(" ")[1]);
+
+        Transform pathContainer;
+        // change name only for the first time a point from this path is received
         try
         {
-            GameObject item = itemsParent.transform.Find(itemName).gameObject;
-            int itemNum = int.Parse(itemName.Split(" ")[1]);
-
-            Transform pathContainer;
-            // change name only for the first time a point from this path is received
-            try
-            {
-                pathContainer = GameObject.Find("PathParent(Clone)").transform;
-                pathContainer.name = "Path " + itemName;
-            }
-            catch(Exception e)
-            {
-                pathContainer = GameObject.Find("Path " + itemName).transform;
-            }
-
-            // parse each axis rotation
-            string[] splittedMessage = pointRotation.Split(" ");
-            float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
-            float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
-            float rotZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
-            float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
-            Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
-
-            item.TryGetComponent(out FollowPathCamera followPathCamera);
-            if (followPathCamera != null)
-            {
-
-                followPathCamera.pathContainer = pathContainer.gameObject;
-                StartCoroutine(followPathCamera.defineNewPathPoint(newCameraPosition, newRotation, false));
-                int pointsCount = followPathCamera.pathPositions.Count;
-
-                // find the corresponding path sphere to change its name and assign the corresponding item
-                GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
-                pathSphere.name = "Point " + (pathContainer.childCount - 2);
-                PathSpheresController spheresController = pathSphere.GetComponentInChildren<PathSpheresController>();
-                CameraRotationController cameraRotationController = pathSphere.GetComponentInChildren<CameraRotationController>();
-                spheresController.item = item;
-                spheresController.followPathCamera = followPathCamera;
-                cameraRotationController.followPathCamera = followPathCamera;
-                cameraRotationController.pointNum = pointsCount -2;
-
-                // create new points layout if it is the first point of the camera path
-                if (pointsCount == 2)
-                    ItemsDirectorPanelController.instance.addPointsLayout(itemName);
-
-                // instantiate a new point button
-                ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 2);
-
-                Transform pointTransform = pathContainer.GetChild(pointsCount - 1);
-                GameObject line = pathContainer.GetChild(0).gameObject;
-
-                // create point in line renderer as its positions are not synchronized with the multiplayer system
-                LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-                if (pointsCount == 2)
-                {
-                    lineRenderer.SetPosition(pointsCount - 2, pointTransform.position);
-                    lineRenderer.positionCount += 1;
-                    lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
-                }
-                if (pointsCount > 2)
-                {
-                    lineRenderer.positionCount += 1;
-                    lineRenderer.SetPosition(pointsCount - 1, pointTransform.position);
-                }
-
-                // set camera event from minicamera
-                Camera miniCameraComponent = pointTransform.GetChild(1).GetComponent<Camera>();
-                Canvas minicameraCanvas = pointTransform.GetChild(2).GetComponent<Canvas>();
-                RawImage minicameraImage = pointTransform.GetChild(2).GetComponentInChildren<RawImage>();
-                minicameraCanvas.worldCamera = miniCameraComponent;
-
-                RenderTexture miniCameraTexture = new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32);
-                minicameraImage.texture = miniCameraTexture;
-                miniCameraComponent.targetTexture = miniCameraTexture;
-            }
+            pathContainer = GameObject.Find("PathParent(Clone)").transform;
+            pathContainer.name = "Path " + itemName;
         }
-        catch (Exception e)
+        catch(Exception e)
         {
-            Debug.LogError("ERROR PARSING ROTATION: " + e.ToString());
+            pathContainer = GameObject.Find("Path " + itemName).transform;
         }
+
+        // parse each axis rotation
+        string[] splittedMessage = pointRotation.Split(" ");
+        float rotX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
+        float rotY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+        float rotZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
+        float rotW = float.Parse(splittedMessage[3], CultureInfo.InvariantCulture);
+        Quaternion newRotation = new Quaternion(rotX, rotY, rotZ, rotW);
+
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
+        if (followPathCamera != null)
+        {
+
+            followPathCamera.pathContainer = pathContainer.gameObject;
+            StartCoroutine(followPathCamera.defineNewPathPoint(newCameraPosition, newRotation, false));
+            int pointsCount = followPathCamera.pathPositions.Count;
+
+            // find the corresponding path sphere to change its name and assign the corresponding item
+            GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
+            pathSphere.name = "Point " + (pathContainer.childCount - 2);
+            PathSpheresController spheresController = pathSphere.GetComponentInChildren<PathSpheresController>();
+            CameraRotationController cameraRotationController = pathSphere.GetComponentInChildren<CameraRotationController>();
+            spheresController.item = item;
+            spheresController.followPathCamera = followPathCamera;
+            cameraRotationController.followPathCamera = followPathCamera;
+            cameraRotationController.pointNum = pointsCount -2;
+
+            // create new points layout if it is the first point of the camera path
+            if (pointsCount == 2)
+                ItemsDirectorPanelController.instance.addPointsLayout(itemName);
+
+            // instantiate a new point button
+            ItemsDirectorPanelController.instance.addNewPointButton(itemName, pointsCount - 2);
+
+            Transform pointTransform = pathContainer.GetChild(pointsCount - 1);
+
+            // set camera event from minicamera
+            Camera miniCameraComponent = pointTransform.GetChild(1).GetComponent<Camera>();
+            Canvas minicameraCanvas = pointTransform.GetChild(2).GetComponent<Canvas>();
+            RawImage minicameraImage = pointTransform.GetChild(2).GetComponentInChildren<RawImage>();
+            minicameraCanvas.worldCamera = miniCameraComponent;
+
+            RenderTexture miniCameraTexture = new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32);
+            minicameraImage.texture = miniCameraTexture;
+            miniCameraComponent.targetTexture = miniCameraTexture;
+        }
+        //catch (Exception e)
+        //{
+        //    Debug.LogError("ERROR PARSING ROTATION: " + e.ToString());
+        //}
     }
 
     void parseDeleteItemDirector(string itemName)
@@ -402,7 +391,7 @@ public class UDPReceiver : MonoBehaviour
 
     void parseShowHideGrid(bool isShowed)
     {
-        DirectorPanelManager.instance.grid.SetActive(isShowed);
+        DirectorPanelManager.instance.showHideGrid(false);
     }
 
     void parseChangeLightColor(string focusName, string colorHex, bool isAccepted)

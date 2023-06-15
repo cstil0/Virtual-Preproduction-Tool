@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class PointControlButtons : MonoBehaviour
 {
     private bool triggerOn = false;
     private bool triggerButtonDown = false;
-    private bool isPointSelectedOriginal = false;
-
+    private bool isItemSelectedOriginal = false;
+    private bool isPointSelected = false;
     [SerializeField] eButtonType buttonType;
 
     [SerializeField] Button button;
@@ -19,6 +20,7 @@ public class PointControlButtons : MonoBehaviour
 
     private FollowPath followPath;
     private FollowPathCamera followPathCamera;
+    private PathSpheresController pathSpheresController;
     enum eButtonType
     {
         TRASH,
@@ -40,12 +42,10 @@ public class PointControlButtons : MonoBehaviour
             // change item's selected state to false to avoid creating a new point when pressing the button
             if (followPath != null)
             {
-                isPointSelectedOriginal = followPath.isSelectedForPath;
                 followPath.isSelectedForPath = false;
             }
 
             if (followPathCamera != null){
-                isPointSelectedOriginal = followPathCamera.isSelectedForPath;
                 followPathCamera.isSelectedForPath = false;
             }
         }
@@ -65,26 +65,42 @@ public class PointControlButtons : MonoBehaviour
 
             // change item's selected state back to its original state
             if (followPath != null)
-                followPath.isSelectedForPath = isPointSelectedOriginal;
+                followPath.isSelectedForPath = followPath.isSelectedForPathOriginal;
 
             if (followPathCamera != null)
-                followPathCamera.isSelectedForPath = isPointSelectedOriginal;
+            {
+                followPathCamera.isSelectedForPath = followPathCamera.isSelectedForPathOriginal;
+            }
         }
     }
 
     void Start()
     {
+        StartCoroutine(Init());
+    }
+
+    IEnumerator Init()
+    {
         point = gameObject.transform.parent.parent.parent.gameObject;
-        PathSpheresController spheresController = point.GetComponent<PathSpheresController>();
+        pathSpheresController = point.GetComponent<PathSpheresController>();
 
         // if point corresponds to character or object get the item's reference
-        if (spheresController != null)
-            item = spheresController.item;
+        if (pathSpheresController != null)
+            item = pathSpheresController.item;
         // if point corresponds to camera get the item and camera rotation controller references
         else
         {
             cameraRotationController = point.GetComponent<CameraRotationController>();
             string pathName = point.transform.parent.parent.gameObject.name;
+
+            // wait until the correct path name has been parsed
+            while (pathName.Contains("Clone"))
+            {
+                pathName = point.transform.parent.parent.gameObject.name;
+                yield return null;
+            }
+            yield return 0;
+
             string[] splittedName = pathName.Split(" ");
             item = HoverObjects.instance.itemsParent.transform.Find(splittedName[1] + " " + splittedName[2]).gameObject;
         }
@@ -142,7 +158,6 @@ public class PointControlButtons : MonoBehaviour
             followPathCamera.deletePathPoint(pointNum);
             followPathCamera.isSelectedForPath = true;
         }
-
     }
 
     void onLevelPressed()

@@ -40,7 +40,7 @@ public class CustomGrabbableCharacters : MonoBehaviour
         // characters should not be grabbed while being on play mode
         if (!DefinePath.instance.isPlaying)
         {
-            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn)
+            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger) && triggerOn && !DirectorPanelManager.instance.isGridShown)
             {
                 if (!buttonDown)
                 {

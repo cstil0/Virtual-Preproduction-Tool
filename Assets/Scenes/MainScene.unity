@@ -2740,14 +2740,14 @@ MonoBehaviour:
       - m_Target: {fileID: 602565770}
         m_TargetAssemblyTypeName: DirectorPanelManager, Assembly-CSharp
         m_MethodName: showHideGrid
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &121080857
 MonoBehaviour:
@@ -45340,14 +45340,14 @@ MonoBehaviour:
       - m_Target: {fileID: 602565770}
         m_TargetAssemblyTypeName: DirectorPanelManager, Assembly-CSharp
         m_MethodName: playPath
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 1
 --- !u!114 &2057603817
 MonoBehaviour:

@@ -2493,6 +2493,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7709365545737463070}
     m_Modifications:
+    - target: {fileID: 3897086083326329775, guid: 0090eb999a3808940a141bb7eba680e4,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4290215002297884451, guid: 0090eb999a3808940a141bb7eba680e4,
         type: 3}
       propertyPath: m_Enabled
@@ -2746,7 +2751,7 @@ PrefabInstance:
     - target: {fileID: 7959668406901391662, guid: 78b05fc87753f85469fe57ba95d33ec2,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: 7959668406901391662, guid: 78b05fc87753f85469fe57ba95d33ec2,
         type: 3}

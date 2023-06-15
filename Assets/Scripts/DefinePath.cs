@@ -328,6 +328,7 @@ public class DefinePath : MonoBehaviour
             if (circlesContainer != null)
                 Destroy(circlesContainer);
         }
+
     }
 
     // used when a new camera is selected to reassign the pre-generated canvas to the corresponding points

@@ -61,6 +61,7 @@ public class UDPSender : MonoBehaviour
     {
         GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
         screenCamera = currentCamera.GetComponent<Camera>();
+        resetStart = true;
 
         sendInfo(directoToAssistantPort, "CHANGE_CAMERA:" + cameraNum);
     }
@@ -198,6 +199,11 @@ public class UDPSender : MonoBehaviour
     {
         SendPosRot();
         sendInfo(assistantToScreenPort, "RESET_POSROT");
+    }
+
+    public void changeResetStart(bool reset)
+    {
+        resetStart = reset;
     }
 
     // -- ASSISTANT TO DIRECTOR MESSAGES --
@@ -398,34 +404,34 @@ public class UDPSender : MonoBehaviour
 
     void Update()
     {
-        int rotation = 0;
         Vector3 currentPos = screenCamera.transform.position;
         if (lastPos != currentPos)
         {
-            if (!positionChanged)
-                resetStart = true;
-            else
-                resetStart = false;
+            //if (!positionChanged)
+            //    changeResetStart(true);
+            //else
+            //    changeResetStart(false);
 
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                 SendPosRot();
 
-            positionChanged = true;
+            //positionChanged = true;
             lastPos = currentPos;
-            posChangedCount = 0;
+            changeResetStart(false);
+            //posChangedCount = 0;
         }
 
-        else if (positionChanged)
-        {
-            // needed to make sure that position is not changing,
-            // since there are frames in between when where position does not change
-            posChangedCount += 1;
-            if (posChangedCount >= 10)
-            {
-                resetStart = false;
-                positionChanged = false;
-            }
-        }
+        //else if (positionChanged)
+        //{
+        //    // needed to make sure that position is not changing,
+        //    // since there are frames in between when where position does not change
+        //    posChangedCount += 1;
+        //    if (posChangedCount >= 10)
+        //    {
+        //        changeResetStart(false);
+        //        positionChanged = false;
+        //    }
+        //}
 
         if (OVRInput.Get(OVRInput.RawButton.Y))
         {
@@ -439,11 +445,10 @@ public class UDPSender : MonoBehaviour
             rotateItemsInScene(rotationConstant);
 
             buttonDown = 1;
-            rotation = 5;
         }
         else
         {
-                buttonDown = 0;
+          buttonDown = 0;
         }
 
         if (OVRInput.Get(OVRInput.RawButton.A) && !hoverObjects.itemAlreadySelected)

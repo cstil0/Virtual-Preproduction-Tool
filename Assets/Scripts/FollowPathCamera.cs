@@ -33,6 +33,7 @@ public class FollowPathCamera : MonoBehaviour
     bool XButtonDown = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
+    public bool isSelectedForPathOriginal = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -101,6 +102,8 @@ public class FollowPathCamera : MonoBehaviour
             {
                 secondaryIndexTriggerDown = true;
                 isSelectedForPath = !isSelectedForPath;
+                // used to know the original state of the camera when control buttons unselect it to avoid instantiating new points while triggering the button
+                isSelectedForPathOriginal = isSelectedForPath;
 
                 // if camera was just selected and there are no points defined yet, define a new one
                 if (pathPositions.Count == 0)
@@ -131,6 +134,8 @@ public class FollowPathCamera : MonoBehaviour
                 startPosition = cinemachineVirtualCamera.transform.position;
                 startRotation = rotationController.transform.rotation;
                 relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
+                LineRenderer lineRenderer = pathContainer.GetComponentInChildren<LineRenderer>();
+                relocateAllBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath);
             }
         }
 
@@ -179,6 +184,8 @@ public class FollowPathCamera : MonoBehaviour
                 Vector3 angDiff = currTargetRot - lastTargetRot;
                 Vector3 minAngDiff = findMinAngle(angDiff);
                 Vector3 targetRot = lastTargetRot + (minAngDiff) * factor;
+                //Vector3 targetRot = Vector3.Lerp(currTargetPos, lastTargetRot, factor);
+                //Vector3 targetRot = Vector3.Slerp(currTargetPos, lastTargetRot, factor);
 
                 rotationController.transform.rotation = Quaternion.Euler(targetRot);
                 lastRotFactor = factor;
@@ -237,10 +244,17 @@ public class FollowPathCamera : MonoBehaviour
                 cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
             }
         }
+
+        // ensure that the bezier curve is computed properly
+        cinemachineSmoothPath.InvalidateDistanceCache();
     }
 
     public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
+        // y axis is received inverted in director side
+        if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
+            newPoint = new Vector3(newPoint.x, -newPoint.y, newPoint.z);
+
         // avoid having negative angles at it is easier to work with positive ones
         Vector3 newRotVec = getPositiveRotation(newRot);
 
@@ -293,14 +307,15 @@ public class FollowPathCamera : MonoBehaviour
             {
                 List<GameObject> containers= DefinePath.instance.addPointToNewPath(newPoint, Quaternion.Euler(newRotVec), (int)pathLength, gameObject, true);
                 pathContainer = containers[0];
+                LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+                addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
             }
             else
             {
+                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
                 // add bezier points to show the interpolated path to the user
                 LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
                 addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
-
-                DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
             }
 
             // inform of the new position and rotation
@@ -309,6 +324,12 @@ public class FollowPathCamera : MonoBehaviour
             UDPSender.instance.sendPointPath(gameObject, newPoint);
             yield return new WaitForSeconds(0.1f);
             UDPSender.instance.sendRotationPath(gameObject, Quaternion.Euler(newRotVec));
+        }
+        else
+        {
+            // add bezier points to show the interpolated path to the user
+            LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+            addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
         }
     }
 
@@ -319,9 +340,17 @@ public class FollowPathCamera : MonoBehaviour
         for (int i = 1; i < cinemachineSmoothPath.m_Resolution + 1; i++)
         {
             // evaluate the real position of each in-between point and assign it to the line renderer
-            float step = 1.0f / (float)cinemachineSmoothPath.m_Resolution;
+        float step = 1.0f / (float)cinemachineSmoothPath.m_Resolution;
             Vector3 bezierPosition = cinemachineSmoothPath.EvaluatePosition(count);
-            lineRenderer.positionCount += 1;
+
+            if (i == 1 && pathLength == 0)
+            {
+                lineRenderer.SetPosition(lineRenderer.positionCount - 1, bezierPosition);
+                break;
+            }
+            else
+                lineRenderer.positionCount += 1;
+
             lineRenderer.SetPosition(lineRenderer.positionCount - 1, bezierPosition);
 
             count += step;
@@ -402,6 +431,34 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
+    void relocateAllBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath)
+    {
+        int pointsCount = lineRenderer.positionCount;
+
+        Vector3[] pathPositionsArray = new Vector3[pointsCount];
+        lineRenderer.GetPositions(pathPositionsArray);
+
+        int resolution = cinemachineSmoothPath.m_Resolution;
+
+        CinemachineSmoothPath.Waypoint[] wayPoints = cinemachineSmoothPath.m_Waypoints;
+        int pathLength = wayPoints.Length;
+
+        float countFloat = 0.0f;
+
+        // iterate through the previous and following lines, adjacent to the current point to evaluate their bezier points
+        for (int i = 0; i < lineRenderer.positionCount; i++)
+        {
+            float step = 1.0f / (float)resolution;
+            Vector3 bezierPosition = cinemachineSmoothPath.EvaluatePosition(countFloat);
+            lineRenderer.SetPosition(i, bezierPosition);
+
+            if (i == 0)
+                countFloat = 1.0f;
+            else
+                countFloat += step;
+        }
+    }
+
     void playLinePath()
     {
         // need them to go to the start location before playing their movement
@@ -413,6 +470,7 @@ public class FollowPathCamera : MonoBehaviour
                 // if first and second point are the same, pass directly to second one. Instead it takes longer to start the movement
                 try
                 {
+                    UDPSender.instance.changeResetStart(true);
                     if (pathPositions[0] == pathPositions[1])
                         currPathPosition = 1;
                     else
@@ -467,9 +525,6 @@ public class FollowPathCamera : MonoBehaviour
         pathPositions.RemoveAt(pointNum + 1);
         pathRotations.RemoveAt(pointNum + 1);
 
-        if (deleteLine)
-            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
-
         // remove point from cinemachine array
         CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
 
@@ -486,6 +541,12 @@ public class FollowPathCamera : MonoBehaviour
         {
             LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
             removeBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pointNum - 1);
+        }
+
+        if (deleteLine)
+        {
+            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+            UDPSender.instance.sendDeletePointToDirector(pointNum, gameObject.name);
         }
     }
 
@@ -507,6 +568,9 @@ public class FollowPathCamera : MonoBehaviour
 
         cinemachinePoints[pointNum + 1] = newWayPoint;
         cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
+
+        // ensure that the bezier curve is computed properly
+        cinemachineSmoothPath.InvalidateDistanceCache();
 
         // relocate point in line renderer
         LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();

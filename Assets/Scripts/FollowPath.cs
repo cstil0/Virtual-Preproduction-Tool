@@ -27,6 +27,7 @@ public class FollowPath : MonoBehaviour
     bool newPathInstantiated = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
+    public bool isSelectedForPathOriginal = false;
     // last local path ID created in this character
     [SerializeField] int lastCharacterPathID = 0;
     [SerializeField] int currentSelectedPath = 0;
@@ -106,37 +107,6 @@ public class FollowPath : MonoBehaviour
 
     void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
-        {
-            bool isElementOnTrigger = HoverObjects.instance.checkIfElementOnTrigger();
-            if (!secondaryIndexTriggerDown && triggerOn)
-            {
-                secondaryIndexTriggerDown = true;
-                // first touch will select the character, and the second one will unselect it
-                isSelectedForPath = !isSelectedForPath;
-
-                if(pointsCount == 0)
-                {
-                    StartCoroutine(defineNewPathPoint(handController.transform.position));
-                }
-
-                changePathColor();
-            }
-
-            // define new path point if the item no element is being triggered
-            else if (!secondaryIndexTriggerDown && isSelectedForPath && HoverObjects.instance.currentItemSelected == gameObject && !isElementOnTrigger)
-            {
-                secondaryIndexTriggerDown = true;
-                StartCoroutine(defineNewPathPoint(handController.transform.position));
-            }
-        }
-        else
-        {
-            newPathInstantiated = false;
-            secondaryIndexTriggerDown = false;
-        }
-
-
         if (triggerOn && !isPlaying) {
             // rotate character with thubstick
             if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft))
@@ -201,6 +171,40 @@ public class FollowPath : MonoBehaviour
             if (animator != null)
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
+        {
+            bool isElementOnTrigger = HoverObjects.instance.checkIfElementOnTrigger();
+            if (!secondaryIndexTriggerDown && triggerOn)
+            {
+                secondaryIndexTriggerDown = true;
+                // first touch will select the character, and the second one will unselect it
+                isSelectedForPath = !isSelectedForPath;
+                isSelectedForPathOriginal = isSelectedForPath;
+
+                if (pointsCount == 0)
+                {
+                    StartCoroutine(defineNewPathPoint(handController.transform.position));
+                }
+
+                changePathColor();
+            }
+
+            // define new path point if the item no element is being triggered
+            else if (!secondaryIndexTriggerDown && isSelectedForPath && HoverObjects.instance.currentItemSelected == gameObject && !isElementOnTrigger)
+            {
+                secondaryIndexTriggerDown = true;
+                StartCoroutine(defineNewPathPoint(handController.transform.position));
+            }
+        }
+        else
+        {
+            newPathInstantiated = false;
+            secondaryIndexTriggerDown = false;
         }
     }
 
