@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class UDPSender : MonoBehaviour
 {
@@ -264,19 +265,39 @@ public class UDPSender : MonoBehaviour
 
     public void sendChangeItemColor(string itemName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE COLOR ITEM: " + itemName + " " + colorHex);
+        Debug.Log("SENDING CHANGE COLOR ITEM: " + itemName + " " + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_ITEM_COLOR:" + itemName + ":" + colorHex);
     }
 
     public void sendChangePathColor(string itemName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE COLOR PATH: " + itemName + " " + colorHex);
+        Debug.Log("SENDING CHANGE COLOR PATH: " + itemName + " " + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_PATH_COLOR:" + itemName + ":" + colorHex);
     }
 
     public void sendChangePointColor(string itemName, string pointName, string colorHex)
     {
+        Debug.Log("SENDING CHANGE POINT COLOR. ITEM: " + itemName + ". POINT: " + pointName + ". COLORHEX:" + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_POINT_COLOR:" + itemName + ":" + pointName + ":" + colorHex);
+    }
+
+    public void sendChangeMinicameraColor(string cameraName, string pointName, string colorHex)
+    {
+        Debug.Log("SENDING CHANGE MINICAMERA COLOR. CAMERA: " + cameraName + ". POINT: " + pointName + ". COLORHEX:" + convertHexToReadable(colorHex));
+        sendInfo(assistantToDirectorPort, "CHANGE_MINICAMERA_COLOR:" + cameraName + ":" + pointName + ":" + colorHex);
+    }
+
+    //BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public string convertHexToReadable(string colorHex)
+    {
+        if (colorHex.Contains("FF6F"))
+            return "DEFAULT RED";
+        else if (colorHex.Contains("80B47A"))
+            return "HOVER GREEN";
+        else if (colorHex.Contains("84BFCE"))
+            return "SELECTED LIGHT BLUE";
+        else
+            return "BLUE";
     }
 
     public void sendShowHideGridDirector(bool isShowed)
@@ -290,8 +311,20 @@ public class UDPSender : MonoBehaviour
         message += direction.x.ToString(CultureInfo.InvariantCulture) + " " + direction.y.ToString(CultureInfo.InvariantCulture) + " " + direction.z.ToString(CultureInfo.InvariantCulture);
 
         if (directionInv != new Vector3())
-        message += directionInv.x.ToString(CultureInfo.InvariantCulture) + " " + directionInv.y.ToString(CultureInfo.InvariantCulture) + " " + directionInv.z.ToString(CultureInfo.InvariantCulture);
+        message += ":" + directionInv.x.ToString(CultureInfo.InvariantCulture) + " " + directionInv.y.ToString(CultureInfo.InvariantCulture) + " " + directionInv.z.ToString(CultureInfo.InvariantCulture);
         sendInfo(assistantToDirectorPort, message);
+    }
+
+    public void sendCameraRelocation(string cameraName, Vector3 startPosition)
+    {
+        string message = "RELOCATE_CAMERA_POINTS: " + cameraName + ":";
+        message += startPosition.x.ToString(CultureInfo.InvariantCulture) + " " + startPosition.y.ToString(CultureInfo.InvariantCulture) + " " + startPosition.z.ToString(CultureInfo.InvariantCulture);
+        sendInfo(assistantToDirectorPort, message);
+    }
+
+    public void sendMenuNavigation(string action, string button)
+    {
+        sendInfo(assistantToDirectorPort, "ITEMS_MENU_NAVIGATION:" + action + ":" + button);
     }
 
     IEnumerator sendInitialParameters()

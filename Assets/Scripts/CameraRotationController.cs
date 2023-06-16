@@ -15,6 +15,16 @@ public class CameraRotationController : MonoBehaviour
     private Quaternion lastRotation;
     public int pointNum = -1;
 
+    private void OnEnable()
+    {
+        UDPReceiver.instance.OnChangeMiniCameraColor += changeMiniCameraColor;
+    }
+
+    private void OnDisable()
+    {
+        UDPReceiver.instance.OnChangeMiniCameraColor -= changeMiniCameraColor;
+    }
+
     void Start()
     {
         lastRotation = gameObject.transform.rotation;
@@ -67,5 +77,24 @@ public class CameraRotationController : MonoBehaviour
         string[] pathName = transform.parent.name.Split(" ");
         int pathNum = int.Parse(pathName[1]);
         followPathCamera.pathRotations[pathNum + 1] = gameObject.transform.rotation.eulerAngles;
+    }
+
+    void changeMiniCameraColor(string cameraName, string pointName, Color color)
+    {
+        StartCoroutine(waitCameraAssigned(cameraName, pointName, color));
+    }
+
+    // wait until there is a reference of its corresponding item to change the point's color on client side
+    IEnumerator waitCameraAssigned(string cameraName, string pointName, Color color)
+    {
+        while (followPathCamera == null) yield return null;
+
+        string currCameraName = followPathCamera.gameObject.name;
+        string currPointName = transform.parent.name;
+        
+        if (cameraName == currCameraName && currPointName == pointName)
+        {
+            HoverObjects.instance.changeColorMaterials(gameObject, color, false);
+        }
     }
 }

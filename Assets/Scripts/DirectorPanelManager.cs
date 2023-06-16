@@ -65,7 +65,7 @@ public class DirectorPanelManager : MonoBehaviour
         Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
         selectedColor.a = 0.15f;
 
-        Button firstInput = cameraViewButtons[0];
+        Button firstInput = cameraViewButtons[1];
         ColorBlock buttonColors = firstInput.colors;
         buttonColors.normalColor = selectedColor;
         firstInput.colors = buttonColors;

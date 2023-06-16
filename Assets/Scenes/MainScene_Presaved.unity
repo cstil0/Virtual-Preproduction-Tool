@@ -12332,8 +12332,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
-  isPointOnTrigger: 0
-  isMiniCameraOnTrigger: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &479241776
@@ -14717,8 +14716,8 @@ MonoBehaviour:
   grid: {fileID: 219495085}
   pointsView: {fileID: 1474057068}
   aerialCameraView: {fileID: 707975125}
-  customRightHand: {fileID: 0}
-  customLeftHand: {fileID: 0}
+  customRightHand: {fileID: 1662008194}
+  customLeftHand: {fileID: 1312494795}
   playIcon: {fileID: 21300000, guid: ebfc1250f77af1a4585b2c0c307ef10e, type: 3}
   pauseIcon: {fileID: 21300000, guid: 103e4383ecf6ea64ca0bec0fb3672303, type: 3}
   gridIcon: {fileID: 21300000, guid: 5d55f4495a6aeb54f95320c3e3d1c762, type: 3}
@@ -17356,8 +17355,8 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
-  previousButton: {fileID: 0}
-  nextButton: {fileID: 0}
+  previousButton: {fileID: 1010913935}
+  nextButton: {fileID: 750011091}
   isEnabled: 0
   buttonType: 1
 --- !u!54 &750011089
@@ -20339,7 +20338,9 @@ MonoBehaviour:
   currentItemCollider: {fileID: 0}
   currentPointCollider: {fileID: 0}
   currentMiniCameraCollider: {fileID: 0}
-  currentSelectedForPath: {fileID: 0}
+  currentItemSelected: {fileID: 0}
+  currentPointSelected: {fileID: 0}
+  currentMiniCameraSelected: {fileID: 0}
   itemsParent: {fileID: 1959356655}
 --- !u!1 &863538878
 GameObject:
@@ -23312,8 +23313,8 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
-  previousButton: {fileID: 0}
-  nextButton: {fileID: 0}
+  previousButton: {fileID: 1010913935}
+  nextButton: {fileID: 750011091}
   isEnabled: 0
   buttonType: 0
 --- !u!54 &1010913933
@@ -27113,9 +27114,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   assistantToDirectorPort: 8051
-  directoToAssistantPort: 8052
+  directorToAssistantPort: 8052
   itemsParent: {fileID: 1959356655}
-  ScreenCamera: {fileID: 1825172517}
+  ScreenCamera: {fileID: 1776131378}
+  itemsMenu: {fileID: 989086354}
 --- !u!1 &1178942739
 GameObject:
   m_ObjectHideFlags: 0
@@ -30982,6 +30984,12 @@ PrefabInstance:
       objectReference: {fileID: 1972393813}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6ba3498ffa1e534b91a07264266e6b8, type: 3}
+--- !u!1 &1312494795 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 143668, guid: e6ba3498ffa1e534b91a07264266e6b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1312494794}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1314280208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38728,6 +38736,12 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: f2f9ddb32c6ba5e4dbe0f3ff6cf497aa, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba1fa4a8c66106b4988c88fe4b8e8502, type: 3}
+--- !u!1 &1662008194 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 195418, guid: ba1fa4a8c66106b4988c88fe4b8e8502,
+    type: 3}
+  m_PrefabInstance: {fileID: 1662008193}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1672036316
 GameObject:
   m_ObjectHideFlags: 0
@@ -41695,8 +41709,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
-  isPointOnTrigger: 0
-  isMiniCameraOnTrigger: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &1776131377
@@ -43164,8 +43177,7 @@ MonoBehaviour:
   pathContainer: {fileID: 0}
   triggerOn: 0
   isSelectedForPath: 0
-  isPointOnTrigger: 0
-  isMiniCameraOnTrigger: 0
+  isSelectedForPathOriginal: 0
   lastCharacterPathID: 0
   currentSelectedPath: 0
 --- !u!114 &1825172525

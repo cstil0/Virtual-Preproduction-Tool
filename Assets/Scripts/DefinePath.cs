@@ -61,7 +61,9 @@ public class DefinePath : MonoBehaviour
         for (int i = 0; i < maxCameraPoints; i++)
         {
             miniCameraTextures.Add(new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32));
-        } 
+        }
+
+        itemsCount = 3;
     }
 
     void Update()
@@ -117,6 +119,13 @@ public class DefinePath : MonoBehaviour
             rawImage.texture = miniCameraTextures[pointsCount];
             cameraCanvas.GetComponent<Canvas>().worldCamera = miniCameraComponent;
 
+            // define the corresponding positions. The values were defined by trial and error
+            miniCamera.transform.position = new Vector3(0.0f, 0.15f, 0.0f) + newPosition;
+            miniCamera.transform.localScale= new Vector3(0.5f, 0.5f, 0.5f);
+            cameraCanvas.transform.position = new Vector3(0.0f, -0.17f, 0.0f) + newPosition;
+            cameraCanvas.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
+            cameraCanvas.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 180f, 0.0f));
+
             // spawn object in connected clients
             spherePoint.GetComponent<NetworkObject>().Spawn();
             miniCamera.GetComponent<NetworkObject>().Spawn();
@@ -124,13 +133,6 @@ public class DefinePath : MonoBehaviour
 
             miniCamera.transform.SetParent(spherePoint.transform);
             cameraCanvas.transform.SetParent(spherePoint.transform);
-
-            // define the corresponding positions. The values were defined by trial and error
-            miniCamera.transform.localPosition = new Vector3(0.0f, 0.15f, 0.0f);
-            miniCamera.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            cameraCanvas.transform.localPosition = new Vector3(0.0f, -0.17f, 0.0f);
-            cameraCanvas.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
-            cameraCanvas.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 180f, 0.0f));
         }
         else
         {
@@ -313,6 +315,9 @@ public class DefinePath : MonoBehaviour
                     pathSphere.name = "Point " + (i - 2);
                     pathMiniCamera.name = "MiniCamera " + (i - 2);
 
+                    pathSphere.GetComponentInChildren<PathSpheresController>().pointNum = i - 2;
+                    pathMiniCamera.GetComponent<CameraRotationController>().pointNum = i - 2;
+
                     // reassign camera texture
                     pathMiniCamera.GetComponent<Camera>().targetTexture = miniCameraTextures[i - 2];
                     rawImage.GetComponent<RawImage>().texture = miniCameraTextures[i - 2];
@@ -382,35 +387,35 @@ public class DefinePath : MonoBehaviour
                 Renderer renderer = currChild.GetComponent<Renderer>();
                 renderer.material.color = pathColor;
             }
-            else if (currChild.name.Contains("Point"))
-            {
-                // change the minicamera color
-                if (pathContainer.name.Contains("MainCamera"))
-                {
-                    Renderer renderer = currChild.transform.GetChild(0).GetComponent<Renderer>();
-                    Material material = renderer.material;
-                    material.color = pathColor;
+            //else if (currChild.name.Contains("Point"))
+            //{
+            //    // change the minicamera color
+            //    if (pathContainer.name.Contains("MainCamera"))
+            //    {
+            //        Renderer renderer = currChild.transform.GetChild(0).GetComponent<Renderer>();
+            //        Material material = renderer.material;
+            //        material.color = pathColor;
 
-                    GameObject miniCamera = currChild.transform.GetChild(1).gameObject;
-                    HoverObjects.instance.changeColorMaterials(miniCamera, pathColor, false);
+            //        GameObject miniCamera = currChild.transform.GetChild(1).gameObject;
+            //        HoverObjects.instance.changeColorMaterials(miniCamera, pathColor, false);
 
-                    // hide reference view canvas in case the camera is being unseledted
-                    currChild.transform.GetChild(2).gameObject.SetActive(isActive);
-                }
-                else
-                {
-                    // change the sphere color
-                    Renderer renderer = currChild.GetComponent<Renderer>();
-                    Material material = renderer.material;
-                    material.color = pathColor;
+            //        // hide reference view canvas in case the camera is being unseledted
+            //        currChild.transform.GetChild(2).gameObject.SetActive(isActive);
+            //    }
+            //    else
+            //    {
+            //        // change the sphere color
+            //        Renderer renderer = currChild.GetComponent<Renderer>();
+            //        Material material = renderer.material;
+            //        material.color = pathColor;
 
-                    // find circles and change their color
-                    string pathName = pathContainer.name;
-                    string[] splittedName = pathName.Split(" ");
-                    int pathNum = int.Parse(splittedName[1]);
-                    HoverObjects.instance.callHoverPointEvent(pathNum, i - 1, pathColor);
-                }
-            }
+            //        // find circles and change their color
+            //        string pathName = pathContainer.name;
+            //        string[] splittedName = pathName.Split(" ");
+            //        int pathNum = int.Parse(splittedName[1]);
+            //        HoverObjects.instance.callHoverPointEvent(pathNum, i - 1, pathColor);
+            //    }
+            //}
         }
     }
 }

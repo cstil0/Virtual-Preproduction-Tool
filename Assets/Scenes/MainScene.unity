@@ -16348,8 +16348,8 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
-  previousButton: {fileID: 0}
-  nextButton: {fileID: 0}
+  previousButton: {fileID: 1010913935}
+  nextButton: {fileID: 750011091}
   isEnabled: 0
   buttonType: 1
 --- !u!54 &750011089
@@ -21876,8 +21876,8 @@ MonoBehaviour:
   adp: {fileID: 818087574}
   buttonsPerPage: 3
   currentMenu: {fileID: 818087570}
-  previousButton: {fileID: 0}
-  nextButton: {fileID: 0}
+  previousButton: {fileID: 1010913935}
+  nextButton: {fileID: 750011091}
   isEnabled: 0
   buttonType: 0
 --- !u!54 &1010913933
@@ -25223,7 +25223,8 @@ MonoBehaviour:
   assistantToDirectorPort: 8051
   directorToAssistantPort: 8052
   itemsParent: {fileID: 1959356655}
-  ScreenCamera: {fileID: 1825172517}
+  ScreenCamera: {fileID: 1776131378}
+  itemsMenu: {fileID: 989086354}
 --- !u!1 &1178942739
 GameObject:
   m_ObjectHideFlags: 0

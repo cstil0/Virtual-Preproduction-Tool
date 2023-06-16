@@ -97,6 +97,7 @@ public class HoverObjects : MonoBehaviour
                 {
                     followPath.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.white);
+                    // change linerenderers color
                     followPath.changePathColor();
 
                     GameObject itemControlMenu = currItem.transform.Find("ItemControlMenu").gameObject;
@@ -121,6 +122,7 @@ public class HoverObjects : MonoBehaviour
                 {
                     followPathCamera.isSelectedForPath = false;
                     changeColorMaterials(currItem, Color.black);
+                    // change linerenderers color
                     followPathCamera.changePathColor();
                 }
             }
@@ -165,9 +167,9 @@ public class HoverObjects : MonoBehaviour
 
                     // change the minicamera color according to the camera state
                     if (followPathCamera.isSelectedForPath)
-                        changeColorMaterials(currMiniCamera, DefinePath.instance.selectedLineColor);
+                        changeMiniCameraColor(DefinePath.instance.selectedLineColor, cameraRotationController, currMiniCamera);
                     else
-                        changeColorMaterials(currMiniCamera, DefinePath.instance.defaultLineColor);
+                        changeMiniCameraColor(DefinePath.instance.defaultLineColor, cameraRotationController, currMiniCamera);
 
                     // hide buttons
                     GameObject cameraControlButtons = currMiniCamera.transform.Find("CameraControlButtons").gameObject;
@@ -178,8 +180,8 @@ public class HoverObjects : MonoBehaviour
                 PathSpheresController pathSpheresController = currPoint.GetComponent<PathSpheresController>();
                 pathSpheresController.isSelected = false;
                 followPath = pathSpheresController.followPath;
-                Renderer renderer = currPoint.GetComponent<Renderer>();
-                Material parentMaterial = renderer.material;
+                //Renderer renderer = currPoint.GetComponent<Renderer>();
+                //Material parentMaterial = renderer.material;
 
                 // hide buttons
                 GameObject pointControlButtons = currPoint.transform.Find("PointControlButtons").gameObject;
@@ -192,20 +194,28 @@ public class HoverObjects : MonoBehaviour
                     if (followPath.isSelectedForPath)
                         color = DefinePath.instance.selectedLineColor;
 
-                    parentMaterial.color = color;
+                    changePointColor(color, pathSpheresController, currPoint);
 
-                    int pathNum = pathSpheresController.pathNum;
-                    int pathPointNum = pathSpheresController.pointNum;
-                    // call event to change also the corresponding circle color
-                    OnPathPointHovered(pathNum, pathPointNum, color);
+                    //parentMaterial.color = color;
+
+                    //int pathNum = pathSpheresController.pathNum;
+                    //int pathPointNum = pathSpheresController.pointNum;
+                    //// call event to change also the corresponding circle color
+                    //OnPathPointHovered(pathNum, pathPointNum, color);
                 }
                 if (followPathCamera != null)
                 {
                     // change spheres color according to the camera's state
+                    Color color = color = DefinePath.instance.defaultLineColor;
                     if (followPathCamera.isSelectedForPath)
-                        parentMaterial.color = DefinePath.instance.selectedLineColor;
-                    else
-                        parentMaterial.color = DefinePath.instance.defaultLineColor;
+                        color = DefinePath.instance.selectedLineColor;
+
+                    changePointColor(color, pathSpheresController, currPoint);
+
+                    //if (followPathCamera.isSelectedForPath)
+                    //    parentMaterial.color = DefinePath.instance.selectedLineColor;
+                    //else
+                    //    parentMaterial.color = DefinePath.instance.defaultLineColor;
                 }
             }
         }
@@ -283,7 +293,9 @@ public class HoverObjects : MonoBehaviour
         else if (currentMiniCameraCollider == null && other.gameObject.layer == 15)
         {
             currentMiniCameraCollider = other.gameObject;
-            currentMiniCameraCollider.GetComponent<CameraRotationController>().triggerOn = true;
+            CameraRotationController cameraRotationController = currentMiniCameraCollider.GetComponent<CameraRotationController>();
+            cameraRotationController.triggerOn = true;
+            changeMiniCameraColor(Color.blue, cameraRotationController, other.gameObject);
         }
     }
 
@@ -344,7 +356,6 @@ public class HoverObjects : MonoBehaviour
                 // change color only if selected state has changed to avoid slowing performance since then it would do it for each frame
                 if (itemAlreadySelected != isSelected)
                 {
-
                     changeItemStates(other.gameObject, isSelected);
 
                     // reassign the textures that are shown for each path point
@@ -453,7 +464,7 @@ public class HoverObjects : MonoBehaviour
                 Color color = followPathCamera != null ? Color.black : Color.white;
 
                 if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                    changeColorMaterials(currentItemCollider, color);
+                    changeColorMaterials(currentItemCollider, color, true);
             }
             else
                 UDPSender.instance.sendChangeItemColor(other.gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(DefinePath.instance.selectedLineColor));
@@ -513,7 +524,10 @@ public class HoverObjects : MonoBehaviour
             Color color = isSelected ? DefinePath.instance.hoverLineColor : notHoverColor;
 
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                changeColorMaterials(currentMiniCameraCollider, color);
+            {
+                changeColorMaterials(currentMiniCameraCollider, color, false);
+                UDPSender.instance.sendChangeMinicameraColor(cameraRotationController.followPathCamera.name, other.transform.parent.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+            }
 
             // remove the intrigger item reference
             currentMiniCameraCollider = null;
@@ -542,12 +556,13 @@ public class HoverObjects : MonoBehaviour
             itemAlreadySelected = isSelected;
             currentItemSelected = null;
             changeColorMaterials(itemCollider, color);
+            deselectAllItems();
         }
     }
 
     private void changePointStates(GameObject pointCollider, bool isSelected, PathSpheresController pathSpheresController, int pointNum)
     {
-        Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+        Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
 
         if (isSelected)
         {
@@ -572,8 +587,12 @@ public class HoverObjects : MonoBehaviour
         // then, client side will change it thanks to the UDP message sent
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
         {
-            changeColorMaterials(currentPointCollider, color, false);
-            UDPSender.instance.sendChangePointColor(pathSpheresController.item.name, pointCollider.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
+            changeColorMaterials(pointCollider, color, false);
+            string pointName = pointCollider.name;
+            if (pathSpheresController.followPathCamera != null)
+                pointName = pointCollider.transform.parent.name;
+
+            UDPSender.instance.sendChangePointColor(pathSpheresController.item.name, pointName, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
         }
 
         // if it corresponds to a character, call the event to change also the circles color
@@ -587,14 +606,14 @@ public class HoverObjects : MonoBehaviour
 
     private void changeMiniCameraStates(GameObject miniCameraCollider, bool isSelected, int pointNum)
     {
-        Color color = isSelected ? DefinePath.instance.selectedLineColor : Color.blue;
+        Color color = isSelected ? DefinePath.instance.hoverLineColor : Color.blue;
+        CameraRotationController cameraRotationController = miniCameraCollider.GetComponent<CameraRotationController>();
 
         if (isSelected)
         {
             miniCameraAlreadySelected = isSelected;
             currentMiniCameraSelected = miniCameraCollider;
-            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                changeColorMaterials(currentMiniCameraCollider, color, false);
+            changeMiniCameraColor(color, cameraRotationController, miniCameraCollider);
             
             deselectAllPoints(pointNum);
         }
@@ -602,8 +621,16 @@ public class HoverObjects : MonoBehaviour
         {
             miniCameraAlreadySelected = isSelected;
             currentMiniCameraSelected = null;
-            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
-                changeColorMaterials(currentMiniCameraCollider, color, false);
+
+        }
+    }
+
+    void changeMiniCameraColor(Color color, CameraRotationController cameraRotationController, GameObject miniCameraCollider)
+    {
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        {
+            changeColorMaterials(miniCameraCollider, color, false);
+            UDPSender.instance.sendChangeMinicameraColor(cameraRotationController.followPathCamera.name, miniCameraCollider.transform.parent.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
         }
     }
 

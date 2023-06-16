@@ -1,3 +1,4 @@
+using Microsoft.MixedReality.Toolkit;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -83,40 +84,53 @@ public class SubmenusNavigate : MonoBehaviour
             if (buttonDown && triggerOn && buttonReleasedOnce)
             {
                 if (buttonType == ebuttonType.PREVIOUS)
-                {
-                    // check there is at least one previous page left to go
-                    if (adp.currentPage - 1 >= 0)
-                    {
-                        adp.currentPage--;
+                    onPreviousButtonPressed();
 
-                        // if it was possible to press previous button, then next one must be enabled
-                        changeButtonColor(nextButton, Color.white, true);
-                        nextButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
-
-                        checkPreviousNextButtons();
-
-                        activateDisableButtons();
-                    }
-                }
                 else if (buttonType == ebuttonType.NEXT)
-                {
-                    // check there is at least one following page left to go
-                    if (adp.currentPage + 1 < adp.buttonsCount / buttonsPerPage)
-                    {
-                        adp.currentPage++;
-
-                        // if it was possible to press next button, then previous one must be enabled
-                        changeButtonColor(previousButton, Color.white, true);
-                        previousButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
-
-                        checkPreviousNextButtons();
-
-                        activateDisableButtons();
-                    }
-                }
+                    onNextButtonPressed();
             }
             buttonDown = false;
         }
+    }
+
+    public void onPreviousButtonPressed()
+    {
+        // check there is at least one previous page left to go
+        if (adp.currentPage - 1 >= 0)
+        {
+            adp.currentPage--;
+
+            // if it was possible to press previous button, then next one must be enabled
+            changeButtonColor(nextButton, Color.white, true);
+            nextButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
+
+            checkPreviousNextButtons();
+
+            activateDisableButtons();
+        }
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            UDPSender.instance.sendMenuNavigation("PREVIOUS_BUTTON", adp.gameObject.name);
+    }
+
+    public void onNextButtonPressed()
+    {
+        // check there is at least one following page left to go
+        if (adp.currentPage + 1 < adp.buttonsCount / buttonsPerPage)
+        {
+            adp.currentPage++;
+
+            // if it was possible to press next button, then previous one must be enabled
+            changeButtonColor(previousButton, Color.white, true);
+            previousButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
+
+            checkPreviousNextButtons();
+
+            activateDisableButtons();
+        }
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            UDPSender.instance.sendMenuNavigation("NEXT_BUTTON", adp.gameObject.name);
     }
 
     public void activateDisableButtons()

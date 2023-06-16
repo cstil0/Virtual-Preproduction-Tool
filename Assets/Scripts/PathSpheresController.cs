@@ -150,7 +150,11 @@ public class PathSpheresController : MonoBehaviour
     {
         while (item == null) yield return null;
 
-        if (itemName == item.name && gameObject.name == pointName)
+        string currPointName = gameObject.name;
+        if (followPathCamera != null)
+            currPointName = transform.parent.name;
+
+        if (itemName == item.name && currPointName == pointName)
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();
             Material material = renderer.material;

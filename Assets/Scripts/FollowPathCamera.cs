@@ -141,6 +141,7 @@ public class FollowPathCamera : MonoBehaviour
                     relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
                     LineRenderer lineRenderer = pathContainer.GetComponentInChildren<LineRenderer>();
                     relocateAllBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath);
+                    UDPSender.instance.sendCameraRelocation(gameObject.name, startPosition);
                 }
             }
         }
@@ -437,7 +438,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
-    void relocateAllBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath)
+    public void relocateAllBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath)
     {
         int pointsCount = lineRenderer.positionCount;
 

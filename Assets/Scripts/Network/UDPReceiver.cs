@@ -41,12 +41,16 @@ public class UDPReceiver : MonoBehaviour
     Quaternion remoteStartRot;
     Quaternion currRot;
 
+    [SerializeField] GameObject itemsMenu;
+
     public delegate void ChangeItemColor(string itemName, Color color);
     public event ChangeItemColor OnChangeItemColor;
     public delegate void ChangePathColor(string itemName, Color color);
     public event ChangePathColor OnChangePathColor;
     public delegate void ChangePointColor(string itemName, string pointName, Color color);
     public event ChangePointColor OnChangePointColor;
+    public delegate void ChangeMiniCameraColor(string cameraName, string pointName, Color color);
+    public event ChangeMiniCameraColor OnChangeMiniCameraColor;
 
     enum eAssistantToDirectorMessages
     {
@@ -60,7 +64,10 @@ public class UDPReceiver : MonoBehaviour
         CHANGE_ITEM_COLOR,
         CHANGE_PATH_COLOR,
         CHANGE_POINT_COLOR,
-        RELOCATE_POINT
+        CHANGE_MINICAMERA_COLOR,
+        RELOCATE_POINT,
+        RELOCATE_CAMERA_POINTS,
+        ITEMS_MENU_NAVIGATION
     }
 
     enum eDirectorToAssistantMessages
@@ -74,6 +81,15 @@ public class UDPReceiver : MonoBehaviour
         SHOW_HIDE_GRID,
         CHANGE_LIGHT_COLOR,
         CHANGE_LIGHT_INTENSITY
+    }
+
+    enum eItemsMenuActions
+    {
+        SHOW_HIDE_MENU,
+        CATEGORY,
+        BACK,
+        NEXT_BUTTON,
+        PREVIOUS_BUTTON
     }
 
     private void Awake()
@@ -314,7 +330,6 @@ public class UDPReceiver : MonoBehaviour
         colorHex = "#" + colorHex;
         UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
         OnChangeItemColor(itemName, color);
-        Debug.Log("ITEM COLOR: " + itemName + " " + color.ToHexString());
     }
 
     void parsePathChangeColor(string itemName, string colorHex)
@@ -323,7 +338,6 @@ public class UDPReceiver : MonoBehaviour
 
         UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
         OnChangePathColor(itemName, color);
-        Debug.Log("PATH COLOR: " + itemName + " " + color.ToHexString());
     }
 
     IEnumerator parsePointChangeColor(string itemName, string pointName, string colorHex)
@@ -335,7 +349,17 @@ public class UDPReceiver : MonoBehaviour
 
         UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
         OnChangePointColor(itemName, pointName, color);
-        Debug.Log("POINT COLOR: " + itemName + " " + color.ToHexString() + ", POINT: " + pointName);
+    }
+
+    IEnumerator parseMiniCameraChangeColor(string itemName, string pointName, string colorHex)
+    {
+        // wait to ensure that the point is created yet
+        yield return new WaitForSeconds(0.2f);
+
+        colorHex = "#" + colorHex;
+
+        UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        OnChangeMiniCameraColor(itemName, pointName, color);
     }
 
     void parsePlayMessage(string playStop)
@@ -432,6 +456,65 @@ public class UDPReceiver : MonoBehaviour
 
         if (followPathCamera != null)
             followPathCamera.relocatePoint(pointNum, directionVec, false, directionInvVec);
+    }
+
+    void parseCameraPointsRelocation(string cameraName, string startPosition)
+    {
+        GameObject item = itemsParent.transform.Find(cameraName).gameObject;
+
+        string[] startPositionSplitted = startPosition.Split(" ");
+        float startPosX = float.Parse(startPositionSplitted[0], CultureInfo.InvariantCulture);
+        float startPosY = float.Parse(startPositionSplitted[1], CultureInfo.InvariantCulture);
+        float startPosZ = float.Parse(startPositionSplitted[2], CultureInfo.InvariantCulture);
+        Vector3 startPositionVec = new Vector3(startPosX, startPosY, startPosZ);
+
+        item.TryGetComponent(out FollowPathCamera followPathCamera);
+
+        followPathCamera.startPosition = startPositionVec;
+
+        followPathCamera.relocateCinemachinePoints(followPathCamera.cinemachineSmoothPath, startPositionVec);
+        LineRenderer lineRenderer = followPathCamera.pathContainer.GetComponentInChildren<LineRenderer>();
+        followPathCamera.relocateAllBezierPointsLineRenderer(lineRenderer, followPathCamera.cinemachineSmoothPath);
+    }
+
+    void parseItemsMenuNavigation(string action, string button)
+    {
+        eItemsMenuActions menuActionEnum = (eItemsMenuActions)Enum.Parse(typeof(eItemsMenuActions), action);
+
+        switch (menuActionEnum)
+        {
+            case eItemsMenuActions.SHOW_HIDE_MENU:
+                bool show = bool.Parse(button);
+                itemsMenu.GetComponent<ActivateDisableMenu>().showHideMenu(show);
+                break;
+            case eItemsMenuActions.CATEGORY:
+                Transform categoryButtonsContainer = itemsMenu.transform.GetChild(0).GetChild(0);
+                GameObject categoryButton = categoryButtonsContainer.Find(button).gameObject;
+                ItemsMenuController itemsMenuController = categoryButton.GetComponent<ItemsMenuController>();
+                itemsMenuController.ChangeMenu();
+                break;
+            case eItemsMenuActions.BACK: 
+                Transform categoriesContainer = itemsMenu.transform.GetChild(0);
+                Transform itemButtonsContainer = categoriesContainer.Find(button);
+                GameObject backButton = itemButtonsContainer.Find("Back Button").gameObject;
+                itemsMenuController = backButton.GetComponent<ItemsMenuController>();
+                itemsMenuController.ChangeMenu();
+                break;
+            case eItemsMenuActions.NEXT_BUTTON:
+                categoriesContainer = itemsMenu.transform.GetChild(0);
+                itemButtonsContainer = categoriesContainer.Find(button);
+                GameObject nextButton = itemButtonsContainer.Find("Next Button").gameObject;
+                SubmenusNavigate submenusNavigate = nextButton.GetComponent<SubmenusNavigate>();
+                submenusNavigate.onNextButtonPressed();
+                break;
+            case eItemsMenuActions.PREVIOUS_BUTTON:
+                categoriesContainer = itemsMenu.transform.GetChild(0);
+                itemButtonsContainer = categoriesContainer.Find(button);
+                GameObject previousButton = itemButtonsContainer.Find("Previous Button").gameObject;
+                submenusNavigate = previousButton.GetComponent<SubmenusNavigate>();
+                submenusNavigate.onPreviousButtonPressed();
+                break;
+        }
     }
 
     void parseChangeLightColor(string focusName, string colorHex, bool isAccepted)
@@ -544,18 +627,28 @@ public class UDPReceiver : MonoBehaviour
                         case eAssistantToDirectorMessages.CHANGE_ITEM_COLOR:
                             itemName = splittedMessage[1];
                             string colorHex = splittedMessage[2];
+                            Debug.Log("RECEIVED ITEM COLOR. ITEM: " + itemName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             parseItemChangeColor(itemName, colorHex);
                             break;
                         case eAssistantToDirectorMessages.CHANGE_PATH_COLOR:
                             itemName = splittedMessage[1];
                             colorHex = splittedMessage[2];
+                            Debug.Log("RECEIVED PATH COLOR. ITEM: " + itemName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             parsePathChangeColor(itemName, colorHex);
                             break;
                         case eAssistantToDirectorMessages.CHANGE_POINT_COLOR:
                             itemName = splittedMessage[1];
                             string pointName = splittedMessage[2];
                             colorHex = splittedMessage[3];
+                            Debug.Log("RECEIVED POINT COLOR. ITEM: " + itemName + ". POINT: " + pointName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             StartCoroutine(parsePointChangeColor(itemName, pointName, colorHex));
+                            break;
+                        case eAssistantToDirectorMessages.CHANGE_MINICAMERA_COLOR:
+                            string cameraName = splittedMessage[1];
+                            pointName = splittedMessage[2];
+                            colorHex = splittedMessage[3];
+                            Debug.Log("RECEIVED MINICAMERA COLOR. CAMERA: " + cameraName + ". POINT: " + pointName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
+                            StartCoroutine(parseMiniCameraChangeColor(cameraName, pointName, colorHex));
                             break;
                         case eAssistantToDirectorMessages.RELOCATE_POINT:
                             string pathNum = splittedMessage[1];
@@ -566,6 +659,16 @@ public class UDPReceiver : MonoBehaviour
                             if (splittedMessage.Length == 5)
                                 directionInv = splittedMessage[4];
                             parsePointRelocation(pathNum, pointNum, direction, directionInv);
+                            break;
+                        case eAssistantToDirectorMessages.RELOCATE_CAMERA_POINTS:
+                            cameraName = splittedMessage[1];
+                            string startPosition = splittedMessage[2];
+                            parseCameraPointsRelocation(cameraName, startPosition);
+                            break;
+                        case eAssistantToDirectorMessages.ITEMS_MENU_NAVIGATION:
+                            string action = splittedMessage[1];
+                            string button = splittedMessage[2];
+                            parseItemsMenuNavigation(action, button);
                             break;
                     }
                     break;

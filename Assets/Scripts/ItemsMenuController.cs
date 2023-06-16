@@ -129,6 +129,14 @@ public class ItemsMenuController : MonoBehaviour
 
         currMenu.SetActive(false);
         newMenu.SetActive(true);
+
+        if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+        {
+            if (gameObject.name.Contains("Back"))
+                UDPSender.instance.sendMenuNavigation("BACK", currMenu.name);
+            else
+                UDPSender.instance.sendMenuNavigation("CATEGORY", gameObject.name);
+        }
     }
 
     // to instantiate the object that is passed according to the pressed button in the menu
