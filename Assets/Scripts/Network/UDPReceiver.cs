@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -28,8 +29,9 @@ public class UDPReceiver : MonoBehaviour
     Thread assistantToDirectorThread;
     Thread directorToAssistantThread;
 
-    private string lastMessageReceived;
-    private bool isMessageParsed = true;
+    private Queue<string> lastMessages = new Queue<string>();
+    //private string lastMessageReceived;
+    //private bool isMessageParsed = true;
 
     public Camera ScreenCamera;
     Vector3 startPos;
@@ -116,8 +118,8 @@ public class UDPReceiver : MonoBehaviour
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, assistantToDirectorPort);
                 byte[] receivedBytes = clientPath.Receive(ref remoteEndPoint);
 
-                lastMessageReceived = Encoding.ASCII.GetString(receivedBytes);
-                isMessageParsed = false;
+                lastMessages.Enqueue(Encoding.ASCII.GetString(receivedBytes));
+                //isMessageParsed = false;
             }
             catch (Exception e)
             {
@@ -139,8 +141,8 @@ public class UDPReceiver : MonoBehaviour
                 IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, directorToAssistantPort);
                 byte[] receiveBytes = clientPlay.Receive(ref remoteEndPoint);
 
-                lastMessageReceived = Encoding.ASCII.GetString(receiveBytes);
-                isMessageParsed = false;
+                lastMessages.Enqueue(Encoding.ASCII.GetString(receiveBytes));
+                //isMessageParsed = false;
             }
             catch (Exception e)
             {
@@ -575,9 +577,10 @@ public class UDPReceiver : MonoBehaviour
 
     void Update()
     {
-        if (!isMessageParsed)
+        if (lastMessages.Count > 0)
         {
-            string[] splittedMessage = lastMessageReceived.Split(":");
+            string lastMessage = lastMessages.Dequeue();
+            string[] splittedMessage = lastMessage.Split(":");
 
             switch (ModesManager.instance.role)
             {
@@ -721,7 +724,6 @@ public class UDPReceiver : MonoBehaviour
                     }
                     break;
             }
-            isMessageParsed = true;
         }
     }
 }
