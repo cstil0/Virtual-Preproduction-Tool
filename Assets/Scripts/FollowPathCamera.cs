@@ -22,7 +22,6 @@ public class FollowPathCamera : MonoBehaviour
     public List<Vector3> pathRotations;
     float pathLength;
     float currPathPosition;
-    float lastRotFactor = 0;
 
     public Vector3 startPosition;
     public Quaternion startRotation;
@@ -191,11 +190,8 @@ public class FollowPathCamera : MonoBehaviour
                 Vector3 angDiff = currTargetRot - lastTargetRot;
                 Vector3 minAngDiff = findMinAngle(angDiff);
                 Vector3 targetRot = lastTargetRot + (minAngDiff) * factor;
-                //Vector3 targetRot = Vector3.Lerp(currTargetPos, lastTargetRot, temporalStep);
-                //Vector3 targetRot = Vector3.Slerp(currTargetPos, lastTargetRot, factor);
 
                 rotationController.transform.rotation = Quaternion.Euler(targetRot);
-                lastRotFactor = factor;
             }
         }
     }
@@ -526,7 +522,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
-    public void deletePathPoint(int pointNum, bool deleteLine=true)
+    public void deletePathPoint(int pointNum, bool sendMessage, bool destroyElements)
     {
         // remove point from local arrays
         pathPositions.RemoveAt(pointNum + 1);
@@ -542,7 +538,7 @@ public class FollowPathCamera : MonoBehaviour
 
         // if the only existent point is being deleted, remove also the first one representing the initial position
         if (pointNum == 0 && pathPositions.Count == 1)
-            deletePathPoint(-1, false);
+            deletePathPoint(-1, false, false);
 
         if (pointNum > 0)
         {
@@ -550,11 +546,9 @@ public class FollowPathCamera : MonoBehaviour
             removeBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pointNum - 1);
         }
 
-        if (deleteLine)
-        {
-            DefinePath.instance.deletePointFromPath(pathContainer, pointNum);
+        DefinePath.instance.deletePointFromPath(pathContainer, pointNum, destroyElements);
+        if (sendMessage)
             UDPSender.instance.sendDeletePointToDirector(pointNum, gameObject.name);
-        }
     }
 
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)

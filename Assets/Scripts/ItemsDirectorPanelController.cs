@@ -70,6 +70,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
     void Start()
     {
         lastPickedColor = colorPicker.color;
+        currPointPressed = -1;
+        currItemPressed = "";
     }
 
     void Update()
@@ -107,6 +109,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
         if (!isAlreadySelected)
         {
+            deselectAllPoints(currItemPressed);
             // get the corresponding follow path script to obtain its speed value
             currItemGO = itemsParent.transform.Find(currItemPressed).gameObject;
             currItemGO.TryGetComponent(out currFollowPath);
@@ -284,10 +287,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
     // send and save new speed value
     public void onSpeedPlusPressed()
     {
-        float speedChange = 1.0f;
-
-        if (currItemPressed.Contains("MainCamera"))
-            speedChange = 0.01f;
+        float speedChange = 0.5f;
 
         speedInput.text = (float.Parse(speedInput.text) + speedChange).ToString();
         onSpeedChange(float.Parse(speedInput.text));
@@ -296,10 +296,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
     // send and save new speed value
     public void onSpeedMinusPressed()
     {
-        float speedChange = 1.0f;
-
-        if (currItemPressed.Contains("MainCamera"))
-            speedChange = 0.01f;
+        float speedChange = 0.5f;
 
         speedInput.text = (float.Parse(speedInput.text) - speedChange).ToString();
         onSpeedChange(float.Parse(speedInput.text));
@@ -330,10 +327,11 @@ public class ItemsDirectorPanelController : MonoBehaviour
     // send and delete path point
     public void onTrashPressed()
     {
-        UDPSender.instance.sendDeletePoint(currPointPressed, currItemPressed);
-
-        deletePointButton(currItemGO, currItemPressed, currPointPressed);
-        currPointPressed = -1;
+        if (currPointPressed != -1)
+        {
+            UDPSender.instance.sendDeletePointToAssistant(currPointPressed, currItemPressed);
+            deletePointButton(currItemGO, currItemPressed, currPointPressed);
+        }
     }
 
     public void deletePointButton(GameObject item, string itemName, int pointNum)
@@ -343,21 +341,25 @@ public class ItemsDirectorPanelController : MonoBehaviour
         item.TryGetComponent<FollowPathCamera>(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
-            followPath.deletePathPoint(pointNum, false);
+            followPath.deletePathPoint(pointNum, false, false);
 
         if (followPathCamera != null)
-            followPathCamera.deletePathPoint(pointNum, false);
+            followPathCamera.deletePathPoint(pointNum, false, false);
 
         // eliminate point button
         Transform itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout");
 
         // iterate through all buttons and change following ones num
-        for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
+        for (int i = itemPointsLayout.transform.childCount - 1; i >= 0; i--)
         {
             // destroy point button
             if (i == pointNum)
-
+            {
+                // force the deleted point to be selected, to then deselect it and ensure that all points are unselected
+                currPointPressed = pointNum;
+                onPointPressed(itemPointsLayout, itemPointsLayout.transform.GetChild(i).gameObject);
                 Destroy(itemPointsLayout.transform.GetChild(i).gameObject);
+            }
 
             // change number for the following ones
             // the substraction is due to the fact we are starting at the second position
@@ -368,6 +370,8 @@ public class ItemsDirectorPanelController : MonoBehaviour
                 pointButton.GetChild(0).GetComponent<TMP_Text>().text = (i - 1).ToString();
             }
         }
+
+        deselectAllPoints(itemName);
     }
 
     public void onPointPressed(Transform pointsPanelLayout, GameObject pointButton)
@@ -376,11 +380,14 @@ public class ItemsDirectorPanelController : MonoBehaviour
         string[] splittedName = pointButton.name.Split(" ");
         int pointNum = int.Parse(splittedName[1]);
 
+        Debug.Log("POINT PRESSED!!. CURRENT: " + currPointPressed + ". NEW: " + pointNum);
         // if the point was already pressed, change the pressed one to -1 to represent that none is selected now
         if (pointNum == currPointPressed)
             currPointPressed = -1;
         else
             currPointPressed = pointNum;
+
+        Debug.Log("NOW PRESSED: " + currPointPressed);
 
         // iterate through all points to change their color according to their current state
         for (int i=0; i < pointsPanelLayout.childCount; i++)
@@ -421,6 +428,9 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
             // update maximum displacement that the items panel can perform according to the new number of item buttons
             itemsDirectorPanelScroll.updateMaxDisplacement();
+
+            onCloseButtonPressed();
+            currPointPressed = -1;
         }
     }
 
@@ -433,10 +443,26 @@ public class ItemsDirectorPanelController : MonoBehaviour
         // the item may not have any point created yet, so we need to handle exceptions
         try
         {
-            GameObject itemPointsLayout = pointsPanel.transform.Find(itemName + " LAYOUT").gameObject;
+            GameObject itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout").gameObject;
             Destroy(itemPointsLayout);
         }
         catch (Exception e) { }
+    }
+
+    private void deselectAllPoints(string itemName)
+    {
+        Transform itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout");
+
+        // iterate through all buttons and change following ones num
+        for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
+        {
+            Transform currPointButton = itemPointsLayout.transform.GetChild(i);
+            ColorBlock buttonColors = currPointButton.GetComponent<Button>().colors;
+            buttonColors.normalColor = normalBlueColor;
+            currPointButton.GetComponent<Button>().colors = buttonColors;
+        }
+
+        currPointPressed = -1;
     }
 
     public void addNewItemButton(string name)

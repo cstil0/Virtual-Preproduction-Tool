@@ -148,50 +148,7 @@ public class ItemsControlButtons : MonoBehaviour
 
     public void onTrashPressed()
     {
-        // get parent item to destroy it
-        string itemName = item.name;
-        string[] splittedName = itemName.Split(" ");
-        string itemNum = splittedName[1];
-        GameObject pathContainer = GameObject.Find("Path " + itemNum);
-        GameObject circlesContainer = GameObject.Find("Circles " + itemNum);
-
-        // destroy the corresponding points and circles as well as the whole containers if it is a character
-        if (circlesContainer != null)
-        {
-            for (int i = pathContainer.transform.childCount - 1; i >= 0; i--)
-            {
-                Destroy(pathContainer.transform.GetChild(i).gameObject);
-                // circles have one less child in the circles container than path container, since those also store the line renderer
-                if (i < pathContainer.transform.childCount - 1)
-                    Destroy(circlesContainer.transform.GetChild(i).gameObject);
-            }
-            Destroy(pathContainer);
-            Destroy(circlesContainer);
-        }
-
-        // destroy the points and path container if it is a camera
-        else if (pathContainer != null)
-        {
-            for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
-            {
-                Destroy(pathContainer.transform.GetChild(i).gameObject); 
-            }
-            Destroy(pathContainer);
-        }
-
-        // destroy the item and its references
-        Destroy(item);
-
-        if (followPath != null)
-            followPath.isSelectedForPath = true;
-
-        if (followPathCamera != null)
-            followPathCamera.isSelectedForPath = true;
-
-        HoverObjects.instance.currentItemCollider = null;
-        HoverObjects.instance.itemAlreadySelected = false;
-
-        UDPSender.instance.sendDeleteItemToDirector(itemName);
+        DefinePath.instance.deleteItem(item, true);
     }
 
     public void onLockPressed()

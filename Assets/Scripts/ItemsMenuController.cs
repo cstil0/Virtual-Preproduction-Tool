@@ -13,13 +13,13 @@ public class ItemsMenuController : MonoBehaviour
     public GameObject itemsParent;
 
 
-    [Header("Category Button Parameters")]
     // Used if the button type is category
+    [Header("Category Button Parameters")]
     public GameObject currMenu;
     public GameObject newMenu;
 
-    [Header("Object Button Parameters")]
     // Used if the button type is object
+    [Header("Object Button Parameters")]
     public GameObject itemPrefab;
     public enum eTypeOfButton
     {
@@ -159,7 +159,7 @@ public class ItemsMenuController : MonoBehaviour
         objectInstance.name += " " + DefinePath.instance.itemsCount.ToString();
         Vector3 handRotation = handController.transform.rotation.eulerAngles;
         Vector3 handPosition = handController.transform.position;
-        // només ens interessa la rotació de la y. +180 per què quedi com necessitem
+        // to ensure that the item is always straight, rotate it only in the y-axis
         Vector3 handRoty = new Vector3(0.0f, handRotation.y, 0.0f);
         // sumem les dues rotacions
         objectInstance.transform.rotation = Quaternion.Euler(handRoty + rotationScale.rotation);

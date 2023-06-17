@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class CustomGrabbableCharacters : MonoBehaviour
 {
-    //Vector3 startPosDiff;
     Vector3 handStartPos;
     Vector3 handStartRot;
     Vector3 startPos;
@@ -24,14 +23,12 @@ public class CustomGrabbableCharacters : MonoBehaviour
         triggerOn = isTrigger;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         triggerOn = false;
         buttonDown = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector3 position = new Vector3();

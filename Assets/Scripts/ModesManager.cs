@@ -94,8 +94,8 @@ public class ModesManager : MonoBehaviour
             else if (role == eRoleType.ASSISTANT)
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
 
-            SceneManager.LoadScene("MainScene");
             //SceneManager.LoadScene("MainScene_Presaved");
+            SceneManager.LoadScene("MainScene");
         }
     }
 
@@ -124,8 +124,9 @@ public class ModesManager : MonoBehaviour
     }
     void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode sceneMode)
     {
+        //if (scene.name == "MainScene_Presaved")
         if (scene.name == "MainScene")
-        {
+            {
             // activate and disable the needed components for each corresponding application
             if (role == eRoleType.DIRECTOR)
             {
@@ -244,12 +245,6 @@ public class ModesManager : MonoBehaviour
             IPAddress.text = "192.168.0.18";
 
             loadMainScene();
-        }
-
-        // pending to implement creating all items and points references and change buttons names when client reconnects to host
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-
         }
     }
 }

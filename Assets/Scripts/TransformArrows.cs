@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
@@ -12,6 +13,17 @@ public class TransformArrows : MonoBehaviour
     private GameObject handCollider;
     private Vector3 lastHandPosition;
     private Color originalColor;
+
+    private Collider grabPoint;
+
+    private void Awake()
+    {
+        // check if the object has originally an OVRGrabbable script, since we will destroy it when grid is shown and add it again when hidden
+        Transform parent = gameObject.transform.parent.parent;
+        parent.TryGetComponent(out OVRGrabbable ovrgrabbable);
+        if (ovrgrabbable != null)
+            grabPoint = ovrgrabbable.grabPoints[0];
+    }
 
     private void OnEnable()
     {
@@ -113,7 +125,11 @@ public class TransformArrows : MonoBehaviour
         gameObject.GetComponent<MeshRenderer>().enabled = isShow;
         Transform parent = gameObject.transform.parent.parent;
         parent.TryGetComponent(out OVRGrabbable ovrgrabbable);
-        if (ovrgrabbable != null)
-            ovrgrabbable.enabled = !isShow;
+        if (ovrgrabbable != null && isShow)
+        {
+            ovrgrabbable.removeGrabPoint();
+        }
+        else if (grabPoint != null && !isShow)
+            ovrgrabbable.setGrabPoint(grabPoint);
     }
 }

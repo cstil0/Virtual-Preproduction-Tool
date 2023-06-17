@@ -256,15 +256,15 @@ public class DefinePath : MonoBehaviour
         addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
     }
 
-    public void deletePointFromPath(GameObject pathContainer, int pointNum, GameObject circlesContainer = null)
+    public void deletePointFromPath(GameObject pathContainer, int pointNum, bool destroyElements, GameObject circlesContainer = null)
     {
-        GameObject line = pathContainer.transform.Find("Line").gameObject;
+        //GameObject line = pathContainer.transform.Find("Line").gameObject;
 
         // change following points name
         // start in second child since first one corresponds to the line renderer
         for (int i = 1; i < pathContainer.transform.childCount; i++)
         {
-            if (i - 1 == pointNum)
+            if (i - 1 == pointNum && destroyElements)
             {
                 // ensure that no other element is selected since it could not be uselected back
                 HoverObjects.instance.currentPointCollider = null;
@@ -325,7 +325,7 @@ public class DefinePath : MonoBehaviour
             }
         }
 
-        if (pathContainer.transform.childCount <= 2 && pointNum == 0)
+        if (pathContainer.transform.childCount <= 2 && pointNum == 0 && destroyElements)
         {
             // destroy line renderer and the container itself
             Destroy(pathContainer.transform.GetChild(0).gameObject);
@@ -334,7 +334,6 @@ public class DefinePath : MonoBehaviour
             if (circlesContainer != null)
                 Destroy(circlesContainer);
         }
-
     }
 
     // used when a new camera is selected to reassign the pre-generated canvas to the corresponding points
@@ -387,35 +386,51 @@ public class DefinePath : MonoBehaviour
                 Renderer renderer = currChild.GetComponent<Renderer>();
                 renderer.material.color = pathColor;
             }
-            //else if (currChild.name.Contains("Point"))
-            //{
-            //    // change the minicamera color
-            //    if (pathContainer.name.Contains("MainCamera"))
-            //    {
-            //        Renderer renderer = currChild.transform.GetChild(0).GetComponent<Renderer>();
-            //        Material material = renderer.material;
-            //        material.color = pathColor;
-
-            //        GameObject miniCamera = currChild.transform.GetChild(1).gameObject;
-            //        HoverObjects.instance.changeColorMaterials(miniCamera, pathColor, false);
-
-            //        // hide reference view canvas in case the camera is being unseledted
-            //        currChild.transform.GetChild(2).gameObject.SetActive(isActive);
-            //    }
-            //    else
-            //    {
-            //        // change the sphere color
-            //        Renderer renderer = currChild.GetComponent<Renderer>();
-            //        Material material = renderer.material;
-            //        material.color = pathColor;
-
-            //        // find circles and change their color
-            //        string pathName = pathContainer.name;
-            //        string[] splittedName = pathName.Split(" ");
-            //        int pathNum = int.Parse(splittedName[1]);
-            //        HoverObjects.instance.callHoverPointEvent(pathNum, i - 1, pathColor);
-            //    }
-            //}
         }
+    }
+
+    public void deleteItem(GameObject item, bool sendMessage)
+    {
+        // get item to destroy it
+        string itemName = item.name;
+        string[] splittedName = itemName.Split(" ");
+        string itemNum = splittedName[1];
+
+        GameObject pathContainer = GameObject.Find("Path " + itemNum);
+        GameObject circlesContainer = GameObject.Find("Circles " + itemNum);
+
+        // destroy the corresponding points and circles as well as the whole containers if it is a character
+        if (circlesContainer != null)
+        {
+            for (int i = pathContainer.transform.childCount - 1; i >= 0; i--)
+            {
+                Destroy(pathContainer.transform.GetChild(i).gameObject);
+                // circles have one less child in the circles container than path container, since those also store the line renderer
+                if (i < pathContainer.transform.childCount - 1)
+                    Destroy(circlesContainer.transform.GetChild(i).gameObject);
+            }
+            Destroy(pathContainer);
+            Destroy(circlesContainer);
+        }
+
+        // destroy the points and path container if it is a camera
+        else if (pathContainer != null)
+        {
+            for (int i = pathContainer.transform.childCount - 1; i >= 0; i++)
+            {
+                Destroy(pathContainer.transform.GetChild(i).gameObject);
+            }
+            Destroy(pathContainer);
+        }
+
+        // destroy the item and its references
+        Destroy(item);
+
+        HoverObjects.instance.currentItemCollider = null;
+        HoverObjects.instance.itemAlreadySelected = false;
+
+        if (sendMessage)
+            UDPSender.instance.sendDeleteItemToDirector(itemName);
+
     }
 }

@@ -12,7 +12,6 @@ public class UDPSender : MonoBehaviour
 {
     public static UDPSender instance = null;
 
-    // udpclient object
     public Camera screenCamera;
     UdpClient client;
     public int assistantToScreenPort = 8050;
@@ -34,9 +33,6 @@ public class UDPSender : MonoBehaviour
     public GameObject OVRPlayer;
     [SerializeField] HoverObjects hoverObjects;
     [SerializeField] GameObject itemsParent;
-
-    // BORRAR!!!!!!!!!!!!!!!1
-    int count = 0;
 
     float timeElapsedSendPos = 0.0f;
     float targetFPS = 40.0f;
@@ -78,13 +74,9 @@ public class UDPSender : MonoBehaviour
         sendInfo(directoToAssistantPort, "CHANGE_SCREEN_DISTANCE:" + distance);
     }
 
-    public void sendDeletePoint(int pointNum, string name)
+    public void sendDeletePointToAssistant(int pointNum, string name)
     {
-        try
-        {
-            sendInfo(directoToAssistantPort, "DELETE_POINT:" + name + ":" + pointNum);
-        }
-        catch (System.Exception e) { }
+        sendInfo(directoToAssistantPort, "DELETE_POINT:" + name + ":" + pointNum);
     }
 
     public void sendDeleteItemToAssistant(string name)
@@ -129,11 +121,10 @@ public class UDPSender : MonoBehaviour
         // sending data
         Vector3 cameraPos = screenCamera.transform.position;
         Quaternion cameraRot = screenCamera.transform.rotation;
-        count += 1;
         string specifier = "G";
 
         IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), assistantToScreenPort);
-        byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString() + "#" + cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + "#" + cameraRot.ToString(specifier, CultureInfo.InvariantCulture) + "#" + count);
+        byte[] message = Encoding.ASCII.GetBytes("CAMERA_INFO:" + resetStart.ToString() + "#" + cameraPos.ToString(specifier, CultureInfo.InvariantCulture) + "#" + cameraRot.ToString(specifier, CultureInfo.InvariantCulture));
         client.Send(message, message.Length, target);
 
         client.Close();
@@ -265,41 +256,23 @@ public class UDPSender : MonoBehaviour
 
     public void sendChangeItemColor(string itemName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE COLOR ITEM: " + itemName + " " + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_ITEM_COLOR:" + itemName + ":" + colorHex);
     }
 
     public void sendChangePathColor(string itemName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE COLOR PATH: " + itemName + " " + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_PATH_COLOR:" + itemName + ":" + colorHex);
     }
 
     public void sendChangePointColor(string itemName, string pointName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE POINT COLOR. ITEM: " + itemName + ". POINT: " + pointName + ". COLORHEX:" + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_POINT_COLOR:" + itemName + ":" + pointName + ":" + colorHex);
     }
 
     public void sendChangeMinicameraColor(string cameraName, string pointName, string colorHex)
     {
-        Debug.Log("SENDING CHANGE MINICAMERA COLOR. CAMERA: " + cameraName + ". POINT: " + pointName + ". COLORHEX:" + convertHexToReadable(colorHex));
         sendInfo(assistantToDirectorPort, "CHANGE_MINICAMERA_COLOR:" + cameraName + ":" + pointName + ":" + colorHex);
     }
-
-    //BORRAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public string convertHexToReadable(string colorHex)
-    {
-        if (colorHex.Contains("FF6F"))
-            return "DEFAULT RED";
-        else if (colorHex.Contains("80B47A"))
-            return "HOVER GREEN";
-        else if (colorHex.Contains("84BFCE"))
-            return "SELECTED LIGHT BLUE";
-        else
-            return "BLUE";
-    }
-
     public void sendShowHideGridDirector(bool isShowed)
     {
         sendInfo(assistantToDirectorPort, "SHOW_HIDE_GRID:" + isShowed);
@@ -327,12 +300,6 @@ public class UDPSender : MonoBehaviour
         sendInfo(assistantToDirectorPort, "ITEMS_MENU_NAVIGATION:" + action + ":" + button);
     }
 
-    IEnumerator sendInitialParameters()
-    {
-        sendCameraType();
-        yield return new WaitForSeconds(5);
-    }
-
     public void rotateItemsInScene(float rotationAngle)
     {
         Vector3 pivotPoint = OVRPlayer.transform.position;
@@ -347,30 +314,6 @@ public class UDPSender : MonoBehaviour
             if (item.name.Contains("MainCamera"))
             {
                 continue;
-                //FollowPathCamera followPathCamera = item.GetComponent<FollowPathCamera>();
-                //CustomGrabbableCameras customGrabbableCameras = item.GetComponent<CustomGrabbableCameras>();
-                //GameObject virtualCamera = customGrabbableCameras.virtualCamera;
-                //GameObject dollyTrack = customGrabbableCameras.dollyTracker;
-                //GameObject rotationController = customGrabbableCameras.rotationController;
-
-                //virtualCamera.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
-                //dollyTrack.transform.position = virtualCamera.transform.position;
-                //rotationController.transform.RotateAround(pivotPoint, Vector3.up, rotationAngle);
-
-                //// iterate through each defined point and rotate it
-                //List<Vector3> pathPositions = followPathCamera.pathPositions;
-                //for (int j = 0; j < pathPositions.Count; j++)
-                //{
-                //    Vector3 point = pathPositions[j];
-                //    pathPositions[j] = rotatePointAround(point, pivotPoint, rotationQuat);
-                //}
-
-                //followPathCamera.pathPositions = pathPositions;
-
-                //// rotate also the start point for the character and cinemachine points
-                //followPathCamera.startPosition = virtualCamera.transform.position;
-                //followPathCamera.startRotation = virtualCamera.transform.rotation;
-                //followPathCamera.relocateCinemachinePoints(followPathCamera.cinemachineSmoothPath, virtualCamera.transform.position);
             }
             else
             {
@@ -452,26 +395,9 @@ public class UDPSender : MonoBehaviour
 
     void Update()
     {
-        //else if (positionChanged)
-        //{
-        //    // needed to make sure that position is not changing,
-        //    // since there are frames in between when where position does not change
-        //    posChangedCount += 1;
-        //    if (posChangedCount >= 10)
-        //    {
-        //        changeResetStart(false);
-        //        positionChanged = false;
-        //    }
-        //}
-
         Vector3 currentPos = screenCamera.transform.position;
         if (lastPos != currentPos)
         {
-            //if (!positionChanged)
-            //    changeResetStart(true);
-            //else
-            //    changeResetStart(false);
-
             timeElapsedSendPos += Time.deltaTime;
             Debug.Log("TIME ELAPSED SINCE LAST POS: " + timeElapsedSendPos);
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT && timeElapsedSendPos >= 1/targetFPS)
@@ -481,10 +407,8 @@ public class UDPSender : MonoBehaviour
                 timeElapsedSendPos = 0.0f;
             }
 
-            //positionChanged = true;
             lastPos = currentPos;
             changeResetStart(false);
-            //posChangedCount = 0;
         }
 
         if (OVRInput.Get(OVRInput.RawButton.Y))

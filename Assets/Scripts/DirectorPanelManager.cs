@@ -199,7 +199,6 @@ public class DirectorPanelManager : MonoBehaviour
         // when grid is shown, objects can be only moved with the GUI arrows, so activate / disable OVR grabbers
         customRightHand.GetComponent<OVRGrabber>().enabled = !isGridShown;
         customLeftHand.GetComponent<OVRGrabber>().enabled = !isGridShown;
-        //customRightHand.transform.parent.parent.GetComponent<HoverObjects>().enabled = !isGridShown;
     }
 
     public void showHidePointsView()

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 
 public class UDPReceiver : MonoBehaviour
 {
@@ -25,13 +26,11 @@ public class UDPReceiver : MonoBehaviour
 
     [SerializeField] GameObject itemsParent;
 
-    //Thread receiveThread;
     Thread assistantToDirectorThread;
     Thread directorToAssistantThread;
 
+    // queue is needed to ensure that all received messages are parsed
     private Queue<string> lastMessages = new Queue<string>();
-    //private string lastMessageReceived;
-    //private bool isMessageParsed = true;
 
     public Camera ScreenCamera;
     Vector3 startPos;
@@ -119,7 +118,6 @@ public class UDPReceiver : MonoBehaviour
                 byte[] receivedBytes = clientPath.Receive(ref remoteEndPoint);
 
                 lastMessages.Enqueue(Encoding.ASCII.GetString(receivedBytes));
-                //isMessageParsed = false;
             }
             catch (Exception e)
             {
@@ -142,7 +140,6 @@ public class UDPReceiver : MonoBehaviour
                 byte[] receiveBytes = clientPlay.Receive(ref remoteEndPoint);
 
                 lastMessages.Enqueue(Encoding.ASCII.GetString(receiveBytes));
-                //isMessageParsed = false;
             }
             catch (Exception e)
             {
@@ -152,10 +149,18 @@ public class UDPReceiver : MonoBehaviour
     }
 
     // executed when a new point is created in the scene
-    void parsePointPosition(string itemName, string pointPosition)
+    IEnumerator parsePointPosition(string itemName, string pointPosition)
     {
+        Transform itemTransform = itemsParent.transform.Find(itemName);
+        while (itemTransform == null)
+        {
+            itemTransform = itemsParent.transform.Find(itemName);
+            yield return null;
+        }
+        yield return 0;
+
         // get corresponding follow path script and containers
-        GameObject item = itemsParent.transform.Find(itemName).gameObject;
+        GameObject item = itemTransform.gameObject;
         int itemNum = int.Parse(itemName.Split(" ")[1]);
         item.TryGetComponent(out FollowPath followPath);
         item.TryGetComponent(out FollowPathCamera followPathCamera);
@@ -165,7 +170,7 @@ public class UDPReceiver : MonoBehaviour
 
         string[] splittedMessage = pointPosition.Split(" ");
         float posX = float.Parse(splittedMessage[0], CultureInfo.InvariantCulture);
-        float posY = -float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
+        float posY = float.Parse(splittedMessage[1], CultureInfo.InvariantCulture);
         float posZ = float.Parse(splittedMessage[2], CultureInfo.InvariantCulture);
         Vector3 newPointPosition = new Vector3(posX, posY, posZ);
 
@@ -231,18 +236,12 @@ public class UDPReceiver : MonoBehaviour
         }
 
         if (followPathCamera != null)
-        {
             newCameraPosition = newPointPosition;
-            Debug.Log("RECEIVED POSITION CAMERA: " + newCameraPosition);
-        }
     }
 
     // executed when a new camera point is created
     void parsePointRotation(string itemName, string pointRotation)
     {
-        // handle exceptions in case the item is not found
-        //try
-        //{
         Transform transformItem = itemsParent.transform.Find(itemName);
         if (transformItem == null)
             return;
@@ -309,15 +308,14 @@ public class UDPReceiver : MonoBehaviour
             minicameraImage.texture = miniCameraTexture;
             miniCameraComponent.targetTexture = miniCameraTexture;
         }
-        //catch (Exception e)
-        //{
-        //    Debug.LogError("ERROR PARSING ROTATION: " + e.ToString());
-        //}
     }
 
     void parseDeleteItemDirector(string itemName)
     {
         ItemsDirectorPanelController.instance.removeItemButtons(itemName);
+
+        GameObject line = GameObject.FindGameObjectWithTag("Line");
+        Destroy(line);
     }
 
     void parseDeletePointDirector(int pointNum, string itemName)
@@ -392,21 +390,17 @@ public class UDPReceiver : MonoBehaviour
         item.TryGetComponent(out FollowPathCamera followPathCamera);
 
         if (followPath != null)
-            followPath.deletePathPoint(pointNum);
+            followPath.deletePathPoint(pointNum, false, true);
 
         if (followPathCamera != null)
-            followPathCamera.deletePathPoint(pointNum);
+            followPathCamera.deletePathPoint(pointNum, false, true);
     }
 
     void parseDeleteItem(string itemName)
     {
         if (!itemName.Contains("Camera")){
-            GameObject item = GameObject.Find(itemName);
-            Destroy(item);
-
-            string[] splittedName = itemName.Split(" ");
-            string itemNum = splittedName[1];
-            GameObject pathContainer = GameObject.Find("Path " + itemNum);
+            GameObject item = itemsParent.transform.Find(itemName).gameObject;
+            DefinePath.instance.deleteItem(item, false);
         }
     }
 
@@ -571,7 +565,6 @@ public class UDPReceiver : MonoBehaviour
         }
 
         startPos = ScreenCamera.transform.position;
-        //startRot = ScreenCamera.transform.rotation.eulerAngles;
         startRot = ScreenCamera.transform.rotation;
     }
 
@@ -600,15 +593,13 @@ public class UDPReceiver : MonoBehaviour
                             string receivedPointName = splittedMessage[1];
                             string receivedPointPosition = splittedMessage[2];
 
-                            parsePointPosition(receivedPointName, receivedPointPosition);
-                            Debug.Log("RECEIVED POSITION");
+                            StartCoroutine(parsePointPosition(receivedPointName, receivedPointPosition));
                             break;
                         case eAssistantToDirectorMessages.NEW_ROTATION:
                             receivedPointName = splittedMessage[1];
                             string receivedPointRotation = splittedMessage[2];
 
                             parsePointRotation(receivedPointName, receivedPointRotation);
-                            Debug.Log("RECEIVED ROTATION");
                             break;
                         case eAssistantToDirectorMessages.DELETE_ITEM:
                             string receivedDeleteItemDirector = splittedMessage[1];
@@ -630,27 +621,23 @@ public class UDPReceiver : MonoBehaviour
                         case eAssistantToDirectorMessages.CHANGE_ITEM_COLOR:
                             itemName = splittedMessage[1];
                             string colorHex = splittedMessage[2];
-                            Debug.Log("RECEIVED ITEM COLOR. ITEM: " + itemName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             parseItemChangeColor(itemName, colorHex);
                             break;
                         case eAssistantToDirectorMessages.CHANGE_PATH_COLOR:
                             itemName = splittedMessage[1];
                             colorHex = splittedMessage[2];
-                            Debug.Log("RECEIVED PATH COLOR. ITEM: " + itemName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             parsePathChangeColor(itemName, colorHex);
                             break;
                         case eAssistantToDirectorMessages.CHANGE_POINT_COLOR:
                             itemName = splittedMessage[1];
                             string pointName = splittedMessage[2];
                             colorHex = splittedMessage[3];
-                            Debug.Log("RECEIVED POINT COLOR. ITEM: " + itemName + ". POINT: " + pointName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             StartCoroutine(parsePointChangeColor(itemName, pointName, colorHex));
                             break;
                         case eAssistantToDirectorMessages.CHANGE_MINICAMERA_COLOR:
                             string cameraName = splittedMessage[1];
                             pointName = splittedMessage[2];
                             colorHex = splittedMessage[3];
-                            Debug.Log("RECEIVED MINICAMERA COLOR. CAMERA: " + cameraName + ". POINT: " + pointName + ". COLOR: " + UDPSender.instance.convertHexToReadable(colorHex));
                             StartCoroutine(parseMiniCameraChangeColor(cameraName, pointName, colorHex));
                             break;
                         case eAssistantToDirectorMessages.RELOCATE_POINT:

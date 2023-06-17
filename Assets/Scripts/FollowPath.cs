@@ -50,48 +50,6 @@ public class FollowPath : MonoBehaviour
         UDPReceiver.instance.OnChangePathColor -= changePathColorDirector;
     }
 
-    // extracted from Vector3.MoveTowards() function
-    public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
-    {
-        float num = target.x - current.x;
-        float num2 = target.y - current.y;
-        float num3 = target.z - current.z;
-        float num4 = num * num + num2 * num2 + num3 * num3;
-        if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
-        {
-            return target;
-        }
-
-        float num5 = (float)Math.Sqrt(num4);
-        return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
-    }
-
-    void move(Vector3 targetPoint)
-    {
-        Vector3 currentPos = gameObject.transform.position;
-        Vector3 targetDirection = targetPoint - currentPos;
-
-        float posStep = posSpeed * Time.deltaTime;
-        float rotStep = rotSpeed * Time.deltaTime;
-
-        Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
-        gameObject.transform.position = newPos;
-        // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
-        try
-        {
-            Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
-
-            // compute the new formard direction where we will rotate to
-            // set y coordinate to 0 so that the rotation only takes into account the floor plane, and then it does not try to rotate to higher altitudes, which are where it starts doing weird things
-            Vector3 targetDirectionXZ = new Vector3(targetDirection.x, 0.0f, targetDirection.z);
-            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
-            // compute the new rotation using this forward
-            gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
-        } catch (Exception e) {
-            Debug.LogError(e.Message);
-        }
-    }
-
     void Start()
     {
         handController = GameObject.Find("RightHandAnchor");
@@ -166,11 +124,21 @@ public class FollowPath : MonoBehaviour
             if (gameObject.transform.position == currTarget)
                 currPoint++;
         }
-        else
+        else if (isPlaying)
         {
             if (animator != null)
                 // do smooth transition from walk to idle taking the delta time
                 animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
+        }
+
+        // stop animation when reaching end of path on client side
+        if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR && isPlaying)
+        {
+            Vector3 currPosition = pathPositions[pathPositions.Count - 1];
+            // y-axis is saved inversed on multi-camera side
+            //if (gameObject.transform.position == new Vector3(currPosition.x, -currPosition.y, currPosition.z) && animator != null)
+            if (gameObject.transform.position == currPosition && animator != null)
+                animator.SetFloat("Speed", 0.0f, 0.0f, Time.deltaTime);
         }
     }
 
@@ -205,6 +173,50 @@ public class FollowPath : MonoBehaviour
         {
             newPathInstantiated = false;
             secondaryIndexTriggerDown = false;
+        }
+    }
+
+    // extracted from Vector3.MoveTowards() function
+    public Vector3 MoveTowardsCustom(Vector3 current, Vector3 target, float maxDistanceDelta)
+    {
+        float num = target.x - current.x;
+        float num2 = target.y - current.y;
+        float num3 = target.z - current.z;
+        float num4 = num * num + num2 * num2 + num3 * num3;
+        if (num4 == 0f || (maxDistanceDelta >= 0f && num4 <= maxDistanceDelta * maxDistanceDelta))
+        {
+            return target;
+        }
+
+        float num5 = (float)Math.Sqrt(num4);
+        return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
+    }
+
+    void move(Vector3 targetPoint)
+    {
+        Vector3 currentPos = gameObject.transform.position;
+        Vector3 targetDirection = targetPoint - currentPos;
+
+        float posStep = posSpeed * Time.deltaTime;
+        float rotStep = rotSpeed * Time.deltaTime;
+
+        Vector3 newPos = MoveTowardsCustom(currentPos, targetPoint, posStep);
+        gameObject.transform.position = newPos;
+        // if it is a camera there is no RotationScale script, and we do not want it to rotate with direction
+        try
+        {
+            Vector3 originalRotation = gameObject.GetComponent<RotationScale>().rotation;
+
+            // compute the new formard direction where we will rotate to
+            // set y coordinate to 0 so that the rotation only takes into account the floor plane, and then it does not try to rotate to higher altitudes, which are where it starts doing weird things
+            Vector3 targetDirectionXZ = new Vector3(targetDirection.x, 0.0f, targetDirection.z);
+            Vector3 newforward = Vector3.RotateTowards(transform.forward, targetDirectionXZ, rotStep, 0.0f);
+            // compute the new rotation using this forward
+            gameObject.transform.rotation = Quaternion.LookRotation(newforward, new Vector3(0.0f, 1.0f, 0.0f));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
         }
     }
 
@@ -273,6 +285,8 @@ public class FollowPath : MonoBehaviour
             itemControlMenu.GetComponent<Canvas>().enabled = true;
         else
             itemControlMenu.GetComponent<Canvas>().enabled = false;
+
+        animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
     }
 
     void hideShowPath(bool isHidden)
@@ -323,14 +337,15 @@ public class FollowPath : MonoBehaviour
     }
 
 
-    public void deletePathPoint(int pointNum, bool deleteLine=true)
+    public void deletePathPoint(int pointNum, bool sendMessage, bool destroyElements)
     {
         pathPositions.RemoveAt(pointNum);
         LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
         removeLineRendererPoint(lineRenderer, pointNum);
 
-        if (deleteLine)
-            DefinePath.instance.deletePointFromPath(pathContainer, pointNum, circlesContainer);
+        DefinePath.instance.deletePointFromPath(pathContainer, pointNum, destroyElements, circlesContainer);
+        if (sendMessage)
+            UDPSender.instance.sendDeletePointToDirector(pointNum, gameObject.name);
         pointsCount--;
     }
 
@@ -372,6 +387,7 @@ public class FollowPath : MonoBehaviour
     public void rotateCharacter(Vector3 rotation)
     {
         gameObject.transform.Rotate(rotation);
+        startRotation = gameObject.transform.rotation;
     }
 
     public void changeSpeed(float speed)

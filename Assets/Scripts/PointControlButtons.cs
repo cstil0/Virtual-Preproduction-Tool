@@ -148,14 +148,14 @@ public class PointControlButtons : MonoBehaviour
         {
             splittedName = point.name.Split(" ");
             int pointNum = int.Parse(splittedName[1]);
-            followPath.deletePathPoint(pointNum);
+            followPath.deletePathPoint(pointNum, true, true);
             followPath.isSelectedForPath = true;
         }
         else if (followPathCamera != null)
         {
             splittedName = point.transform.parent.name.Split(" ");
             int pointNum = int.Parse(splittedName[1]);
-            followPathCamera.deletePathPoint(pointNum);
+            followPathCamera.deletePathPoint(pointNum, true, true);
             followPathCamera.isSelectedForPath = true;
         }
     }

@@ -19,6 +19,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -167,6 +169,25 @@ public class OVRGrabbable : MonoBehaviour
         {
             // Notify the hand to release destroyed grabbables
             m_grabbedBy.ForceRelease(this);
+        }
+    }
+
+    public void setGrabPoint(Collider grabPoint)
+    {
+        if (m_grabPoints.Length == 0)
+        {
+            List<Collider> grabPointsList = new List<Collider> { grabPoint };
+            m_grabPoints = grabPointsList.ToArray();
+        }
+    }
+
+    public void removeGrabPoint()
+    {
+        List<Collider> grabPointsList = m_grabPoints.ToList();
+        if (grabPointsList.Count > 0)
+        {
+            grabPointsList.RemoveAt(0);
+            m_grabPoints = grabPointsList.ToArray();
         }
     }
 }
