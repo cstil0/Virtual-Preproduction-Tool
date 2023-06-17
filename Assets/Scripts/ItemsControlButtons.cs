@@ -25,6 +25,7 @@ public class ItemsControlButtons : MonoBehaviour
     private FollowPath followPath;
     private FollowPath followPathCamera;
     private BoxCollider boxCollider;
+    private Collider grabPoint;
 
     private Vector3 lastPosition;
 
@@ -97,6 +98,9 @@ public class ItemsControlButtons : MonoBehaviour
         item.TryGetComponent(out followPathCamera);
         item.TryGetComponent(out boxCollider);
 
+        if (ovrgrabbable != null)
+            grabPoint = ovrgrabbable.grabPoints[0];
+
         if (buttonType == eButtonType.HEIGHT)
         {
             lastPosition = item.transform.position;
@@ -153,6 +157,8 @@ public class ItemsControlButtons : MonoBehaviour
 
     public void onLockPressed()
     {
+        isLocked = !isLocked;
+
         // change button shape according to the new state
         if (isLocked)
             buttonImage.sprite = lockImage;
@@ -161,14 +167,13 @@ public class ItemsControlButtons : MonoBehaviour
 
         // disable grabbable to avoid grabbing the item
         if (customGrabbableCharacters != null)
-            customGrabbableCharacters.enabled = isLocked;
-        if (ovrgrabbable != null)
-        {
-            ovrgrabbable.enabled = isLocked;
-            boxCollider.enabled = isLocked;
-        }
+            customGrabbableCharacters.enabled = !isLocked;
 
-        isLocked = !isLocked;
+        if (ovrgrabbable != null && !isLocked)
+            ovrgrabbable.removeGrabPoint();
+        else if (grabPoint != null && isLocked)
+            ovrgrabbable.setGrabPoint(grabPoint);
+
     }
 
     public void showHideHeight(bool isGridShown)

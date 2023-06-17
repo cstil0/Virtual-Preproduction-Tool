@@ -23,9 +23,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Samples/Mixed Reality Toolkit Examples/2.8.2/Demos - HandTracking/Scenes/HandInteractionExamples.unity
     guid: 3dd4a396b5225f8469b9a1eb608bfa57
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/MainScene_Presaved.unity
-    guid: 75e51853e8ef796408490463c2dbb360
+    guid: 46af568bf275248408bceb0139d2b5e0
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: b2f4bcf15aecc8144a0ae808d9c56454,
       type: 2}

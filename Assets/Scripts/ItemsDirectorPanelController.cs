@@ -42,7 +42,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     [Header ("Selected Items")]
     private int currPointPressed;
-    private string currItemPressed;
+    public string currItemPressed;
     private GameObject currItemGO;
     private FollowPath currFollowPath;
     private FollowPathCamera currFollowPathCamera;
@@ -76,7 +76,10 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     void Update()
     {
-
+        // BORRAR!!!!!!!!!!!!!!
+        if (Input.GetKeyDown (KeyCode.B)) {
+            assignListeners();
+        }
     }
 
     public void onItemsButtonPressed(GameObject itemButtonGO)
@@ -380,14 +383,11 @@ public class ItemsDirectorPanelController : MonoBehaviour
         string[] splittedName = pointButton.name.Split(" ");
         int pointNum = int.Parse(splittedName[1]);
 
-        Debug.Log("POINT PRESSED!!. CURRENT: " + currPointPressed + ". NEW: " + pointNum);
         // if the point was already pressed, change the pressed one to -1 to represent that none is selected now
         if (pointNum == currPointPressed)
             currPointPressed = -1;
         else
             currPointPressed = pointNum;
-
-        Debug.Log("NOW PRESSED: " + currPointPressed);
 
         // iterate through all points to change their color according to their current state
         for (int i=0; i < pointsPanelLayout.childCount; i++)
@@ -453,16 +453,19 @@ public class ItemsDirectorPanelController : MonoBehaviour
     {
         Transform itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout");
 
-        // iterate through all buttons and change following ones num
-        for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
+        if (itemPointsLayout != null)
         {
-            Transform currPointButton = itemPointsLayout.transform.GetChild(i);
-            ColorBlock buttonColors = currPointButton.GetComponent<Button>().colors;
-            buttonColors.normalColor = normalBlueColor;
-            currPointButton.GetComponent<Button>().colors = buttonColors;
-        }
+            // iterate through all buttons and change following ones num
+            for (int i = 0; i < itemPointsLayout.transform.childCount; i++)
+            {
+                Transform currPointButton = itemPointsLayout.transform.GetChild(i);
+                ColorBlock buttonColors = currPointButton.GetComponent<Button>().colors;
+                buttonColors.normalColor = normalBlueColor;
+                currPointButton.GetComponent<Button>().colors = buttonColors;
+            }
 
-        currPointPressed = -1;
+            currPointPressed = -1;
+        }
     }
 
     public void addNewItemButton(string name)
@@ -524,5 +527,18 @@ public class ItemsDirectorPanelController : MonoBehaviour
         newPointButton.name = "Point " + pointNum;
         newPointButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pointNum.ToString();
         newPointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(parentLayout, newPointButton); });
+    }
+
+
+    // BORRAR!!!!!!!!!!!!!!!!!!!!
+    void assignListeners()
+    {
+        foreach (Transform layout in pointsPanel.transform)
+        {
+            foreach (Transform pointButton in layout)
+            {
+                pointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(layout, pointButton.gameObject); });
+            }
+        }
     }
 }

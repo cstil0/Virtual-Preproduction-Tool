@@ -98,7 +98,7 @@ public class DefinePath : MonoBehaviour
             areaLight.color = Color.white;
     }
 
-    private void addPointGeneric(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f, GameObject circlesContainer = null)
+    private void addPointGeneric(int itemNum, GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f, GameObject circlesContainer = null)
     {
         GameObject spherePoint;
         if (isCamera)
@@ -159,7 +159,7 @@ public class DefinePath : MonoBehaviour
             circlePoint.name = "Circle " + pointsCount;
 
             PathCirclesController pathCirclesController = circlePoint.GetComponent<PathCirclesController>();
-            pathCirclesController.pathNum = itemsCount;
+            pathCirclesController.pathNum = itemNum;
             pathCirclesController.pointNum = pointsCount;
         }
 
@@ -190,7 +190,7 @@ public class DefinePath : MonoBehaviour
         }
 
         // assign path and point num properties
-        pathSpheresController.pathNum = itemsCount;
+        pathSpheresController.pathNum = itemNum;
         pathSpheresController.pointNum = pointsCount;
 
         // save the point as child of the corresponding path container
@@ -201,6 +201,9 @@ public class DefinePath : MonoBehaviour
     // used to generate the general elements needed for a new path such as the corresponding path container
     public List<GameObject> addPointToNewPath(Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
+        string[] splittedName = item.name.Split(" ");
+        int itemNum = int.Parse(splittedName[1]);
+
         // intantiate the empty GameObject, line renderer and sphere to show the defined points
         GameObject pathContainer = Instantiate(pathParentPrefab);
         GameObject line = Instantiate(linePrefab);
@@ -213,8 +216,8 @@ public class DefinePath : MonoBehaviour
         {
             circlesContainer = Instantiate(circlesParentPrefab);
             circlesContainer.GetComponent<NetworkObject>().Spawn();
-            circlesContainer.name = "Circles " + itemsCount;
-            pathContainer.transform.name = "Path " + itemsCount;
+            circlesContainer.name = "Circles " + itemNum;
+            pathContainer.transform.name = "Path " + itemNum;
         }
         else
             pathContainer.transform.name = "Path " + item.name;
@@ -229,7 +232,7 @@ public class DefinePath : MonoBehaviour
         line.transform.name = "Line";
     
         // add the sphere and required elements to visualize the point
-        addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
+        addPointGeneric(itemNum, pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
 
         List<GameObject> containers = new List<GameObject>();
         containers.Add(pathContainer);
@@ -242,6 +245,9 @@ public class DefinePath : MonoBehaviour
     // used to define only the point and add it as a child of an existent path container
     public void addPointToExistentPath(GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f)
     {
+        string[] splittedItemName = item.name.Split(" ");
+        int itemNum = int.Parse(splittedItemName[1]);
+
         string pathName = pathContainer.name;
         string[] splittedName = pathName.Split(" ");
         int pathNum = -1;
@@ -253,7 +259,7 @@ public class DefinePath : MonoBehaviour
         GameObject circlesContainer = GameObject.Find("Circles " + pathNum);
 
         // add the sphere and required elements to visualize the point
-        addPointGeneric(pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
+        addPointGeneric(itemNum, pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
     }
 
     public void deletePointFromPath(GameObject pathContainer, int pointNum, bool destroyElements, GameObject circlesContainer = null)

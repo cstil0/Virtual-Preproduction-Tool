@@ -142,13 +142,6 @@ public class UDPSender : MonoBehaviour
         catch (Exception e) { }
     }
 
-    public void sendChangeCameraScreen(string cameraNum)
-    {
-        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
-        screenCamera = currentCamera.GetComponent<Camera>();
-        sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
-    }
-
     public void sendChangeScreenDistanceAssistant(string changeDistanceMessage)
     {
         sendInfo(assistantToScreenPort, "CHANGE_SCREEN_DISTANCE:" + changeDistanceMessage);
@@ -181,15 +174,23 @@ public class UDPSender : MonoBehaviour
         if (currentCamera != screenCamera.gameObject)
         {
             string[] cameraName = currentCamera.name.Split(" ");
-            int cameraNum = int.Parse(cameraName[1]);
+            string cameraNum = cameraName[1];
 
-            screenCamera = currentCamera.GetComponent<Camera>();
-
-            screenCameraStartPos = screenCamera.transform.position;
-            screenCameraStartRot = screenCamera.transform.rotation;
-
-            sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
+            sendChangeCameraScreen(cameraNum);
         }
+    }
+
+    public void sendChangeCameraScreen(string cameraNum)
+    {
+        GameObject currentCamera = itemsParent.transform.Find("MainCamera " + cameraNum).gameObject;
+        screenCamera = currentCamera.GetComponent<Camera>();
+
+        screenCameraStartPos = screenCamera.transform.position;
+        screenCameraStartRot = screenCamera.transform.rotation;
+
+        lastPos = screenCamera.transform.position;
+        
+        sendInfo(assistantToScreenPort, "CHANGE_CAMERA: " + cameraNum);
     }
 
     public void sendResetPosRot()
@@ -399,10 +400,8 @@ public class UDPSender : MonoBehaviour
         if (lastPos != currentPos)
         {
             timeElapsedSendPos += Time.deltaTime;
-            Debug.Log("TIME ELAPSED SINCE LAST POS: " + timeElapsedSendPos);
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT && timeElapsedSendPos >= 1/targetFPS)
             {
-                Debug.Log("SENDING POS: " + timeElapsedSendPos);
                 SendPosRot();
                 timeElapsedSendPos = 0.0f;
             }

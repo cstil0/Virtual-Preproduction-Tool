@@ -94,8 +94,8 @@ public class ModesManager : MonoBehaviour
             else if (role == eRoleType.ASSISTANT)
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
 
-            //SceneManager.LoadScene("MainScene_Presaved");
-            SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("MainScene_Presaved");
+            //SceneManager.LoadScene("MainScene");
         }
     }
 
@@ -124,9 +124,9 @@ public class ModesManager : MonoBehaviour
     }
     void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode sceneMode)
     {
-        //if (scene.name == "MainScene_Presaved")
-        if (scene.name == "MainScene")
-            {
+        if (scene.name == "MainScene_Presaved")
+        //if (scene.name == "MainScene")
+        {
             // activate and disable the needed components for each corresponding application
             if (role == eRoleType.DIRECTOR)
             {

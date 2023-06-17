@@ -7,11 +7,11 @@ using UnityEngine;
 public class FollowPath : MonoBehaviour
 {
     public GameObject handController;
-    public List<Vector3> pathPositions;
+    public List<Vector3> pathPositions = new List<Vector3>();
     // relate each path ID with the start and end positions in the pathPositions list
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
-    public int pointsCount;
+    public int pointsCount = 0;
     public int currPoint;
     public Vector3 startPosition;
     Vector3 startDiffPosition;
@@ -53,8 +53,6 @@ public class FollowPath : MonoBehaviour
     void Start()
     {
         handController = GameObject.Find("RightHandAnchor");
-        pathPositions = new List<Vector3>();
-        pointsCount = 0;
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
@@ -118,7 +116,8 @@ public class FollowPath : MonoBehaviour
                 animator.SetFloat("Speed", 0.1f, 0.05f, Time.deltaTime);
 
             // since VR application is set as host it plays the movement
-            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            // CUIDAOOOOOOOOOOOOOOOOOOOOOOOOOO S'HA DE DESCOMENTAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                 move(currTarget);
 
             if (gameObject.transform.position == currTarget)
@@ -286,7 +285,7 @@ public class FollowPath : MonoBehaviour
         else
             itemControlMenu.GetComponent<Canvas>().enabled = false;
 
-        animator.SetFloat("Speed", 0.0f, 0.05f, Time.deltaTime);
+        animator.SetFloat("Speed", 0.0f, 0.0f, Time.deltaTime);
     }
 
     void hideShowPath(bool isHidden)

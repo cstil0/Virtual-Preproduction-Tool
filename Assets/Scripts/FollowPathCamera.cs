@@ -18,10 +18,10 @@ public class FollowPathCamera : MonoBehaviour
     public float speed = 0.005f;
 
     public GameObject handController;
-    public List<Vector3> pathPositions;
-    public List<Vector3> pathRotations;
+    public List<Vector3> pathPositions = new List<Vector3>();
+    public List<Vector3> pathRotations = new List<Vector3>();
     float pathLength;
-    float currPathPosition;
+    float currPathPosition = 0.0f;
 
     public Vector3 startPosition;
     public Quaternion startRotation;
@@ -81,16 +81,12 @@ public class FollowPathCamera : MonoBehaviour
         UDPReceiver.instance.OnChangePathColor += changePathColorDirector;
 
         cinemachineTrackedDolly = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTrackedDolly>();
-        currPathPosition = 0.0f;
         pathLength = cinemachineTrackedDolly.m_Path.MaxPos;
 
         handController = GameObject.Find("RightHandAnchor");
 
         startPosition = cinemachineVirtualCamera.transform.position;
         startRotation = cinemachineVirtualCamera.transform.rotation;
-
-        pathPositions = new List<Vector3>();
-        pathRotations = new List<Vector3>();
     }
 
     void Update()
