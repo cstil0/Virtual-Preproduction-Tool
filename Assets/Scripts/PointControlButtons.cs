@@ -4,12 +4,11 @@ using UnityEngine.UI;
 using UnityEngine;
 using Unity.VisualScripting;
 
+// this script manages the buttons' actions that are associated to path points
 public class PointControlButtons : MonoBehaviour
 {
     private bool triggerOn = false;
     private bool triggerButtonDown = false;
-    private bool isItemSelectedOriginal = false;
-    private bool isPointSelected = false;
     [SerializeField] eButtonType buttonType;
 
     [SerializeField] Button button;
@@ -81,6 +80,7 @@ public class PointControlButtons : MonoBehaviour
 
     IEnumerator Init()
     {
+        // get parent point gameobject
         point = gameObject.transform.parent.parent.parent.gameObject;
         pathSpheresController = point.GetComponent<PathSpheresController>();
 
@@ -105,6 +105,7 @@ public class PointControlButtons : MonoBehaviour
             item = HoverObjects.instance.itemsParent.transform.Find(splittedName[1] + " " + splittedName[2]).gameObject;
         }
 
+        // ensure that button is not shown as hovered
         var colors = button.GetComponent<Button>().colors;
         colors.normalColor = Color.white;
         button.GetComponent<Button>().colors = colors;
@@ -139,6 +140,7 @@ public class PointControlButtons : MonoBehaviour
         }
     }
 
+    // remove path point
     void onTrashPressed()
     {
         string[] splittedName = null;
@@ -160,6 +162,7 @@ public class PointControlButtons : MonoBehaviour
         }
     }
 
+    // level minicamera horizontally
     void onLevelPressed()
     {
         // eliminate x and z rotation axis to ensure that the minicamera is leveled in the horizontal axis

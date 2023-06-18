@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+// this script is used to show the corresponding category pages by pressing previous and next buttons in the items menu
 public class SubmenusNavigate : MonoBehaviour
 {
     public ActivateDisablePages adp;
 
+    // number of buttons shown per each page
     public int buttonsPerPage = 3;
 
     bool triggerOn;
@@ -38,6 +40,7 @@ public class SubmenusNavigate : MonoBehaviour
 
     IEnumerator init()
     {
+        // wait until buttons have been counted
         while(adp.buttonsCount == 0) { yield return null; }
 
         activateDisableButtons();
@@ -54,6 +57,7 @@ public class SubmenusNavigate : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        // go back to white to disable hover effect
         changeButtonColor(gameObject.GetComponent<Button>(), Color.white, isEnabled);
 
         triggerOn = false;
@@ -70,7 +74,7 @@ public class SubmenusNavigate : MonoBehaviour
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && triggerOn)
         {
-            // do it only once when the button is pressed and after button was released at least once
+            // perform action only once when the button is pressed and after button was released at least once
             if (!buttonDown)
             {
                 buttonDown = true;
@@ -104,11 +108,12 @@ public class SubmenusNavigate : MonoBehaviour
             changeButtonColor(nextButton, Color.white, true);
             nextButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
+            // check if previous and next buttons should be disabled and activate the corresponding buttons in the category page
             checkPreviousNextButtons();
-
             activateDisableButtons();
         }
 
+        // assistant (VR), handles button presing actions
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
             UDPSender.instance.sendMenuNavigation("PREVIOUS_BUTTON", adp.gameObject.name);
     }
@@ -124,15 +129,17 @@ public class SubmenusNavigate : MonoBehaviour
             changeButtonColor(previousButton, Color.white, true);
             previousButton.gameObject.GetComponent<SubmenusNavigate>().isEnabled = true;
 
+            // check if previous and next buttons should be disabled and activate the corresponding buttons in the category page
             checkPreviousNextButtons();
-
             activateDisableButtons();
         }
 
+        // assistant (VR), handles button presing actions
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
             UDPSender.instance.sendMenuNavigation("NEXT_BUTTON", adp.gameObject.name);
     }
 
+    // check if items buttons should be shown or hidden
     public void activateDisableButtons()
     {
         int startButton = adp.currentPage * buttonsPerPage;
@@ -148,6 +155,7 @@ public class SubmenusNavigate : MonoBehaviour
         }
     }
 
+    // chech if previous and next buttons can be enabled or disabled
     void checkPreviousNextButtons()
     {
        if (buttonType == ebuttonType.PREVIOUS)

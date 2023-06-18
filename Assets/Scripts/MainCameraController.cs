@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
+
+// this script was used during motion parallax testing in Sala Aranyó, by mapping the controller movements to the camera in the set to generate the tracking
 public class MainCameraController : MonoBehaviour
 {
     public GameObject controller;

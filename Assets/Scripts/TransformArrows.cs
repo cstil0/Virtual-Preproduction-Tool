@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal.Internal;
 
+// this script is used to manage the relocation of items using the transform arrows is grid mode
 public class TransformArrows : MonoBehaviour
 {
     [SerializeField] Vector3 arrowDirection;
@@ -56,6 +57,7 @@ public class TransformArrows : MonoBehaviour
 
     void Start()
     {
+        // suscript to the event on start function, since in onEnable, the event is usually not created yet, causing an error
         DirectorPanelManager.instance.OnHideShowGrid += showHideArrows;
 
         Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -93,6 +95,7 @@ public class TransformArrows : MonoBehaviour
             Vector3 movementDirection = new Vector3(difference.x * arrowDirection.x, difference.y * arrowDirection.y, difference.z * arrowDirection.z);
 
             Transform parent = gameObject.transform.parent.parent;
+            // if item is a camera, apply the movement to its corresponding dolly track
             if (parent.name.Contains("Camera")){
                 FollowPathCamera followPathCamera = parent.gameObject.GetComponent<FollowPathCamera>();
                 movementDirection = applyRotation(parent, movementDirection);
@@ -108,6 +111,7 @@ public class TransformArrows : MonoBehaviour
         }
     }
 
+    // rotate transform arrows using the item's coordinates, and not world ones to translate it towards the desired direction
     Vector3 applyRotation(Transform item, Vector3 movementDirection)
     {
         if (movementDirection.x != 0.0f)
@@ -122,13 +126,18 @@ public class TransformArrows : MonoBehaviour
 
     void showHideArrows(bool isShow)
     {
+        // show / hide arrows mesh renderers
         gameObject.GetComponent<MeshRenderer>().enabled = isShow;
         Transform parent = gameObject.transform.parent.parent;
         parent.TryGetComponent(out OVRGrabbable ovrgrabbable);
+
+        // if it has an ovrgrabbable and arrows are shown, remove its grab point to disable OVR Grabbable functionalities
         if (ovrgrabbable != null && isShow)
         {
             ovrgrabbable.removeGrabPoint();
         }
+
+        // if it originally had a grabpoint from an OVR Grabbable component, add it again once the arrows are hidden
         else if (grabPoint != null && !isShow)
             ovrgrabbable.setGrabPoint(grabPoint);
     }

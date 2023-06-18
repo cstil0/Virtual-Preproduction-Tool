@@ -98,6 +98,7 @@ public class ItemsControlButtons : MonoBehaviour
         item.TryGetComponent(out followPathCamera);
         item.TryGetComponent(out boxCollider);
 
+        // if the item has an ovrgrabbable script, get its grab point, since we will remove it to disable grabbing action when locked
         if (ovrgrabbable != null)
             grabPoint = ovrgrabbable.grabPoints[0];
 
@@ -165,12 +166,14 @@ public class ItemsControlButtons : MonoBehaviour
         else
             buttonImage.sprite = unlockImage;
 
-        // disable grabbable to avoid grabbing the item
+        // disable custom grabbable to avoid grabbing the character
         if (customGrabbableCharacters != null)
             customGrabbableCharacters.enabled = !isLocked;
 
+        // if the item contains an ovrgrabbable script, remove its grab point when locked to disable it
         if (ovrgrabbable != null && !isLocked)
             ovrgrabbable.removeGrabPoint();
+        // when unlocking, set its grab point back to enable it againg
         else if (grabPoint != null && isLocked)
             ovrgrabbable.setGrabPoint(grabPoint);
 

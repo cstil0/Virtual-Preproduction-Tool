@@ -4,36 +4,34 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// this script is used to handle character's movements
 public class FollowPath : MonoBehaviour
 {
-    public GameObject handController;
-    public List<Vector3> pathPositions = new List<Vector3>();
-    // relate each path ID with the start and end positions in the pathPositions list
+    [Header ("Transform & Path Properties")]
+    public List<Vector3> pathPositions;
     public float posSpeed = 20.0f;
     public float rotSpeed = 7.0f;
-    public int pointsCount = 0;
+    public int pointsCount;
     public int currPoint;
     public Vector3 startPosition;
     Vector3 startDiffPosition;
     public Quaternion startRotation;
-
-    Animator animator;
-
-    public GameObject pathContainer;
-    public GameObject circlesContainer;
-
-    public bool isPlaying = false;
-    bool secondaryIndexTriggerDown = false;
-    bool newPathInstantiated = false;
-    public bool triggerOn = false;
-    public bool isSelectedForPath = false;
-    public bool isSelectedForPathOriginal = false;
-    // last local path ID created in this character
-    [SerializeField] int lastCharacterPathID = 0;
-    [SerializeField] int currentSelectedPath = 0;
-
     [SerializeField] Vector3 characterRotationLeft = new Vector3(0, -5f, 0);
     [SerializeField] Vector3 characterRotationRight = new Vector3(0, 5f, 0);
+
+    [Header ("States")]
+    public bool isPlaying = false;
+    bool secondaryIndexTriggerDown = false;
+    public bool triggerOn = false;
+    public bool isSelectedForPath = false;
+    // used to know if character was selected before disabling it when item button is triggered
+    public bool isSelectedForPathOriginal = false;
+
+    [Header ("GameObjects")]
+    public GameObject handController;
+    public GameObject pathContainer;
+    public GameObject circlesContainer;
+    Animator animator;
 
     private void OnEnable()
     {
@@ -53,6 +51,9 @@ public class FollowPath : MonoBehaviour
     void Start()
     {
         handController = GameObject.Find("RightHandAnchor");
+
+        pathPositions = new List<Vector3>();
+        pointsCount = 0;
 
         startPosition = gameObject.transform.position;
         startRotation = gameObject.transform.rotation;
@@ -116,8 +117,7 @@ public class FollowPath : MonoBehaviour
                 animator.SetFloat("Speed", 0.1f, 0.05f, Time.deltaTime);
 
             // since VR application is set as host it plays the movement
-            // CUIDAOOOOOOOOOOOOOOOOOOOOOOOOOO S'HA DE DESCOMENTAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
+            if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
                 move(currTarget);
 
             if (gameObject.transform.position == currTarget)
@@ -141,6 +141,7 @@ public class FollowPath : MonoBehaviour
         }
     }
 
+    // new points are created in late update to ensure that they are only created once after update parameters are computed
     private void LateUpdate()
     {
         if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger) && !isPlaying)
@@ -158,6 +159,7 @@ public class FollowPath : MonoBehaviour
                     StartCoroutine(defineNewPathPoint(handController.transform.position));
                 }
 
+                // change line renderer color
                 changePathColor();
             }
 
@@ -170,7 +172,6 @@ public class FollowPath : MonoBehaviour
         }
         else
         {
-            newPathInstantiated = false;
             secondaryIndexTriggerDown = false;
         }
     }
@@ -191,6 +192,7 @@ public class FollowPath : MonoBehaviour
         return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
     }
 
+    // move and rotate character to go from the current position / rotation in the array to the next one
     void move(Vector3 targetPoint)
     {
         Vector3 currentPos = gameObject.transform.position;
@@ -219,6 +221,7 @@ public class FollowPath : MonoBehaviour
         }
     }
 
+    // create new path point and all of its references
     public IEnumerator defineNewPathPoint(Vector3 controllerPos, bool instantiatePoint = true)
     {
         // if it is the first point, compute the initial difference needed to compute the height of the point
@@ -314,6 +317,7 @@ public class FollowPath : MonoBehaviour
         }
     }
 
+    // used to add a point to the line renderer
     void addLineRendererPoint(LineRenderer lineRenderer, Vector3 newPosition, int pointsCount)
     {
         // add it both to the positions array and line renderer
@@ -321,6 +325,7 @@ public class FollowPath : MonoBehaviour
         lineRenderer.SetPosition(pointsCount, newPosition);
     }
 
+    // used to remove a point from the line renderer
     void removeLineRendererPoint(LineRenderer lineRenderer, int pointNum) 
     {
         // we cannot modify a linerenderer point, but we can copy them to a list, modify it and assign the list again
@@ -335,9 +340,10 @@ public class FollowPath : MonoBehaviour
         lineRenderer.positionCount = pointsCount - 1;
     }
 
-
+    // used to remove a path point and all of its references
     public void deletePathPoint(int pointNum, bool sendMessage, bool destroyElements)
     {
+        // remove point from positions array and line renderer
         pathPositions.RemoveAt(pointNum);
         LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
         removeLineRendererPoint(lineRenderer, pointNum);
@@ -348,9 +354,10 @@ public class FollowPath : MonoBehaviour
         pointsCount--;
     }
 
+    // used to relocate a point from the path
     public void relocatePoint(int pointNum, Vector3 direction, bool relocateSphere)
     {
-        // relocate sphere
+        // relocate sphere gameobject according to the movement direction
         if (relocateSphere)
         {
             Transform sphere = pathContainer.transform.GetChild(pointNum + 1);
@@ -383,18 +390,21 @@ public class FollowPath : MonoBehaviour
         currLineRenderer.SetPositions(pathPositionsArray);
     }
 
+    // when a character is rotated, its initial rotation has to be reseted
     public void rotateCharacter(Vector3 rotation)
     {
         gameObject.transform.Rotate(rotation);
         startRotation = gameObject.transform.rotation;
     }
 
+    // used to change characters speed
     public void changeSpeed(float speed)
     {
         posSpeed = speed;
         rotSpeed = speed * 3;
     }
 
+    // used to change the line renderer color
     public void changePathColor()
     {
         // get the corresponding color
@@ -409,29 +419,25 @@ public class FollowPath : MonoBehaviour
             UDPSender.instance.sendChangePathColor(gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 
+    // used to change the color of an specific item in the client side
     private void changeItemColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
     }
 
+    // used to change the color of an specific linerenderer from a path in the client side
     private void changePathColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
             StartCoroutine(changeColorWaitPathContainer(color));
     }
 
-    // this coroutine is necessary in the client part since we need to wait until the path container is received and correctly stored
+    // this coroutine is necessary in the side part since we need to wait until the path container is received and correctly stored
     IEnumerator changeColorWaitPathContainer(Color color)
     {
         while (pathContainer == null) yield return null;
 
         DefinePath.instance.changePathColor(pathContainer, color, false);
-    }
-
-    public int extractItemNum()
-    {
-        string[] splittedName = gameObject.name.Split(' ');
-        return int.Parse(splittedName[1]);
     }
 }

@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script is in charge of instantiating new items in the scene and navigating pages in the items menu
 public class ItemsMenuController : MonoBehaviour
 {
     public GameObject button;
@@ -44,6 +45,7 @@ public class ItemsMenuController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        // change back to non-hover color
         var colors = button.GetComponent<Button>().colors;
         colors.normalColor = Color.white;
         button.GetComponent<Button>().colors = colors;
@@ -64,12 +66,12 @@ public class ItemsMenuController : MonoBehaviour
         buttonDown = false;
         buttonReleasedOnce = false;
 
+        // ensure that buttons are shown without hovering
         var colors = button.GetComponent<Button>().colors;
         colors.normalColor = Color.white;
         button.GetComponent<Button>().colors = colors;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // if button is pressed and hand is touching the menu do an action
@@ -107,6 +109,8 @@ public class ItemsMenuController : MonoBehaviour
             buttonDown = false;
         }
     }
+
+    // enable and disable corresponding buttons to change between categories
     public void ChangeMenu()
     {
         // reset current and next menu's pages
@@ -148,6 +152,7 @@ public class ItemsMenuController : MonoBehaviour
         rotationScale = itemPrefab.GetComponentInChildren<RotationScale>();
         Vector3 scale = new Vector3(rotationScale.scale, rotationScale.scale, rotationScale.scale);
 
+        // instantiate and rename item using the corresponding itemid
         GameObject objectInstance = Instantiate(itemPrefab);
         string wrongName = objectInstance.name;
         if (wrongName.Contains("(Clone)"))
@@ -168,9 +173,11 @@ public class ItemsMenuController : MonoBehaviour
         objectInstance.transform.position = new Vector3(handPosition.x, -attachPoint.y, handPosition.z);
         objectInstance.transform.position -= objectInstance.transform.forward * attachPoint.z;
 
+        // crowd items need each child to be spawned
         if (objectInstance.name.Contains("Crowd"))
             spawnCrowdChilds(objectInstance.transform);
 
+        // send item to client and inform of its instantiation to change its name
         objectInstance.GetComponent<NetworkObject>().Spawn();
         objectInstance.transform.parent = itemsParent.transform;
         UDPSender.instance.sendItemMiddle(objectInstance.name, wrongName);

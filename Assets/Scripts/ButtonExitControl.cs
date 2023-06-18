@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+// this script handles color change for some panel buttons in which we do not want to mantain the selected color when the pointer exits the button although it was pressed
 public class ButtonExitControl : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
     [SerializeField] Button button;
@@ -22,12 +23,10 @@ public class ButtonExitControl : MonoBehaviour, IPointerExitHandler, IPointerEnt
         button.colors = buttonColors;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
     }
 
-    // Update is called once per frame
     void Update()
     {
         

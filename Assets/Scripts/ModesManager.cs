@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
+// this script is used when the app is executed, to load the corresponding elements by determining if the instance corresponds to a client (multi-camera) or host (VR)
 public class ModesManager : MonoBehaviour
 {
     public static ModesManager instance = null;
@@ -54,6 +55,7 @@ public class ModesManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    // used when start button is pressed
     public void loadMainScene()
     { 
         // check that both role and mode are selected to load the main scene
@@ -94,8 +96,7 @@ public class ModesManager : MonoBehaviour
             else if (role == eRoleType.ASSISTANT)
                 NetworkManager_go.GetComponent<UnityTransport>().ConnectionData.Address = getLocalIPV4();
 
-            SceneManager.LoadScene("MainScene_Presaved");
-            //SceneManager.LoadScene("MainScene");
+            SceneManager.LoadScene("MainScene");
         }
     }
 
@@ -122,10 +123,11 @@ public class ModesManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
+    // load the set scene by enabling and disabling the corresponding elements depending on type of instance
     void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode sceneMode)
     {
-        if (scene.name == "MainScene_Presaved")
-        //if (scene.name == "MainScene")
+        if (scene.name == "MainScene")
         {
             // activate and disable the needed components for each corresponding application
             if (role == eRoleType.DIRECTOR)

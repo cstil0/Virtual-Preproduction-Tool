@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script handles item panel opeions' behaviour
 public class ItemsDirectorPanelController : MonoBehaviour
 {
     public static ItemsDirectorPanelController instance = null;
@@ -54,7 +55,6 @@ public class ItemsDirectorPanelController : MonoBehaviour
     public Color normalColor;
     public Color normalBlueColor;
     [SerializeField] FlexibleColorPicker colorPicker;
-    private Color lastPickedColor;
 
     private void Awake()
     {
@@ -69,19 +69,15 @@ public class ItemsDirectorPanelController : MonoBehaviour
 
     void Start()
     {
-        lastPickedColor = colorPicker.color;
         currPointPressed = -1;
         currItemPressed = "";
     }
 
     void Update()
     {
-        // BORRAR!!!!!!!!!!!!!!
-        if (Input.GetKeyDown (KeyCode.B)) {
-            assignListeners();
-        }
-    }
 
+    }
+    
     public void onItemsButtonPressed(GameObject itemButtonGO)
     {
         TMP_Text buttonText = itemButtonGO.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -110,6 +106,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
                 currLayout.SetActive(false);
         }
 
+        // if it was not already selected, select it and show its corresponding item options
         if (!isAlreadySelected)
         {
             deselectAllPoints(currItemPressed);
@@ -118,6 +115,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
             currItemGO.TryGetComponent(out currFollowPath);
             currItemGO.TryGetComponent(out currFollowPathCamera);
 
+            // get corresponding speed
             if (currFollowPath != null)
                 speedInput.text = currFollowPath.posSpeed.ToString();
 
@@ -246,7 +244,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         currItemGO.GetComponent<LightController>().changeLightIntensity(intensity);
     }
 
-    // show the light controls and send new colore after accepting the light color
+    // show the light controls and send new colors after accepting the light color
     public void onAcceptColorButtonPressed()
     {
         UDPSender.instance.sendChangeLightColor(currItemPressed, colorPicker.color, true);
@@ -337,6 +335,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
     }
 
+    // used to delete a specific point button
     public void deletePointButton(GameObject item, string itemName, int pointNum)
     {
         // get the corresponding follow path script to delete point from there
@@ -434,6 +433,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         }
     }
 
+    // used to remove item button and all of its point buttons
     public void removeItemButtons(string itemName)
     {
         // destroy item button and points buttons
@@ -449,6 +449,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         catch (Exception e) { }
     }
 
+    // deselect all point buttons from an item
     private void deselectAllPoints(string itemName)
     {
         Transform itemPointsLayout = pointsPanel.transform.Find(itemName + " Layout");
@@ -502,6 +503,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
         rTrans.localPosition = new Vector3(rTrans.localPosition.x, rTrans.localPosition.y, 0);
     }
 
+    // add new point to the points layout of a specific item
     public void addNewPointButton(string name, int pointNum)
     {
         GameObject newPointButton = Instantiate(pointButtonPrefab);
@@ -515,6 +517,7 @@ public class ItemsDirectorPanelController : MonoBehaviour
             if (!currLayout.name.Contains(name))
                 continue;
 
+            // set its transform properties
             newPointButton.transform.parent = currLayout.transform;
             parentLayout = currLayout.transform;
             RectTransform rTrans = newPointButton.GetComponent<RectTransform>();
@@ -527,18 +530,5 @@ public class ItemsDirectorPanelController : MonoBehaviour
         newPointButton.name = "Point " + pointNum;
         newPointButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = pointNum.ToString();
         newPointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(parentLayout, newPointButton); });
-    }
-
-
-    // BORRAR!!!!!!!!!!!!!!!!!!!!
-    void assignListeners()
-    {
-        foreach (Transform layout in pointsPanel.transform)
-        {
-            foreach (Transform pointButton in layout)
-            {
-                pointButton.GetComponent<Button>().onClick.AddListener(delegate { onPointPressed(layout, pointButton.gameObject); });
-            }
-        }
     }
 }

@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script manages the scroll of the panel containing items buttons
 public class ItemsDirectorPanelScroll : MonoBehaviour
 {
     public int shownItemsNum;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Xml.XPath;
 using UnityEngine;
 
+// this script manages path point's spheres behaviour
 public class PathSpheresController : MonoBehaviour
 {
     public bool triggerOn = false;
@@ -76,14 +77,19 @@ public class PathSpheresController : MonoBehaviour
             {
                 Vector3 newPosition = gameObject.transform.position;
                 GameObject line = null;
+
+                // relocate camera point position
                 if (followPathCamera != null)
                 {
                     Vector3 direction = lastPosition - newPosition;
+                    // inverted direction is needed because of how cinemachine stores path positions
                     Vector3 directionInv = newPosition - lastPosition;
                     Vector3 directionCorrected = new Vector3(direction.x, -direction.y, direction.z);
                     followPathCamera.relocatePoint(pointNum, directionCorrected, false, directionInv);
                     UDPSender.instance.sendPointRelocation(item.name, pointNum, -direction, -directionInv);
                 }
+
+                // relocate character point position
                 if (followPath != null)
                 {
                     Vector3 distance = lastPosition - newPosition;
@@ -120,6 +126,7 @@ public class PathSpheresController : MonoBehaviour
         }
     }
 
+    // used to know if the corresponding point is on trigger
     public void changeTriggerState(bool newTriggerState)
     {
         // if point is on trigger we do not want to instantiate new points when pressing trigger button
@@ -140,6 +147,7 @@ public class PathSpheresController : MonoBehaviour
         item.TryGetComponent<FollowPathCamera>(out followPathCamera);
     }
 
+    // change point color from received event
     void changePointColor(string itemName, string pointName, Color color)
     {
         StartCoroutine(waitItemAssigned(itemName, pointName, color));
@@ -154,6 +162,7 @@ public class PathSpheresController : MonoBehaviour
         if (followPathCamera != null)
             currPointName = transform.parent.name;
 
+        // check if the received item name and point correspond to the current one. Then, change its color
         if (itemName == item.name && currPointName == pointName)
         {
             Renderer renderer = gameObject.GetComponent<Renderer>();

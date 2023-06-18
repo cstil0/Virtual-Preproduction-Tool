@@ -25224,7 +25224,7 @@ MonoBehaviour:
   assistantToDirectorPort: 8051
   directorToAssistantPort: 8052
   itemsParent: {fileID: 1959356655}
-  ScreenCamera: {fileID: 1776131378}
+  ScreenCamera: {fileID: 1825172517}
   itemsMenu: {fileID: 989086354}
 --- !u!1 &1178942739
 GameObject:
@@ -27976,7 +27976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 947d28239188f7a41b6523c448852d08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenCamera: {fileID: 1776131378}
+  screenCamera: {fileID: 1825172517}
   assistantToScreenPort: 8050
   assistantToDirectorPort: 8051
   directoToAssistantPort: 8052
@@ -38601,12 +38601,6 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!20 &1776131378 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 5781834974586894724, guid: 76f555b9dfd0d0d4484816b700de078c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1776131374}
-  m_PrefabAsset: {fileID: 0}
 --- !u!54 &1776131379
 Rigidbody:
   m_ObjectHideFlags: 0

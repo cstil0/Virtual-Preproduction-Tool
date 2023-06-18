@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this script handles objects selection for those items that are not either characters nor cameras
 public class ObjectsSelector : MonoBehaviour
 {
     public bool isSelected = false;

@@ -11,7 +11,6 @@ public class CopyHandRotation : MonoBehaviour
     [SerializeField] FollowPathCamera followPathCamera;
     private bool triggerOn = false;
 
-    // Start is called before the first frame update
     void Start()
     {
     }
@@ -30,14 +29,9 @@ public class CopyHandRotation : MonoBehaviour
             // therefore, we need to copy the hand rotation when the dolly tracker is grabbed because camera rotation is not managed through the dolly tracker
             if (triggerOn)
             {
-                //Quaternion handRotation = Quaternion.Euler(- handController.transform.rotation.eulerAngles);
-                //Quaternion cameraRotation = transform.rotation;
-
                 transform.rotation = handController.transform.rotation;
-                //transform.rotation = handRotation * cameraRotation;
             }
 
-            //transform.position = dollyTracker.transform.position;
             transform.position = dollyPosition;
             virtualCamera.transform.position = dollyPosition;
             dollyTracker.transform.rotation = transform.rotation;

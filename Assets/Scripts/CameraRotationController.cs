@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// this script handles the rotation of minicameras to set the rotation of each point in the camera's path
 public class CameraRotationController : MonoBehaviour
 {
     public bool triggerOn = false;
@@ -47,6 +48,7 @@ public class CameraRotationController : MonoBehaviour
                 triggerButtonDown = false;
         }
 
+        // rotate the minicamera according to thumbstick input
         if (OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight) && isSelected)
         {
             gameObject.transform.Rotate(rotationPan * Time.deltaTime);
@@ -64,7 +66,7 @@ public class CameraRotationController : MonoBehaviour
             gameObject.transform.Rotate (-rotationTilt * Time.deltaTime);
         }
 
-        // ensure that pointNum was already assigned before changing its rotation
+        // apply the selected rotation when changed, but first ensure that pointNum was already assigned before changing its rotation
         if (lastRotation != gameObject.transform.rotation && pointNum != -1)
         {
             changePointRotation();
@@ -72,13 +74,15 @@ public class CameraRotationController : MonoBehaviour
         }
     }
 
+    // used to assign the new rotation in the pathrotations array
     public void changePointRotation()
     {
-        string[] pathName = transform.parent.name.Split(" ");
-        int pathNum = int.Parse(pathName[1]);
-        followPathCamera.pathRotations[pathNum + 1] = gameObject.transform.rotation.eulerAngles;
+        string[] pointName = transform.parent.name.Split(" ");
+        int pointNum = int.Parse(pointName[1]);
+        followPathCamera.pathRotations[pointNum + 1] = gameObject.transform.rotation.eulerAngles;
     }
 
+    // used to change the multicamera color when the event is triggered
     void changeMiniCameraColor(string cameraName, string pointName, Color color)
     {
         StartCoroutine(waitCameraAssigned(cameraName, pointName, color));
@@ -92,6 +96,7 @@ public class CameraRotationController : MonoBehaviour
         string currCameraName = followPathCamera.gameObject.name;
         string currPointName = transform.parent.name;
         
+        // check if the received minicamera and camera names correspond to the current one, and change its color accordingly if it is the case
         if (cameraName == currCameraName && currPointName == pointName)
         {
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);

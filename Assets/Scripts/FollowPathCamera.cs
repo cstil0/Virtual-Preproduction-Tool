@@ -9,36 +9,37 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
+// this script is used to handle camera's movements
 public class FollowPathCamera : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera cinemachineVirtualCamera;
-    private CinemachineTrackedDolly cinemachineTrackedDolly;
-    public CinemachineSmoothPath cinemachineSmoothPath;
-    [SerializeField] GameObject rotationController;
-    public float speed = 0.005f;
-
-    public GameObject handController;
-    public List<Vector3> pathPositions = new List<Vector3>();
-    public List<Vector3> pathRotations = new List<Vector3>();
+    [Header("Transform & Path Properties")]
+    public List<Vector3> pathPositions;
+    public List<Vector3> pathRotations;
     float pathLength;
-    float currPathPosition = 0.0f;
+    float currPathPosition;
 
     public Vector3 startPosition;
     public Quaternion startRotation;
 
-
     public GameObject pathContainer;
 
+    public float speed = 0.005f;
+
+    [Header("States")]
     bool isPlaying = false;
     bool secondaryIndexTriggerDown = false;
-    bool XButtonDown = false;
     public bool triggerOn = false;
     public bool isSelectedForPath = false;
     public bool isSelectedForPathOriginal = false;
-    // last local path ID created in this character
-    [SerializeField] int lastCharacterPathID = 0;
-    [SerializeField] int currentSelectedPath = 0;
-    private float currPathgPosition = 0;
+
+    [Header("Cinemachine Components")]
+    [SerializeField] CinemachineVirtualCamera cinemachineVirtualCamera;
+    private CinemachineTrackedDolly cinemachineTrackedDolly;
+    public CinemachineSmoothPath cinemachineSmoothPath;
+    [SerializeField] GameObject rotationController;
+
+    [Header("GameObjects")]
+    public GameObject handController;
 
     private void OnDisable()
     {
@@ -46,7 +47,6 @@ public class FollowPathCamera : MonoBehaviour
         DirectorPanelManager.instance.OnStopPath -= stopLinePath;
         UDPReceiver.instance.OnChangeItemColor -= changeItemColorDirector;
         UDPReceiver.instance.OnChangePathColor -= changePathColorDirector;
-
     }
 
     // extracted from Vector3.MoveTowards() method
@@ -65,7 +65,7 @@ public class FollowPathCamera : MonoBehaviour
         return new Vector3(current.x + num / num5 * maxDistanceDelta, current.y + num2 / num5 * maxDistanceDelta, current.z + num3 / num5 * maxDistanceDelta);
     }
 
-    // inverse interpolation
+    // compute inverse interpolation
     public static float InverseLerp(Vector3 pointA, Vector3 pointB, Vector3 middlePoint)
     {
         Vector3 distanceAB = pointB - pointA;
@@ -84,6 +84,9 @@ public class FollowPathCamera : MonoBehaviour
         pathLength = cinemachineTrackedDolly.m_Path.MaxPos;
 
         handController = GameObject.Find("RightHandAnchor");
+
+        pathPositions = new List<Vector3>();
+        pathRotations = new List<Vector3>();
 
         startPosition = cinemachineVirtualCamera.transform.position;
         startRotation = cinemachineVirtualCamera.transform.rotation;
@@ -109,6 +112,7 @@ public class FollowPathCamera : MonoBehaviour
                     StartCoroutine(defineNewPathPoint(gameObject.transform.position, gameObject.transform.rotation));
                 }
 
+                // change line renderer color
                 changePathColor();
             }
             else if (!secondaryIndexTriggerDown && isSelectedForPath && HoverObjects.instance.currentItemSelected == gameObject && !isElementOnTrigger)
@@ -133,6 +137,8 @@ public class FollowPathCamera : MonoBehaviour
 
                 if (pathRotations.Count > 0)
                 {
+                    // when the camera is relocated, all of its points are relocated to follow its new position,
+                    // so we need to relocate all cinemachine and linerenderer points to mantain them in their desired position
                     relocateCinemachinePoints(cinemachineSmoothPath, startPosition);
                     LineRenderer lineRenderer = pathContainer.GetComponentInChildren<LineRenderer>();
                     relocateAllBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath);
@@ -216,7 +222,9 @@ public class FollowPathCamera : MonoBehaviour
 
         return new Vector3(minAngDiffX, minAngDiffY, minAngDiffZ);
     }
+    
 
+    // relocate the defined cinemachine points according to the camera's start position. Used when the camera is relocated to mantain the points at their desired positions
     public void relocateCinemachinePoints(CinemachineSmoothPath cinemachineSmoothPath, Vector3 startPosition)
     {
         CinemachineSmoothPath.Waypoint[] cinemachinePoints = cinemachineSmoothPath.m_Waypoints;
@@ -233,6 +241,7 @@ public class FollowPathCamera : MonoBehaviour
                 cinemachinePoints[i] = newWayPoint;
                 cinemachineSmoothPath.m_Waypoints = cinemachinePoints;
             }
+            // for the rest of points, compute the distance from the real point to the camera's start position and save it in the smoothpath component
             else
             {
                 newWayPoint = new CinemachineSmoothPath.Waypoint();
@@ -248,6 +257,7 @@ public class FollowPathCamera : MonoBehaviour
         cinemachineSmoothPath.InvalidateDistanceCache();
     }
 
+    // used to create a new path point and save all of its references
     public IEnumerator defineNewPathPoint(Vector3 newPoint, Quaternion newRot, bool instantiatePos = true)
     {
         // y axis is received inverted in director side
@@ -272,8 +282,7 @@ public class FollowPathCamera : MonoBehaviour
         
         List<CinemachineSmoothPath.Waypoint> wayPointsList = new List<CinemachineSmoothPath.Waypoint>(wayPoints);
 
-        // it is necessary to separate the first point which corresponding to 0,
-        // so that the difference with the next one is correct in case the camera is moved from the first point
+        // the first point is always 0,0,0 since it is the difference with the camera's start position
         if (pathLength == 0)
         {
             CinemachineSmoothPath.Waypoint firstWayPoint = new CinemachineSmoothPath.Waypoint();
@@ -302,17 +311,19 @@ public class FollowPathCamera : MonoBehaviour
 
         if (instantiatePos)
         {
+            // if it is the first created point, instantiate sphere and minicamera and save the corresponding linerenderer
             if (pathLength == 0)
             {
                 List<GameObject> containers= DefinePath.instance.addPointToNewPath(newPoint, Quaternion.Euler(newRotVec), (int)pathLength, gameObject, true);
                 pathContainer = containers[0];
                 LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
+                // generate the bezier positions in the linerenderer to show the interpolated curve
                 addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
             }
             else
             {
                 DefinePath.instance.addPointToExistentPath(pathContainer, newPoint, Quaternion.Euler(newRotVec), (int)pathLength - 1, gameObject, true);
-                // add bezier points to show the interpolated path to the user
+                // add bezier points to show the interpolated path
                 LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
                 addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
             }
@@ -326,12 +337,13 @@ public class FollowPathCamera : MonoBehaviour
         }
         else
         {
-            // add bezier points to show the interpolated path to the user
+            // if the sphere does not need to be instantiated, just add bezier points to show the interpolated path
             LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
             addBezierPointsLineRenderer(lineRenderer, cinemachineSmoothPath, pathLength);
         }
     }
 
+    // used to add the bezier curve positions to the linerenderer to show the interpolated curve
     void addBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, float pathLength)
     {
         float count = pathLength - 1;
@@ -356,6 +368,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
+    // used to remove the bezier curve positions when a path point is deleted
     void removeBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, int pointNum)
     {
         int pointsCount = lineRenderer.positionCount;
@@ -395,6 +408,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
+    // used to relocate the bezier points positions when a point is relocated
     void relocateBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath, int pointNum, Vector3 newPoint)
     {
         int pointsCount = lineRenderer.positionCount;
@@ -430,6 +444,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
+    // used to re-evaluate all bezier points to relocate the line renderer when the camera is relocated
     public void relocateAllBezierPointsLineRenderer(LineRenderer lineRenderer, CinemachineSmoothPath cinemachineSmoothPath)
     {
         int pointsCount = lineRenderer.positionCount;
@@ -444,7 +459,7 @@ public class FollowPathCamera : MonoBehaviour
 
         float countFloat = 0.0f;
 
-        // iterate through the previous and following lines, adjacent to the current point to evaluate their bezier points
+        // iterate through all points in the linerenderer to re-evaluate their position
         for (int i = 0; i < lineRenderer.positionCount; i++)
         {
             float step = 1.0f / (float)resolution;
@@ -500,6 +515,7 @@ public class FollowPathCamera : MonoBehaviour
         hideShowPath(true);
     }
 
+    // used to hide or show the linerenderers and spheres of the path when pressing play or stop buttons
     void hideShowPath(bool isHidden)
     {
         // iterate through all points and line renderer and disable / enable them
@@ -518,6 +534,7 @@ public class FollowPathCamera : MonoBehaviour
         }
     }
 
+    // used to remove a path point and all of its references
     public void deletePathPoint(int pointNum, bool sendMessage, bool destroyElements)
     {
         // remove point from local arrays
@@ -546,7 +563,8 @@ public class FollowPathCamera : MonoBehaviour
         if (sendMessage)
             UDPSender.instance.sendDeletePointToDirector(pointNum, gameObject.name);
     }
-
+    
+    // used to relocate a path point
     public void relocatePoint(int pointNum, Vector3 direction, bool moveSphere, Vector3 directionInv)
     {
         // relocate point from local position array
@@ -569,7 +587,7 @@ public class FollowPathCamera : MonoBehaviour
         // ensure that the bezier curve is computed properly
         cinemachineSmoothPath.InvalidateDistanceCache();
 
-        // relocate point in line renderer
+        // relocate points in line renderer
         LineRenderer lineRenderer = pathContainer.transform.GetComponentInChildren<LineRenderer>();
         relocateBezierPointsLineRenderer(lineRenderer,cinemachineSmoothPath, pointNum, newPoint);
 
@@ -587,6 +605,7 @@ public class FollowPathCamera : MonoBehaviour
         speed = newSpeed;
     }
 
+    // change linerenderer color
     public void changePathColor()
     {
         Color color = DefinePath.instance.defaultLineColor;
@@ -599,18 +618,21 @@ public class FollowPathCamera : MonoBehaviour
             UDPSender.instance.sendChangePathColor(gameObject.name, UnityEngine.ColorUtility.ToHtmlStringRGBA(color));
     }
 
+    // used to change the item's color in client side
     private void changeItemColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
             HoverObjects.instance.changeColorMaterials(gameObject, color, false);
     }
 
+    // used to change linerenderer color in client side
     private void changePathColorDirector(string itemName, Color color)
     {
         if (itemName == gameObject.name)
             StartCoroutine(changeColorWaitPathContainer(color));
     }
-
+    
+    // used to wait until path container is referenced in order to change the line renderer color
     IEnumerator changeColorWaitPathContainer(Color color)
     {
         // wait until path container is received and correctly stored
@@ -619,6 +641,7 @@ public class FollowPathCamera : MonoBehaviour
         DefinePath.instance.changePathColor(pathContainer, color, false);
     }
 
+    // ensure that the rotation has no negative coordinates
     Vector3 getPositiveRotation(Quaternion rot)
     {
         // if angle is negative, compute its conjugate
@@ -633,11 +656,5 @@ public class FollowPathCamera : MonoBehaviour
             newRot.z = newRot.z + 360.0f;
 
         return newRot;
-    }
-
-    public int extractCameraNum()
-    {
-        string[] splittedName = gameObject.name.Split(' ');
-        return int.Parse(splittedName[1]);
     }
 }

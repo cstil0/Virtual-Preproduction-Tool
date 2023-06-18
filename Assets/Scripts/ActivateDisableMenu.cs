@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script is used to activate or disable the items menu then controller button is pressed
 public class ActivateDisableMenu : MonoBehaviour
 {
     public GameObject Canvas;
@@ -73,6 +74,7 @@ public class ActivateDisableMenu : MonoBehaviour
         }
     }
 
+    // show or hide the items menu
     public void showHideMenu(bool show)
     {
         Canvas.transform.GetChild(0).gameObject.SetActive(show);
@@ -91,6 +93,7 @@ public class ActivateDisableMenu : MonoBehaviour
             }
         }
 
+        // inform of the current items menu state to client
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
             UDPSender.instance.sendMenuNavigation("SHOW_HIDE_MENU", show.ToString());
     }

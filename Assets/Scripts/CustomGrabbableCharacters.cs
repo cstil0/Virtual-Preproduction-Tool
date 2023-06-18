@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+// this scripts substitutes the Oculus OVRGrabbable script, in order to limit rotation allow for rotation only in the y-axis
 public class CustomGrabbableCharacters : MonoBehaviour
 {
     Vector3 handStartPos;

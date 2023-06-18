@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using Unity.VisualScripting;
 
+// this script manages the general director panel's actions
 public class DirectorPanelManager : MonoBehaviour
 {
     [Header ("GameObjects")]
@@ -65,7 +66,7 @@ public class DirectorPanelManager : MonoBehaviour
         Color selectedColor = ItemsDirectorPanelController.instance.selectedColor;
         selectedColor.a = 0.15f;
 
-        Button firstInput = cameraViewButtons[1];
+        Button firstInput = cameraViewButtons[0];
         ColorBlock buttonColors = firstInput.colors;
         buttonColors.normalColor = selectedColor;
         firstInput.colors = buttonColors;
@@ -89,17 +90,20 @@ public class DirectorPanelManager : MonoBehaviour
             isXbuttonDown = false;
     }
 
+    // used to change from aerial to camera views panels and the other way around
     public void goToAerialView()
     {
         multiviewPanel.SetActive(false);
         aerealviewPanel.SetActive(true);
     }
+
     public void goToMainPView()
     {
         multiviewPanel.SetActive(true);
         aerealviewPanel.SetActive(false);
     }
 
+    // change the camera that is shown in the PGM (main) view
     public void changePGMCamera(GameObject input)
     {
         // ressign the camera texture to be rendered at the PGM slot
@@ -130,6 +134,7 @@ public class DirectorPanelManager : MonoBehaviour
         }
     }
 
+    // used when play / pause button is pressed
     public void playPath(bool fromDirector = true)
     {
         isPlaying = !isPlaying;
@@ -146,6 +151,7 @@ public class DirectorPanelManager : MonoBehaviour
             SendPlayStop("PLAY");
     }
 
+    // used when stop button is pressed
     public void stopPath()
     {
         // all stop event
@@ -164,7 +170,6 @@ public class DirectorPanelManager : MonoBehaviour
 
             string ipAddress = ModesManager.instance.IPAddress.text;
 
-            // sending data
             IPEndPoint target = new IPEndPoint(IPAddress.Parse(ipAddress), pathPlayPort);
 
             byte[] message = Encoding.ASCII.GetBytes("PLAY_PATH:" + playMessage);
@@ -178,6 +183,7 @@ public class DirectorPanelManager : MonoBehaviour
         }
     }
 
+    // used when grid button is pressed
     public void showHideGrid(bool sendMessage)
     {
         isGridShown = !isGridShown;
@@ -201,6 +207,7 @@ public class DirectorPanelManager : MonoBehaviour
         customLeftHand.GetComponent<OVRGrabber>().enabled = !isGridShown;
     }
 
+    // used to go to camera points view
     public void showHidePointsView()
     {
         isPointsViewActive = !isPointsViewActive;
@@ -210,15 +217,17 @@ public class DirectorPanelManager : MonoBehaviour
         else
             pointsViewButton.GetComponent<Image>().sprite = pointsViewIcon;
 
+        // enable / disable aerial or points view
         pointsView.SetActive(isPointsViewActive);
         aerialCameraView.SetActive(!isPointsViewActive);
     }
 
+    // used to replace the current view texture that is being shown by the one corresponding to the selected point
     public void changePointsViewTexture(string itemPressedName, int pointNumPressed)
     {
         if (itemPressedName.Contains("MainCamera"))
         {
-            // show alert message if no point is
+            // show alert message if no point is selected
             if (pointNumPressed == -1)
             {
                 pointsView.GetComponent<RawImage>().texture = null;
@@ -249,6 +258,7 @@ public class DirectorPanelManager : MonoBehaviour
         }
     } 
 
+    // used to send the new distance to the screen when is value changes
     public void onScreenDistanceChange(Slider distanceSlider)
     {
         float distance = distanceSlider.GetComponent<Slider>().value;

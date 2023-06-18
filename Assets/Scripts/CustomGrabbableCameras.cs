@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this script substitutes the Oculus OVRGrabbable script to transfer the movement to the corresponding virtual camera, dolly track and rotation controller gameobjects
 public class CustomGrabbableCameras : MonoBehaviour
 {
     GameObject currentHand;

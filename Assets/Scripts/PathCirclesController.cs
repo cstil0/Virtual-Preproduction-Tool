@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this script handles path circles behaviour
 public class PathCirclesController : MonoBehaviour
 {
     public int pathNum;

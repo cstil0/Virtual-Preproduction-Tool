@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// this script is used to implement zoom in / out and drag functionalities to the aerial view of the multi-canera panel
 public class ZenhitalZoom : MonoBehaviour
 {
     [SerializeField] float speed = 6.0f;
@@ -15,7 +16,6 @@ public class ZenhitalZoom : MonoBehaviour
         rectTransform = gameObject.GetComponent<RectTransform>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         // get the local mouse position with respect to the rect transform of the aerial view to know if it is inside

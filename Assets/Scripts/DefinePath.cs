@@ -5,13 +5,13 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// this scripts handles the general definition of paths for both characters and cameras, by generating, relocating or removing points
 public class DefinePath : MonoBehaviour
 {
     public static DefinePath instance = null;
 
-    public bool isPlaying = false;
-    [SerializeField] Light areaLight;
-
+    [Header("GameObjects")]
     public GameObject spherePrefab;
     public GameObject sphereCameraPrefab;
     public GameObject circlePrefab;
@@ -21,21 +21,26 @@ public class DefinePath : MonoBehaviour
     [SerializeField] GameObject circlesParentPrefab;
     [SerializeField] GameObject cameraCanvasPrefab;
     [SerializeField] GameObject handController;
-    [SerializeField] int pathPointsPort = 8051;
 
+    [Header("Path Colors")]
     public Color defaultLineColor;
     public Color hoverLineColor;
     public Color selectedLineColor;
     public Color playLightColor;
 
+    [Header("States & Properties")]
+    [SerializeField] int pathPointsPort = 8051;
     public bool isThereCharacterSelected = false;
     public int itemsCount;
+    public List<RenderTexture> miniCameraTextures;
+    public int maxCameraPoints;
+    public bool isPlaying = false;
+    [SerializeField] Light areaLight;
+
 
     public delegate void PathPositionChanged(int pathNum, int pointNum, Vector3 distance);
     public event PathPositionChanged OnPathPositionChanged;
 
-    public List<RenderTexture> miniCameraTextures;
-    public int maxCameraPoints;
 
     private void Awake()
     {
@@ -63,6 +68,7 @@ public class DefinePath : MonoBehaviour
             miniCameraTextures.Add(new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32));
         }
 
+        // start at 3 since there are already 3 cameras in the set
         itemsCount = 3;
     }
 
@@ -78,6 +84,7 @@ public class DefinePath : MonoBehaviour
         }
     }
 
+    // used to call the path position changed event
     public void triggerPointPathChanged(int pathNum, int pointNum, Vector3 distance)
     {
         OnPathPositionChanged(pathNum, pointNum, distance);
@@ -98,6 +105,7 @@ public class DefinePath : MonoBehaviour
             areaLight.color = Color.white;
     }
 
+    // used set the needed properties to generate a path point, which are common for a new and existent paths
     private void addPointGeneric(int itemNum, GameObject pathContainer, Vector3 newPosition, Quaternion newRotation, int pointsCount, GameObject item, bool isCamera, float startDifferenceY = 0.0f, GameObject circlesContainer = null)
     {
         GameObject spherePoint;
@@ -151,7 +159,7 @@ public class DefinePath : MonoBehaviour
             spherePoint.GetComponent<NetworkObject>().Spawn();
             circlePoint.GetComponent<NetworkObject>().Spawn();
 
-            // defined with trial and error
+            // values are defined with trial and error
             if (startDifferenceY == 0.0f)
                 startDifferenceY += 0.001f;
 
@@ -166,6 +174,7 @@ public class DefinePath : MonoBehaviour
         PathSpheresController pathSpheresController;
         if (isCamera)
         {
+            // on cameras, the sphere is located as a child of the point gameobject
             GameObject sphere = spherePoint.transform.GetChild(0).gameObject;
             pathSpheresController = sphere.GetComponent<PathSpheresController>();
             pathSpheresController.item = item;
@@ -262,10 +271,9 @@ public class DefinePath : MonoBehaviour
         addPointGeneric(itemNum, pathContainer, newPosition, newRotation, pointsCount, item, isCamera, startDifferenceY, circlesContainer);
     }
 
+    // delete a path point and all of its references
     public void deletePointFromPath(GameObject pathContainer, int pointNum, bool destroyElements, GameObject circlesContainer = null)
     {
-        //GameObject line = pathContainer.transform.Find("Line").gameObject;
-
         // change following points name
         // start in second child since first one corresponds to the line renderer
         for (int i = 1; i < pathContainer.transform.childCount; i++)
@@ -278,7 +286,7 @@ public class DefinePath : MonoBehaviour
                 HoverObjects.instance.pointAlreadySelected = false;
                 HoverObjects.instance.miniCameraAlreadySelected = false;
 
-                // destroy minicamera
+                // destroy minicamera and canvas view
                 if (pathContainer.transform.GetChild(i).tag != "PathPoint")
                 {
                     Destroy(pathContainer.transform.GetChild(i).GetChild(1).gameObject);
@@ -333,7 +341,7 @@ public class DefinePath : MonoBehaviour
 
         if (pathContainer.transform.childCount <= 2 && pointNum == 0 && destroyElements)
         {
-            // destroy line renderer and the container itself
+            // if we are at the only left position, destroy line renderer and the container itself
             Destroy(pathContainer.transform.GetChild(0).gameObject);
             Destroy(pathContainer);
 
@@ -380,6 +388,7 @@ public class DefinePath : MonoBehaviour
         }
     }
 
+    // change all line renderers' colors from a path
     public void changePathColor(GameObject pathContainer, Color pathColor, bool isActive)
     {
         // iterate through all points of the path
@@ -395,6 +404,7 @@ public class DefinePath : MonoBehaviour
         }
     }
 
+    // remove an item gameobject and all of its references
     public void deleteItem(GameObject item, bool sendMessage)
     {
         // get item to destroy it

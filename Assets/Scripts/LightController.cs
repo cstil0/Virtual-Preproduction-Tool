@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this script handles spotlights behaviour from multi-camera panel
 public class LightController : MonoBehaviour
 {
     private Color originalColor;

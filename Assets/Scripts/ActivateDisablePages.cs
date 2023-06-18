@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this script is used to show or hide item button pages from different categories
 public class ActivateDisablePages : MonoBehaviour
 {
     public int currentPage;
