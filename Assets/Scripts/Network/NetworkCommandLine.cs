@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+// this script is used to start multiplayer communication
 public class NetworkCommandLine : MonoBehaviour
 {
     private NetworkManager netManager;

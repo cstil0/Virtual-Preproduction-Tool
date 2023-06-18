@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
+// this script handles the sending of udp messages
 public class UDPSender : MonoBehaviour
 {
     public static UDPSender instance = null;
@@ -48,6 +50,7 @@ public class UDPSender : MonoBehaviour
             instance = this;
     }
 
+    // general function to send string UDP messages
     private void sendInfo(int port, string messageString)
     {
         string ipAddress = ModesManager.instance.IPAddress.text;
@@ -301,6 +304,7 @@ public class UDPSender : MonoBehaviour
         sendInfo(assistantToDirectorPort, "ITEMS_MENU_NAVIGATION:" + action + ":" + button);
     }
 
+    // used to rotate items in secene around VR user
     public void rotateItemsInScene(float rotationAngle)
     {
         Vector3 pivotPoint = OVRPlayer.transform.position;
@@ -311,7 +315,7 @@ public class UDPSender : MonoBehaviour
         for (int i = 0; i < itemsParent.transform.childCount; i++)
         {
             GameObject item = itemsParent.transform.GetChild(i).gameObject;
-            // if it is a camera, rotate the cinemachine gameobjects
+            // if it is a camera ignore it
             if (item.name.Contains("MainCamera"))
             {
                 continue;
@@ -368,6 +372,7 @@ public class UDPSender : MonoBehaviour
         }
     }
 
+    // used to rotate a point around a defined pivot point
     Vector3 rotatePointAround(Vector3 point, Vector3 pivotPoint, Quaternion rotationQuat)
     {
         // move to the world center
@@ -396,10 +401,13 @@ public class UDPSender : MonoBehaviour
 
     void Update()
     {
+        // when the defined screen camera is relocated both because playing or because the user moves it, send its current coordinates to the screen project
         Vector3 currentPos = screenCamera.transform.position;
         if (lastPos != currentPos)
         {
+            // sum the elapsed time from the last UDP message
             timeElapsedSendPos += Time.deltaTime;
+            // only host sends the coordinates to the screen project, by limiting the messages sending to that project's fps to avoid bottlenecks
             if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT && timeElapsedSendPos >= 1/targetFPS)
             {
                 SendPosRot();
@@ -410,11 +418,13 @@ public class UDPSender : MonoBehaviour
             changeResetStart(false);
         }
 
+        // rotate items in scene when Y button is pressed
         if (OVRInput.Get(OVRInput.RawButton.Y))
         {
             float rotationConstant = 30.0f * Time.deltaTime;
             // The way the secondary scene reads the angle is in total (not just the delta one)
             sceneRotation += rotationConstant;
+            // to avoid giant angles if rotating several times, reset the rotation when reaching 360
             if (sceneRotation >= 360)
                 sceneRotation = sceneRotation - 360;
 
@@ -428,6 +438,7 @@ public class UDPSender : MonoBehaviour
           buttonDown = 0;
         }
 
+        // reset main camera's position and rotation. This was used during motion parallax testing in Sala Aranyó
         if (OVRInput.Get(OVRInput.RawButton.A) && !hoverObjects.itemAlreadySelected)
         {
             screenCamera.transform.position = screenCameraStartPos;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// this script is used to handle the initial menu page and show the corresponding color buttons according to their selected state
 public class InitialMenu : MonoBehaviour
 {
     [SerializeField] Color selectedColor;

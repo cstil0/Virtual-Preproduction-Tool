@@ -12,6 +12,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEditor.Rendering;
 
+// this scripts listens to UDP messages and trigger the corresponding actions when one is received
 public class UDPReceiver : MonoBehaviour
 {
     public static UDPReceiver instance = null;
@@ -53,6 +54,7 @@ public class UDPReceiver : MonoBehaviour
     public delegate void ChangeMiniCameraColor(string cameraName, string pointName, Color color);
     public event ChangeMiniCameraColor OnChangeMiniCameraColor;
 
+    // -- Messages definition --
     enum eAssistantToDirectorMessages
     {
         NEW_ITEM,
@@ -104,7 +106,7 @@ public class UDPReceiver : MonoBehaviour
             instance = this;
     }
 
-    // thread to listen to assistant messages
+    // thread to listen to VR user messages
     void UDP_assistantToDirectorReceive()
     {
         clientPath = new UdpClient(assistantToDirectorPort);
@@ -126,7 +128,7 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
-    // thread to listen to director messages
+    // thread to listen to multi-camera user messages
     void UDP_directorToAssistantReceive()
     {
         clientPlay = new UdpClient(directorToAssistantPort);
@@ -195,6 +197,7 @@ public class UDPReceiver : MonoBehaviour
             GameObject pathSphere = pathContainer.GetChild(pathContainer.childCount - 1).gameObject;
             GameObject circle = circlesContainer.GetChild(circlesContainer.childCount - 1).gameObject;
 
+            // rename and store needed references
             pathSphere.name = "Point " + (pathContainer.childCount - 2);
             circle.name = "Circle " + (circlesContainer.childCount - 1);
             PathCirclesController circlesController = circle.GetComponent<PathCirclesController>();
@@ -235,11 +238,12 @@ public class UDPReceiver : MonoBehaviour
             lineRenderer.SetPosition(pointsCount - 1, realNewPosition);
         }
 
+        // if camera, store its position to parse it along with the rotation
         if (followPathCamera != null)
             newCameraPosition = newPointPosition;
     }
 
-    // executed when a new camera point is created
+    // executed when a new camera position and rotation is created
     void parsePointRotation(string itemName, string pointRotation)
     {
         Transform transformItem = itemsParent.transform.Find(itemName);
@@ -304,12 +308,14 @@ public class UDPReceiver : MonoBehaviour
             RawImage minicameraImage = pointTransform.GetChild(2).GetComponentInChildren<RawImage>();
             minicameraCanvas.worldCamera = miniCameraComponent;
 
+            // assign corresponding view texure 
             RenderTexture miniCameraTexture = new RenderTexture(426, 240, 16, RenderTextureFormat.ARGB32);
             minicameraImage.texture = miniCameraTexture;
             miniCameraComponent.targetTexture = miniCameraTexture;
         }
     }
 
+    // executed when an item is deleted in VR side
     void parseDeleteItemDirector(string itemName)
     {
         ItemsDirectorPanelController.instance.removeItemButtons(itemName);
@@ -318,6 +324,7 @@ public class UDPReceiver : MonoBehaviour
         Destroy(line);
     }
 
+    // executed when a point is deleted in VR side
     void parseDeletePointDirector(int pointNum, string itemName)
     {
         GameObject item = itemsParent.transform.Find(itemName).gameObject;
@@ -329,6 +336,7 @@ public class UDPReceiver : MonoBehaviour
     {
         colorHex = "#" + colorHex;
         UnityEngine.ColorUtility.TryParseHtmlString(colorHex, out Color color);
+        // call event to change the corresponding item's color
         OnChangeItemColor(itemName, color);
     }
 
@@ -370,6 +378,7 @@ public class UDPReceiver : MonoBehaviour
             DirectorPanelManager.instance.stopPath();
     }
 
+    // executed when new speed is received
     void parseSpeed(string itemName, float speed)
     {
         GameObject item = itemsParent.transform.Find(itemName).gameObject;
@@ -410,6 +419,7 @@ public class UDPReceiver : MonoBehaviour
         UDPSender.instance.rotateItemsInScene(rotationAngle);
     }
 
+    // executed when new main camera is selected to inform the screen project
     void parseChangeCamera(string changeCameraMessage)
     {
         UDPSender.instance.sendChangeCameraScreen(changeCameraMessage);
@@ -425,15 +435,19 @@ public class UDPReceiver : MonoBehaviour
         DirectorPanelManager.instance.showHideGrid(false);
     }
 
+    // executed when a path point is relocated
     void parsePointRelocation(string itemName, int pointNum, string direction, string directionInv)
     {
+        // parse relocation direction
         string[] directionSplitted = direction.Split(" ");
         float dirX = float.Parse(directionSplitted[0], CultureInfo.InvariantCulture);
         float dirY = float.Parse(directionSplitted[1], CultureInfo.InvariantCulture);
         float dirZ = float.Parse(directionSplitted[2], CultureInfo.InvariantCulture);
         Vector3 directionVec = new Vector3(dirX, dirY, dirZ);
 
+        // inverse direction is needed because of the way that cinemachine points are stored
         Vector3 directionInvVec = new Vector3();
+        // first check if it was set, since characters do not need it
         if (directionInv != "")
         {
             string[] directionInvSplitted = direction.Split(" ");
@@ -443,6 +457,7 @@ public class UDPReceiver : MonoBehaviour
             directionInvVec = new Vector3(dirInvX, dirInvY, dirInvZ);
         }
 
+        // find the corresponding follow path script and relocate the point
         GameObject item = itemsParent.transform.Find(itemName).gameObject;
         item.TryGetComponent(out FollowPath followPath);
         item.TryGetComponent(out FollowPathCamera followPathCamera);
@@ -454,16 +469,19 @@ public class UDPReceiver : MonoBehaviour
             followPathCamera.relocatePoint(pointNum, directionVec, false, directionInvVec);
     }
 
+    // executed when a camera is relocated, to relocate all of its points and mantain their position, since otherwise they follow the camera's new position
     void parseCameraPointsRelocation(string cameraName, string startPosition)
     {
         GameObject item = itemsParent.transform.Find(cameraName).gameObject;
 
+        // parse start position of the camera
         string[] startPositionSplitted = startPosition.Split(" ");
         float startPosX = float.Parse(startPositionSplitted[0], CultureInfo.InvariantCulture);
         float startPosY = float.Parse(startPositionSplitted[1], CultureInfo.InvariantCulture);
         float startPosZ = float.Parse(startPositionSplitted[2], CultureInfo.InvariantCulture);
         Vector3 startPositionVec = new Vector3(startPosX, startPosY, startPosZ);
 
+        // find the corresponding follow path script and relocate all of its points in cinemachine component and linerenderer
         item.TryGetComponent(out FollowPathCamera followPathCamera);
 
         followPathCamera.startPosition = startPositionVec;
@@ -473,6 +491,7 @@ public class UDPReceiver : MonoBehaviour
         followPathCamera.relocateAllBezierPointsLineRenderer(lineRenderer, followPathCamera.cinemachineSmoothPath);
     }
 
+    // executed when a new state or action is performed in the items menu, to replicate it in the client side
     void parseItemsMenuNavigation(string action, string button)
     {
         eItemsMenuActions menuActionEnum = (eItemsMenuActions)Enum.Parse(typeof(eItemsMenuActions), action);
@@ -513,6 +532,7 @@ public class UDPReceiver : MonoBehaviour
         }
     }
 
+    // executed when light color changes
     void parseChangeLightColor(string focusName, string colorHex, bool isAccepted)
     {
         GameObject focus = itemsParent.transform.Find(focusName).gameObject;
@@ -548,7 +568,7 @@ public class UDPReceiver : MonoBehaviour
 
     void Start()
     {
-        // director wants to receive new point paths created by the assistant
+        // listen to assistant messages if director role is set
         if (ModesManager.instance.role == ModesManager.eRoleType.DIRECTOR)
         {
             assistantToDirectorThread = new Thread(UDP_assistantToDirectorReceive);
@@ -556,7 +576,7 @@ public class UDPReceiver : MonoBehaviour
             assistantToDirectorThread.Start();
         }
 
-        // assistant wants to receive when director plays or stops the path play, since it controlls the position with network manager
+        // listen to director messages if assistant role is set
         if (ModesManager.instance.role == ModesManager.eRoleType.ASSISTANT)
         {
             directorToAssistantThread = new Thread(UDP_directorToAssistantReceive);
@@ -570,8 +590,10 @@ public class UDPReceiver : MonoBehaviour
 
     void Update()
     {
+        // check if there are messages left to be parsed and check their type
         if (lastMessages.Count > 0)
         {
+            // get oldest message stored in the queue and parse it
             string lastMessage = lastMessages.Dequeue();
             string[] splittedMessage = lastMessage.Split(":");
 
