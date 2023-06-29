@@ -11387,21 +11387,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineVirtualCamera: {fileID: 893955598}
-  cinemachineSmoothPath: {fileID: 1793905922}
-  rotationController: {fileID: 91735870}
-  speed: 1
-  handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
   startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
+  speed: 1
   triggerOn: 0
   isSelectedForPath: 0
   isSelectedForPathOriginal: 0
-  lastCharacterPathID: 0
-  currentSelectedPath: 0
+  cinemachineVirtualCamera: {fileID: 893955598}
+  cinemachineSmoothPath: {fileID: 1793905922}
+  rotationController: {fileID: 91735870}
+  handController: {fileID: 861928155}
 --- !u!114 &479241776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21353,7 +21351,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 961957378}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 50
+  m_MaxValue: 100
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -35593,8 +35591,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c77416542e2c69e4885cbef4b941ab35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlaying: 0
-  areaLight: {fileID: 2017635521}
   spherePrefab: {fileID: 5597389748885439251, guid: 1ec686e16e6910548aed43dbd36282c6,
     type: 3}
   sphereCameraPrefab: {fileID: 7341567524320583052, guid: 82c7088b50863cf48a1bc51f0993f44a,
@@ -35612,15 +35608,17 @@ MonoBehaviour:
   cameraCanvasPrefab: {fileID: 1456751059504817343, guid: 85e657ca9653c51489a7eb14bf92af92,
     type: 3}
   handController: {fileID: 861928155}
-  pathPointsPort: 8051
   defaultLineColor: {r: 1, g: 0.43529412, b: 0.36862746, a: 1}
   hoverLineColor: {r: 0.5019608, g: 0.7058824, b: 0.47843137, a: 1}
   selectedLineColor: {r: 0.5176471, g: 0.7504352, b: 0.8078431, a: 1}
   playLightColor: {r: 0.8352941, g: 0.6745098, b: 1, a: 0}
+  pathPointsPort: 8051
   isThereCharacterSelected: 0
   itemsCount: 0
   miniCameraTextures: []
   maxCameraPoints: 8
+  isPlaying: 0
+  areaLight: {fileID: 2017635521}
 --- !u!1001 &1662008193
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38552,21 +38550,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineVirtualCamera: {fileID: 863538880}
-  cinemachineSmoothPath: {fileID: 650033263}
-  rotationController: {fileID: 1820964237}
-  speed: 1
-  handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
   startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
+  speed: 1
   triggerOn: 0
   isSelectedForPath: 0
   isSelectedForPathOriginal: 0
-  lastCharacterPathID: 0
-  currentSelectedPath: 0
+  cinemachineVirtualCamera: {fileID: 863538880}
+  cinemachineSmoothPath: {fileID: 650033263}
+  rotationController: {fileID: 1820964237}
+  handController: {fileID: 861928155}
 --- !u!114 &1776131377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39848,21 +39844,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8535f968dfb4b40824562c04bd312c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineVirtualCamera: {fileID: 589624330}
-  cinemachineSmoothPath: {fileID: 1283584885}
-  rotationController: {fileID: 672654596}
-  speed: 1
-  handController: {fileID: 861928155}
   pathPositions: []
   pathRotations: []
   startPosition: {x: 0, y: 0, z: 0}
   startRotation: {x: 0, y: 0, z: 0, w: 0}
   pathContainer: {fileID: 0}
+  speed: 1
   triggerOn: 0
   isSelectedForPath: 0
   isSelectedForPathOriginal: 0
-  lastCharacterPathID: 0
-  currentSelectedPath: 0
+  cinemachineVirtualCamera: {fileID: 589624330}
+  cinemachineSmoothPath: {fileID: 1283584885}
+  rotationController: {fileID: 672654596}
+  handController: {fileID: 861928155}
 --- !u!114 &1825172525
 MonoBehaviour:
   m_ObjectHideFlags: 0

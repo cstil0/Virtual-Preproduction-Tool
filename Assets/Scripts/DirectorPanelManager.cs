@@ -72,6 +72,7 @@ public class DirectorPanelManager : MonoBehaviour
         firstInput.colors = buttonColors;
 
         float distance = distanceSlider.GetComponent<Slider>().value;
+        distanceSlider.GetComponent<Slider>().maxValue = 100;
         distanceText.GetComponent<TextMeshProUGUI>().text = "Distance to screen: " + (int)distance;
     }
 
